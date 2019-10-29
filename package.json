@@ -1,10 +1,12 @@
 {
   "name": "node-red-contrib-self-healing",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Node-RED self-healing related nodes.",
+  "keywords": [ "node-red" ],
   "node-red": {
     "nodes": {
-      "flow-control": "flow-control/flow-control.js"
+      "flow-control": "flow-control/flow-control.js",
+      "thresholdWatcher": "threshold-watcher/threshold-watcher.js"
     }
   },
   "scripts": {
@@ -13,6 +15,8 @@
   "author": "JP Dias",
   "license": "ISC",
   "dependencies": {
+    "ajv": "^6.10.2",
+    "asn1": "^0.2.4",
     "request": "^2.88.0"
   }
 }

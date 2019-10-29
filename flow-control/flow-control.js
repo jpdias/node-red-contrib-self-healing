@@ -2,43 +2,46 @@ var request = require('request');
 
 module.exports = function(RED) {
 
-    editorConfig = {
-        settings: {
-            targetNodeRed: {
-                value: "http://localhost",
-                exportable: true
-            }
-        }
-    }
-
     function FlowControl(config) {
         RED.nodes.createNode(this,config);
-
         var node = this;
         node.on('input', function(msg, send, done) {
-            targetUrl = `http://localhost:1880/flow/${RED.settings.targetNodeRed}`
-
-            if(typeof(msg.payload) === "boolean" && msg.payload){
-                request('targetUrl', function (error, response, body) {
-                    body.disabled = false
-                    request({
-                        method: 'PUT',
-                        uri: targetUrl,
-                        body: body
-                    }, function (error, response, body) {
-                      if (error) {
-                        node.status({fill:"red",shape:"ring",text:"Error"});
-                        done(err);
-                      } else {
-                        node.status({fill:"green",shape:"ring",text:"Ok"});
-                        done();
-                      }
-                      console.log('Upload successful!  Server responded with:', body);
-                    })
-                });    
+            targetUrl = `http://${config.targetHost}:${config.targetPort}/flow/${config.targetFlow}`
+          
+            if(typeof(msg.payload) === "boolean"){
+                try {
+                    request.get(targetUrl, function (error, response, body) {
+                        
+                        if (error) {
+                            node.status({fill:"red",shape:"ring",text:"Error"});
+                            done(error);
+                        }
+                        editedFlow = JSON.parse(body)
+                        editedFlow["disabled"] = msg.payload ? true : false
+                        request.put({
+                            method: 'PUT',
+                            uri: targetUrl,
+                            json: editedFlow
+                        }, function (error, response, body) {
+                        if (error) {
+                            node.status({fill:"red",shape:"ring",text:"Error"});
+                            done(error);
+                        } else {
+                            node.status({fill:"green",shape:"ring",text:"Ok"});
+                            done();
+                        }
+                        console.log('Upload successful!  Server responded with:', body);
+                        })
+                    });
+                } catch (error) {
+                    if (error) {
+                        node.status({fill:"red",shape:"ring",text:"Node Missconfig"});
+                        done(error);
+                    } 
+                }    
             }
         });
     }
 
-    RED.nodes.registerType("flow-control",FlowControl, editorConfig);
+    RED.nodes.registerType("flow-control",FlowControl);
 }
