@@ -5,7 +5,7 @@
     </div>
     <div class="form-row">
         <label for="node-input-targetPort"><i class="fa fa-tag"></i> targetPort</label>
-        <input type="text" id="node-input-targetPort" placeholder="targetPort">
+        <input type="number" id="node-input-targetPort" placeholder="targetPort">
     </div>
     <div class="form-row">
         <label for="node-input-targetFlow"><i class="fa fa-tag"></i> targetFlow</label>
@@ -28,10 +28,9 @@
             targetPort: {value:1880,required:true,validate:RED.validators.number()},
         },
         icon: "arrow-in.png",
-        color: "#F3B567",
+        color: "#74b9ff",
         inputs: 1,
         outputs: 1,
-        color: "green",
         align: 'left',
         inputLabels: "boolean",
         outputLabels: ["status"],

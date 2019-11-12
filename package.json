@@ -6,7 +6,7 @@
   "node-red": {
     "nodes": {
       "flow-control": "flow-control/flow-control.js",
-      "thresholdWatcher": "threshold-watcher/threshold-watcher.js"
+      "replication-voter": "replication-voter/replication-voter.js"
     }
   },
   "scripts": {

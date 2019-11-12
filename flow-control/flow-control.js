@@ -25,9 +25,11 @@ module.exports = function(RED) {
                         }, function (error, response, body) {
                         if (error) {
                             node.status({fill:"red",shape:"ring",text:"Error"});
+                            node.send({"payload": "error"});
                             done(error);
                         } else {
                             node.status({fill:"green",shape:"ring",text:"Ok"});
+                            node.send({"payload": {"id": config.targetFlow, "isDisabled": editedFlow["disabled"]}});
                             done();
                         }
                         console.log('Upload successful!  Server responded with:', body);
