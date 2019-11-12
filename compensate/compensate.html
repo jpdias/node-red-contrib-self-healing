@@ -1,0 +1,39 @@
+<script type="text/x-red" data-template-name="sensor-compensate">
+    <div class="form-row">
+        <label for="node-input-msghistory"><i class="fa fa-tag"></i> Message History</label>
+        <input type="number" id="node-input-msghistory" placeholder="10">
+    </div>
+    <div class="form-row">
+        <label for="node-input-timeout"><i class="fa fa-tag"></i> Timeout (s)</label>
+        <input type="number" id="node-input-timeout" placeholder="10">
+    </div>
+    <div class="form-row">
+        <label for="node-input-strategy"><i class="fa fa-tag"></i> Compensate Strategy</label>
+        <input type="text" id="node-input-strategy" placeholder="mean, mode, last">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="sensor-compensate">
+   <p>Some useful help text to introduce the node.</p>
+   <p>Some more information about the node.</p>
+</script>
+
+
+<script type="text/javascript">
+    RED.nodes.registerType('sensor-compensate', {
+        category: "SelfHealing",
+        defaults: {
+            msghistory: {value:10,required:true,validate:RED.validators.number()},
+            timeout: {value:5,required:true,validate:RED.validators.number()},
+            strategy: {value:"",required:true}
+        },
+        icon: "arrow-in.png",
+        color: "#74b9ff",
+        inputs: 1,
+        outputs: 1,
+        align: 'left',
+        inputLabels: "Number",
+        outputLabels: ["msg"],
+        label: "Sensor Compensate"
+    });
+</script>

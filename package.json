@@ -6,7 +6,8 @@
   "node-red": {
     "nodes": {
       "flow-control": "flow-control/flow-control.js",
-      "replication-voter": "replication-voter/replication-voter.js"
+      "replication-voter": "replication-voter/replication-voter.js",
+      "compensate": "compensate/compensate.js"
     }
   },
   "scripts": {
