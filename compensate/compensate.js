@@ -1,5 +1,5 @@
 module.exports = function(RED) {
-    var schedule;
+
     const mode = (myArray) => myArray.reduce(
         (a,b,i,arr) => (
             arr.filter(v => JSON.stringify(v) === JSON.stringify(a)).length 
@@ -13,7 +13,7 @@ module.exports = function(RED) {
             switch (strategy) {
                 case "mean":
                     let sum = history.reduce(function(a, b) { return a + b; });
-                    let avg = sum / arr.length;
+                    let avg = sum / history.length;
                     node.status({fill:"yellow",shape:"ring",text:"Timeout. Sending Mean"});
                     history.push(avg);
                     if(history.length > histSize) {
@@ -54,6 +54,7 @@ module.exports = function(RED) {
     function Compensate(config) {
         RED.nodes.createNode(this,config);
         var node = this;
+        var schedule = 'undefined';
         node.context().set("history"+node.id, []);
         node.on('input', function(msg, send, done) {
             strategy = config.strategy;
@@ -71,6 +72,8 @@ module.exports = function(RED) {
                 node.status({fill:"green",shape:"ring",text:"Ok"});
                 send(msg);
                 done();
+            } else {
+                node.status({fill:"red",shape:"ring",text:"Payload Not a Number"});
             }
         });
     }
