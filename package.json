@@ -7,7 +7,8 @@
     "nodes": {
       "flow-control": "flow-control/flow-control.js",
       "replication-voter": "replication-voter/replication-voter.js",
-      "compensate": "compensate/compensate.js"
+      "compensate": "compensate/compensate.js",
+      "threshold-check": "threshold-check/threshold-check.js"
     }
   },
   "scripts": {

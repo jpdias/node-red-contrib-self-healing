@@ -23,6 +23,32 @@ module.exports = function(RED) {
                     send({"payload": avg});
                     done();
                     break;
+                case "max":
+                    let max = history.reduce((prev, curr) => {
+                            return Math.max(prev, curr)
+                    });
+                    node.status({fill:"yellow",shape:"ring",text:"Timeout. Sending Max"});
+                    history.push(max);
+                    if(history.length > histSize) {
+                        history.shift();
+                    }
+                    node.context().set("history"+node.id,history);
+                    send({"payload": max});
+                    done();
+                    break;
+                case "min":
+                    let min = history.reduce((prev, curr) => {
+                            return Math.min(prev, curr)
+                    });
+                    node.status({fill:"yellow",shape:"ring",text:"Timeout. Sending Min"});
+                    history.push(min);
+                    if(history.length > histSize) {
+                        history.shift();
+                    }
+                    node.context().set("history"+node.id,history);
+                    send({"payload": min});
+                    done();
+                    break;
                 case "last":
                     node.status({fill:"yellow",shape:"ring",text:"Timeout. Sending Last"});
                     let last = history[history.length-1];
