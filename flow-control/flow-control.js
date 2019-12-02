@@ -5,7 +5,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     var node = this;
     node.on("input", function(msg, send, done) {
-      targetUrl = `http://${config.targetHost}:${config.targetPort}/flow/${config.targetFlow}`;
+      let targetUrl = `http://${config.targetHost}:${config.targetPort}/flow/${config.targetFlow}`;
 
       if (typeof msg.payload === "boolean") {
         try {
@@ -14,7 +14,7 @@ module.exports = function(RED) {
               node.status({ fill: "red", shape: "ring", text: "Error" });
               done(error);
             }
-            editedFlow = JSON.parse(body);
+            let editedFlow = JSON.parse(body);
             editedFlow["disabled"] = msg.payload ? true : false;
             request.put(
               {

@@ -2,7 +2,9 @@
   "name": "node-red-contrib-self-healing",
   "version": "1.0.1",
   "description": "Node-RED self-healing related nodes.",
-  "keywords": [ "node-red" ],
+  "keywords": [
+    "node-red"
+  ],
   "node-red": {
     "nodes": {
       "flow-control": "flow-control/flow-control.js",
@@ -20,5 +22,8 @@
     "ajv": "^6.10.2",
     "asn1": "^0.2.4",
     "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.7.2"
   }
 }

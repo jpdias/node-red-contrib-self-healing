@@ -28,7 +28,7 @@ module.exports = function(RED) {
         }
       } else {
         node.status({ fill: "red", shape: "ring", text: "Error" });
-        done(error);
+        done();
       }
     });
   }

@@ -107,7 +107,7 @@ module.exports = function(RED) {
     var schedule = "undefined";
     node.context().set("history" + node.id, []);
     node.on("input", function(msg, send, done) {
-      strategy = config.strategy;
+      let strategy = config.strategy;
       let history = node.context().get("history" + node.id);
       if (schedule == "undefined")
         schedule = setInterval(
