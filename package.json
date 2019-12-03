@@ -10,7 +10,8 @@
       "flow-control": "flow-control/flow-control.js",
       "replication-voter": "replication-voter/replication-voter.js",
       "compensate": "compensate/compensate.js",
-      "threshold-check": "threshold-check/threshold-check.js"
+      "threshold-check": "threshold-check/threshold-check.js",
+      "redundancy-manager": "redundancy/redundancy.js"
     }
   },
   "scripts": {
