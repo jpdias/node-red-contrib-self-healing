@@ -221,7 +221,8 @@ module.exports = function(RED) {
                         send([
                             null,
                             {
-                                payload:
+                                payload: msg.payload,
+                                fault: 
                                     "Assertion " +
                                     (i + 1) +
                                     " failed: " +

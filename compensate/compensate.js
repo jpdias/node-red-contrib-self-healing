@@ -22,7 +22,7 @@ module.exports = function(RED) {
             history.shift();
         }
         node.context().set("history" + node.id, history);
-        send({ payload: modeval });
+        send([{ payload: modeval }, {payload: history.last()}]);
         done();
     }
 
@@ -38,7 +38,7 @@ module.exports = function(RED) {
             history.shift();
         }
         node.context().set("history" + node.id, history);
-        send({ payload: last });
+        send([{ payload: last }, {payload: history.last()}]);
         done();
     }
 
@@ -56,7 +56,7 @@ module.exports = function(RED) {
             history.shift();
         }
         node.context().set("history" + node.id, history);
-        send({ payload: min });
+        send([{ payload: min }, {payload: history.last()}]);
         done();
     }
 
@@ -74,7 +74,7 @@ module.exports = function(RED) {
             history.shift();
         }
         node.context().set("history" + node.id, history);
-        send({ payload: max });
+        send([{ payload: max }, {payload: history.last()}]);
         done();
     }
 
@@ -93,7 +93,7 @@ module.exports = function(RED) {
             history.shift();
         }
         node.context().set("history" + node.id, history);
-        send({ payload: avg });
+        send([{ payload: avg }, {payload: history.last()}]);
         done();
     }
 
@@ -157,7 +157,7 @@ module.exports = function(RED) {
                 history.push(msg.payload);
                 node.context().set("history" + node.id, history);
                 node.status({ fill: "green", shape: "ring", text: "Ok" });
-                send(msg);
+                send([msg, null]);
                 done();
             } else {
                 node.status({

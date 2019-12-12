@@ -50,7 +50,7 @@
 <script type="text/javascript">
     RED.nodes.registerType('threshold-check', {
         color: "#74b9ff",
-        category: 'SelfHealing',
+        category: 'SHEN',
         defaults: {
             name: { value: "" },
             rules: {
@@ -69,11 +69,11 @@
         },
         inputs: 1,
         outputs: 2,
-        icon: "arrow-in.png",
+        icon: "status.png",
         inputLabels: "msg",
-        outputLabels: ["msg", "error-msg"],
+        outputLabels: ["msg", "fault"],
         label: function () {
-            return this.name || "threshold-check";
+            return this.name || "Threshold Check";
         },
         oneditprepare: function () {
             var node = this;

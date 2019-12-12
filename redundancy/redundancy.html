@@ -1,5 +1,9 @@
 <script type="text/x-red" data-template-name="redundancy-manager">
     <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
         <label for="node-input-timeout"><i class="fa fa-tag"></i> Timeout for alive IP (s)</label>
         <input type="number" id="node-input-timeout" placeholder="5">
     </div>
@@ -17,18 +21,21 @@
 
 <script type="text/javascript">
     RED.nodes.registerType('redundancy-manager', {
-        category: "SelfHealing",
+        category: "SHEN",
         defaults: {
+            name: {value: ""},
             timeout: {value:"5", required:true, validate:RED.validators.number()},
             pingInterval: {value:"30", required:true, validate:RED.validators.number()}
         },
-        icon: "arrow-in.png",
+        icon: "status.png",
         color: "#74b9ff",
         inputs: 1,
         outputs: 3,
         align: 'left',
         inputLabels: "n2n",
         outputLabels: ["master(bool)", "ips(array)", "ping"],
-        label: "Redundancy Manager"
+        label: function () {
+            return this.name || "Redundancy Manager";
+        }
     });
 </script>

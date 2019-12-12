@@ -1,5 +1,9 @@
 <script type="text/x-red" data-template-name="sensor-compensate">
     <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
         <label for="node-input-msghistory"><i class="fa fa-tag"></i> Message History</label>
         <input type="number" id="node-input-msghistory" placeholder="10">
     </div>
@@ -14,7 +18,7 @@
             <option>max</option>
             <option>last</option>
             <option>mode</option>
-            <option>mode</option>
+            <option>mean</option>
         </select>
     </div>
 </script>
@@ -27,19 +31,22 @@
 
 <script type="text/javascript">
     RED.nodes.registerType('sensor-compensate', {
-        category: "SelfHealing",
+        category: "SHEN",
         defaults: {
+            name: { value: "" },
             msghistory: {value:10,required:true,validate:RED.validators.number()},
             timeout: {value:5,required:true,validate:RED.validators.number()},
             strategy: {value:"",required:true}
         },
-        icon: "arrow-in.png",
+        icon: "status.png",
         color: "#74b9ff",
         inputs: 1,
-        outputs: 1,
+        outputs: 2,
         align: 'left',
-        inputLabels: "Number",
-        outputLabels: ["msg"],
-        label: "Sensor Compensate"
+        inputLabels: "number",
+        outputLabels: ["msg", "fault"],
+        label: function () {
+            return this.name || "Sensor Compensate";
+        }
     });
 </script>

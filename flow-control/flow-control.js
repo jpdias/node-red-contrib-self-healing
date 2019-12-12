@@ -15,7 +15,7 @@ module.exports = function(RED) {
               done(error);
             }
             let editedFlow = JSON.parse(body);
-            editedFlow["disabled"] = msg.payload ? true : false;
+            editedFlow["disabled"] = !msg.payload ? true : false;
             request.put(
               {
                 method: "PUT",
@@ -25,16 +25,16 @@ module.exports = function(RED) {
               function(error, response, body) {
                 if (error) {
                   node.status({ fill: "red", shape: "ring", text: "Error" });
-                  node.send({ payload: "error" });
+                  node.send([null, { payload: "error" }]);
                   done(error);
                 } else {
                   node.status({ fill: "green", shape: "ring", text: "Ok" });
-                  node.send({
+                  node.send([{
                     payload: {
                       id: config.targetFlow,
-                      isDisabled: editedFlow["disabled"]
+                      disabled: editedFlow["disabled"]
                     }
-                  });
+                  }, null]);
                   done();
                 }
                 console.log("Upload successful!  Server responded with:", body);

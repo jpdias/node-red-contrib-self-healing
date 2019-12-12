@@ -1,5 +1,9 @@
 <script type="text/x-red" data-template-name="replication-voter">
     <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
         <label for="node-input-majority"><i class="fa fa-tag"></i> Majority Value</label>
         <input type="number" id="node-input-majority" placeholder="2">
     </div>
@@ -13,17 +17,20 @@
 
 <script type="text/javascript">
     RED.nodes.registerType('replication-voter', {
-        category: "SelfHealing",
+        category: "SHEN",
         defaults: {
+            name: {value: ""},
             majority: {value:"2",required:true}
         },
-        icon: "arrow-in.png",
+        icon: "status.png",
         color: "#74b9ff",
         inputs: 1,
         outputs: 2,
         align: 'left',
         inputLabels: "JSONArray",
         outputLabels: ["majority", "no-majority"],
-        label: "Replication Voter"
+        label: function () {
+            return this.name || "Replication Voter";
+        }
     });
 </script>
