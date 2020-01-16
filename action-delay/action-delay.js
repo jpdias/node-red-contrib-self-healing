@@ -49,7 +49,9 @@ module.exports = function (RED) {
                 send([null, msg]);
                 done();
             }
-            if (schedule == "undefined") {
+            if(config.strategy == "discard"){
+                allActions = [];
+            } else if (schedule == "undefined") {
                 schedule = setInterval(executeMsg, delayInMilis, send, done);
             }
         });
