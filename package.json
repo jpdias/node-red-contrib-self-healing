@@ -11,7 +11,8 @@
       "replication-voter": "replication-voter/replication-voter.js",
       "compensate": "compensate/compensate.js",
       "threshold-check": "threshold-check/threshold-check.js",
-      "redundancy-manager": "redundancy/redundancy.js"
+      "redundancy-manager": "redundancy/redundancy.js",
+      "action-delay": "action-delay/action-delay.js"
     }
   },
   "scripts": {
