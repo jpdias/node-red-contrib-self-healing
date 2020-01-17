@@ -12,7 +12,8 @@
       "compensate": "compensate/compensate.js",
       "threshold-check": "threshold-check/threshold-check.js",
       "redundancy-manager": "redundancy/redundancy.js",
-      "action-delay": "action-delay/action-delay.js"
+      "action-delay": "action-delay/action-delay.js",
+      "distinct": "distinct/distinct.js"
     }
   },
   "scripts": {
