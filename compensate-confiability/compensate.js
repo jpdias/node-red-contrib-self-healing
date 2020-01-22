@@ -1,16 +1,10 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
     var compensatedCounter = 0;
 
     const mode = myArray =>
         myArray.reduce(
             (a, b, i, arr) =>
-                arr.filter(v => JSON.stringify(v) === JSON.stringify(a))
-                    .length >=
-                arr.filter(v => JSON.stringify(v) === JSON.stringify(b)).length
-                    ? a
-                    : b,
-            null
-        );
+                arr.filter(v => JSON.stringify(v) === JSON.stringify(a)).length >= arr.filter(v => JSON.stringify(v) === JSON.stringify(b)).length ? a : b, null);
 
     function modeCompensate(node, mode, history, histSize, send, done) {
         node.status({
@@ -24,7 +18,7 @@ module.exports = function(RED) {
             history.shift();
         }
         node.context().set("history" + node.id, history);
-        send([{ payload: modeval }, {payload: history[history.length - 1]}, {payload: compensatedCounter/histSize}]);
+        send([{ payload: modeval }, { payload: history[history.length - 1] }, { payload: compensatedCounter / history.length }]);
         done();
     }
 
@@ -40,7 +34,7 @@ module.exports = function(RED) {
             history.shift();
         }
         node.context().set("history" + node.id, history);
-        send([{ payload: last }, {payload: history[history.length - 1]}, {payload: compensatedCounter/histSize}]);
+        send([{ payload: last }, { payload: history[history.length - 1] }, { payload: compensatedCounter / history.length }]);
         done();
     }
 
@@ -58,7 +52,7 @@ module.exports = function(RED) {
             history.shift();
         }
         node.context().set("history" + node.id, history);
-        send([{ payload: min }, {payload: history[history.length - 1]}, {payload: compensatedCounter/histSize}]);
+        send([{ payload: min }, { payload: history[history.length - 1] }, { payload: compensatedCounter / history.length }]);
         done();
     }
 
@@ -76,12 +70,12 @@ module.exports = function(RED) {
             history.shift();
         }
         node.context().set("history" + node.id, history);
-        send([{ payload: max }, {payload: history[history.length - 1]}, {payload: compensatedCounter/histSize}]);
+        send([{ payload: max }, { payload: history[history.length - 1] }, { payload: compensatedCounter / history.length }]);
         done();
     }
 
     function meanCompensate(history, node, histSize, send, done) {
-        let sum = history.reduce(function(a, b) {
+        let sum = history.reduce(function (a, b) {
             return a + b;
         });
         let avg = sum / history.length;
@@ -95,7 +89,7 @@ module.exports = function(RED) {
             history.shift();
         }
         node.context().set("history" + node.id, history);
-        send([{ payload: avg }, {payload: history[history.length - 1]}, {payload: compensatedCounter/histSize}]);
+        send([{ payload: avg }, { payload: history[history.length - 1] }, { payload: compensatedCounter / history.length }]);
         done();
     }
 
@@ -130,7 +124,7 @@ module.exports = function(RED) {
         var node = this;
         var schedule = "undefined";
         node.context().set("history" + node.id, []);
-        node.on("input", function(msg, send, done) {
+        node.on("input", function (msg, send, done) {
             let strategy = config.strategy;
             let history = node.context().get("history" + node.id);
             if (schedule == "undefined")
@@ -161,7 +155,7 @@ module.exports = function(RED) {
                 node.context().set("history" + node.id, history);
                 node.status({ fill: "green", shape: "ring", text: "Ok" });
                 compensatedCounter--;
-                send([msg, null, {payload: compensatedCounter/histSize}]);
+                send([msg, null, { payload: compensatedCounter / history.length }]);
                 done();
             } else {
                 node.status({
