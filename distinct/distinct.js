@@ -1,4 +1,5 @@
 module.exports = function (RED) {
+    //TODO: add strategy (all distinct, size of array)
     function Distinct(config) {
         RED.nodes.createNode(this, config);
         var node = this;
