@@ -1,6 +1,10 @@
 module.exports = function (RED) {
     var compensatedCounter = 0;
 
+    function confidenceLevel(compensatedCounter, history) {
+        return (1 / compensatedCounter + 1 / history.length) >= 1 ? 1 : (1 / compensatedCounter + 1 / history.length);
+    }    
+
     const mode = myArray =>
         myArray.reduce(
             (a, b, i, arr) =>
@@ -13,14 +17,9 @@ module.exports = function (RED) {
             text: "Timeout. Sending Mode"
         });
         let modeval = mode(history);
-        history.push(modeval);
-        if (history.length > histSize) {
-            history.shift();
-        }
         node.context().set("history" + node.id, history);
-        send([{ payload: modeval }, { payload: history[history.length - 1] }, { payload: compensatedCounter / history.length }]);
-        done();
-    }
+        send([{ payload: modeval }, { payload: history[history.length - 1] }, { payload:  confidenceLevel(compensatedCounter, history)  }]);
+        done();    }
 
     function lastCompensate(node, history, histSize, send, done) {
         node.status({
@@ -29,12 +28,8 @@ module.exports = function (RED) {
             text: "Timeout. Sending Last"
         });
         let last = history[history.length - 1];
-        history.push(last);
-        if (history.length > histSize) {
-            history.shift();
-        }
         node.context().set("history" + node.id, history);
-        send([{ payload: last }, { payload: history[history.length - 1] }, { payload: compensatedCounter / history.length }]);
+        send([{ payload: last }, { payload: history[history.length - 1] }, { payload: confidenceLevel(compensatedCounter, history) }]);
         done();
     }
 
@@ -47,12 +42,8 @@ module.exports = function (RED) {
             shape: "ring",
             text: "Timeout. Sending Min"
         });
-        history.push(min);
-        if (history.length > histSize) {
-            history.shift();
-        }
         node.context().set("history" + node.id, history);
-        send([{ payload: min }, { payload: history[history.length - 1] }, { payload: compensatedCounter / history.length }]);
+        send([{ payload: min }, { payload: history[history.length - 1] }, { payload: confidenceLevel(compensatedCounter, history) }]);
         done();
     }
 
@@ -65,12 +56,8 @@ module.exports = function (RED) {
             shape: "ring",
             text: "Timeout. Sending Max"
         });
-        history.push(max);
-        if (history.length > histSize) {
-            history.shift();
-        }
         node.context().set("history" + node.id, history);
-        send([{ payload: max }, { payload: history[history.length - 1] }, { payload: compensatedCounter / history.length }]);
+        send([{ payload: max }, { payload: history[history.length - 1] }, { payload: confidenceLevel(compensatedCounter, history) }]);
         done();
     }
 
@@ -84,12 +71,8 @@ module.exports = function (RED) {
             shape: "ring",
             text: "Timeout. Sending Mean"
         });
-        history.push(avg);
-        if (history.length > histSize) {
-            history.shift();
-        }
         node.context().set("history" + node.id, history);
-        send([{ payload: avg }, { payload: history[history.length - 1] }, { payload: compensatedCounter / history.length }]);
+        send([{ payload: avg }, { payload: history[history.length - 1] }, { payload: confidenceLevel(compensatedCounter, history) }]);
         done();
     }
 
@@ -154,8 +137,8 @@ module.exports = function (RED) {
                 history.push(msg.payload);
                 node.context().set("history" + node.id, history);
                 node.status({ fill: "green", shape: "ring", text: "Ok" });
-                compensatedCounter--;
-                send([msg, null, { payload: compensatedCounter / history.length }]);
+                compensatedCounter === 0 ? 0 : compensatedCounter--;
+                send([msg, null, { payload: 1 }]);
                 done();
             } else {
                 node.status({
@@ -169,3 +152,4 @@ module.exports = function (RED) {
 
     RED.nodes.registerType("sensor-compensate-confiability", CompensateConfiability);
 };
+
