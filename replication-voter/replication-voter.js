@@ -12,6 +12,20 @@ module.exports = function(RED) {
   function ReplicationVoter(config) {
     RED.nodes.createNode(this, config);
     var node = this;
+    var allValues = []
+
+    sendOut = (node, msg, done, majority) => {
+      if (majority) {
+        node.status({ fill: "green", shape: "ring", text: "Majority" });
+        node.send([msg, null]);
+        done();
+      } else {
+        node.status({ fill: "yellow", shape: "ring", text: "No majority" });
+        node.send([null, msg]);
+        done();
+      }
+    }
+
     node.on("input", function(msg, send, done) {
       if (msg.payload.constructor === Array) {
         let arrayMode = mode(msg.payload);
@@ -19,15 +33,23 @@ module.exports = function(RED) {
           x => JSON.stringify(x) == JSON.stringify(arrayMode)
         ).length;
         msg.payload = arrayMode;
-        if (majorCount >= parseInt(config.majority)) {
-          node.send([msg, null]);
-          done();
-        } else {
-          node.send([null, msg]);
-          done();
+        sendOut(node,msg,done,majorCount >= parseInt(config.majority));
+      }
+      else if(msg.payload.constructor === Number && typeof config.countInputs != "undefined"){
+        allValues.push(msg.payload);
+        if(allValues.length == config.countInputs){
+          let arrayMode = mode(allValues);
+          let majorCount = allValues.filter(
+            x => JSON.stringify(x) == JSON.stringify(arrayMode)
+          ).length;
+          msg.payload = arrayMode;
+          allValues = [];
+          sendOut(node,msg,done,majorCount >= parseInt(config.majority));
         }
-      } else {
-        node.status({ fill: "red", shape: "ring", text: "Error" });
+      }
+      else {
+        node.status({ fill: "red", shape: "ring", text: "Error: Unexpected Input" });
+        allValues = [];
         done();
       }
     });

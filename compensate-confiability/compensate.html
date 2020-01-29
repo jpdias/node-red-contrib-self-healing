@@ -1,4 +1,4 @@
-<script type="text/x-red" data-template-name="sensor-compensate">
+<script type="text/x-red" data-template-name="sensor-compensate-confiability">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
         <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
@@ -23,14 +23,14 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="sensor-compensate">
+<script type="text/x-red" data-help-name="sensor-compensate-confiability">
    <p>Some useful help text to introduce the node.</p>
    <p>Some more information about the node.</p>
 </script>
 
 
 <script type="text/javascript">
-    RED.nodes.registerType('sensor-compensate', {
+    RED.nodes.registerType('sensor-compensate-confiability', {
         category: "SHEN",
         defaults: {
             name: { value: "" },
@@ -41,12 +41,12 @@
         icon: "status.png",
         color: "#74b9ff",
         inputs: 1,
-        outputs: 2,
+        outputs: 3,
         align: 'left',
         inputLabels: "number",
-        outputLabels: ["msg", "fault"],
+        outputLabels: ["msg", "fault", "confiability-ratio"],
         label: function () {
-            return this.name || "Sensor Compensate";
+            return this.name || "Sensor Compensate-Confiability";
         }
     });
 </script>

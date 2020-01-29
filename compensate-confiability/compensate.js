@@ -1,14 +1,14 @@
-module.exports = function(RED) {
+module.exports = function (RED) {
+    var compensatedCounter = 0;
+
+    function confidenceLevel(compensatedCounter, history) {
+        return (1 / compensatedCounter + 1 / history.length) >= 1 ? 1 : (1 / compensatedCounter + 1 / history.length);
+    }    
+
     const mode = myArray =>
         myArray.reduce(
             (a, b, i, arr) =>
-                arr.filter(v => JSON.stringify(v) === JSON.stringify(a))
-                    .length >=
-                arr.filter(v => JSON.stringify(v) === JSON.stringify(b)).length
-                    ? a
-                    : b,
-            null
-        );
+                arr.filter(v => JSON.stringify(v) === JSON.stringify(a)).length >= arr.filter(v => JSON.stringify(v) === JSON.stringify(b)).length ? a : b, null);
 
     function modeCompensate(node, mode, history, histSize, send, done) {
         node.status({
@@ -17,14 +17,9 @@ module.exports = function(RED) {
             text: "Timeout. Sending Mode"
         });
         let modeval = mode(history);
-        history.push(modeval);
-        if (history.length > histSize) {
-            history.shift();
-        }
         node.context().set("history" + node.id, history);
-        send([{ payload: modeval }, {payload: history[history.length - 1]}]);
-        done();
-    }
+        send([{ payload: modeval }, { payload: history[history.length - 1] }, { payload:  confidenceLevel(compensatedCounter, history)  }]);
+        done();    }
 
     function lastCompensate(node, history, histSize, send, done) {
         node.status({
@@ -33,12 +28,8 @@ module.exports = function(RED) {
             text: "Timeout. Sending Last"
         });
         let last = history[history.length - 1];
-        history.push(last);
-        if (history.length > histSize) {
-            history.shift();
-        }
         node.context().set("history" + node.id, history);
-        send([{ payload: last }, {payload: history[history.length - 1]}]);
+        send([{ payload: last }, { payload: history[history.length - 1] }, { payload: confidenceLevel(compensatedCounter, history) }]);
         done();
     }
 
@@ -51,12 +42,8 @@ module.exports = function(RED) {
             shape: "ring",
             text: "Timeout. Sending Min"
         });
-        history.push(min);
-        if (history.length > histSize) {
-            history.shift();
-        }
         node.context().set("history" + node.id, history);
-        send([{ payload: min }, {payload: history[history.length - 1]}]);
+        send([{ payload: min }, { payload: history[history.length - 1] }, { payload: confidenceLevel(compensatedCounter, history) }]);
         done();
     }
 
@@ -69,17 +56,13 @@ module.exports = function(RED) {
             shape: "ring",
             text: "Timeout. Sending Max"
         });
-        history.push(max);
-        if (history.length > histSize) {
-            history.shift();
-        }
         node.context().set("history" + node.id, history);
-        send([{ payload: max }, {payload: history[history.length - 1]}]);
+        send([{ payload: max }, { payload: history[history.length - 1] }, { payload: confidenceLevel(compensatedCounter, history) }]);
         done();
     }
 
     function meanCompensate(history, node, histSize, send, done) {
-        let sum = history.reduce(function(a, b) {
+        let sum = history.reduce(function (a, b) {
             return a + b;
         });
         let avg = sum / history.length;
@@ -88,18 +71,15 @@ module.exports = function(RED) {
             shape: "ring",
             text: "Timeout. Sending Mean"
         });
-        history.push(avg);
-        if (history.length > histSize) {
-            history.shift();
-        }
         node.context().set("history" + node.id, history);
-        send([{ payload: avg }, {payload: history[history.length - 1]}]);
+        send([{ payload: avg }, { payload: history[history.length - 1] }, { payload: confidenceLevel(compensatedCounter, history) }]);
         done();
     }
 
     function sendMessage(node, send, done, strategy, histSize) {
         let history = node.context().get("history" + node.id);
         if (history.length > 0) {
+            compensatedCounter++;
             switch (strategy) {
                 case "mean":
                     meanCompensate(history, node, histSize, send, done);
@@ -122,12 +102,12 @@ module.exports = function(RED) {
         }
     }
 
-    function Compensate(config) {
+    function CompensateConfiability(config) {
         RED.nodes.createNode(this, config);
         var node = this;
         var schedule = "undefined";
         node.context().set("history" + node.id, []);
-        node.on("input", function(msg, send, done) {
+        node.on("input", function (msg, send, done) {
             let strategy = config.strategy;
             let history = node.context().get("history" + node.id);
             if (schedule == "undefined")
@@ -157,7 +137,8 @@ module.exports = function(RED) {
                 history.push(msg.payload);
                 node.context().set("history" + node.id, history);
                 node.status({ fill: "green", shape: "ring", text: "Ok" });
-                send([msg, null]);
+                compensatedCounter === 0 ? 0 : compensatedCounter--;
+                send([msg, null, { payload: 1 }]);
                 done();
             } else {
                 node.status({
@@ -169,5 +150,6 @@ module.exports = function(RED) {
         });
     }
 
-    RED.nodes.registerType("sensor-compensate", Compensate);
+    RED.nodes.registerType("sensor-compensate-confiability", CompensateConfiability);
 };
+
