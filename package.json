@@ -14,7 +14,8 @@
       "threshold-check": "threshold-check/threshold-check.js",
       "redundancy-manager": "redundancy/redundancy.js",
       "action-delay": "action-delay/action-delay.js",
-      "distinct": "distinct/distinct.js"
+      "distinct": "distinct/distinct.js",
+      "network-aware": "network-aware/network-aware.js"
     }
   },
   "scripts": {
@@ -25,6 +26,8 @@
   "dependencies": {
     "ajv": "^6.10.2",
     "asn1": "^0.2.4",
+    "libnmap": "^0.4.19",
+    "local-devices": "^3.0.0",
     "request": "^2.88.0"
   },
   "devDependencies": {
