@@ -28,14 +28,9 @@ module.exports = function(RED) {
         });
     }
 
+    //Bully Algorithm
     function setMaster(node, send, done) {
         let isMaster = false;
-
-        if(!node.context().get("ips")){
-            let ips = new Set();
-            console.log(JSON.stringify(ips));
-            node.context().set("ips", ips);
-        }
         let res = Array.from(node.context().get("ips"));
         let major = null;
         if(res.lenght >= 0){
@@ -56,7 +51,7 @@ module.exports = function(RED) {
             isMaster = true;
         }
         syncPayload.payload.master = node.context().global.get("master");
-        send([{ "payload": {"master": isMaster} }, { "payload": res }, syncPayload]);
+        send([{ "payload": {"master": isMaster} }, { "payload": node.context().get("ips") }, syncPayload]);
         done();
     }
 
@@ -65,13 +60,13 @@ module.exports = function(RED) {
         var node = this;
         var timeout = "undefined";
         node.context().global.set("master", false);
-
+        node.context().set("ips", new Set());
         let interval = parseInt(config.pingInterval) < 15 ? 15 : 30;
 
-        node.emit("input", syncPayload);
+        node.emit("input", {"payload": "internal-sync"});
 
         setInterval(() => {
-            node.emit("input", syncPayload);
+            node.emit("input", {"payload": "internal-sync"});
         }, interval*1000);
 
         node.on("input", function(msg, send, done) {
@@ -94,18 +89,17 @@ module.exports = function(RED) {
                 clearTimeout(timeout);
                 node.status({ fill: "yellow", shape: "ring", text: "I'm Slave. Master is "+ msg.hostip});
             }
-            if (!node.context().get("ips")) {
-                let ips = new Set([msg.hostip]);
-                console.log(JSON.stringify(ips));
-                node.context().set("ips", ips);
-            } else {
-                let nodes = node.context().get("ips");
-                if (typeof msg.hostip != "undefined") {
-                    nodes.add(msg.hostip);
-                    node.context().set("ips", nodes);
-                }
+
+            //update ip list
+            let allips = node.context().get("ips");
+            if (typeof msg.hostip != "undefined") {
+                console.log(">>"+JSON.stringify(node.context().get("ips")))
+                allips.add(msg.hostip);
+                node.context().set("ips", allips);
             }
-            if(msg.payload.sync == "ping"){
+
+            //
+            if(msg.payload == "internal-sync"){
                 syncPayload.payload.master = node.context().global.get("master");
                 send([null, null, syncPayload]);
                 node.status({ fill: "green", shape: "ring", text: "Sync Ping"});
