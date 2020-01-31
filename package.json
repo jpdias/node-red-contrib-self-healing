@@ -25,10 +25,11 @@
   "license": "ISC",
   "dependencies": {
     "ajv": "^6.10.2",
-    "arpping": "^0.2.0",
     "asn1": "^0.2.4",
     "oui": "^10.0.41",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "child_process": "^1.0.2",
+    "os": "^0.1.1"
   },
   "devDependencies": {
     "eslint": "^6.7.2"

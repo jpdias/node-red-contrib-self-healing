@@ -1,4 +1,4 @@
-var arpping = require('arpping')({
+var arpping = require('./arpping.js')({
     timeout: 10,
     includeEndpoints: true
 });
