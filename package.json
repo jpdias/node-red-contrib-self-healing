@@ -26,6 +26,7 @@
   "dependencies": {
     "ajv": "^6.10.2",
     "asn1": "^0.2.4",
+    "libnmap": "^0.4.19",
     "local-devices": "^3.0.0",
     "request": "^2.88.0"
   },
