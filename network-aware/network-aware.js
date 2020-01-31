@@ -39,15 +39,13 @@ module.exports = function (RED) {
             }
             for (const fdev of hosts) {
                 let idsha = uuidv4();
+                let mnf = "unknown"
                 if(typeof fdev.mac == "string"){
                     idsha = crypto.createHash('sha256').update(fdev.mac).digest('hex');
+                    mnf = oui(fdev.mac.substring(0, 8)) 
                 }
                 
-                let mnf = oui(fdev.mac.substring(0, 8)) 
-                
-                if(typeof mnf != "string"){
-                    mnf = ""
-                } else {
+                if(mnf != "unknown"){
                     mnf = oui(fdev.mac.substring(0, 8)).split("\n")[0]
                 }
                 let dev = {
