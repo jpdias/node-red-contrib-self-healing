@@ -92,8 +92,8 @@ var arpping = {
             var ip = ""
             var mac = ""
             if (osType == 'Linux') {
-                if (stdout.indexOf('wlan0') == -1) return callback(new Error('No wifi connection'));
-                var wlan0 = stdout.split('wlan0')[1].split('\n');
+                if (stdout.indexOf('enp0') == -1) return callback(new Error('No wifi connection'));
+                var wlan0 = stdout.split('enp0')[1].split('\n');
                 ip = wlan0[1].slice(wlan0[1].indexOf('inet ')).split(' ')[1];
                 mac = wlan0[3].slice(wlan0[3].indexOf('ether ')).split(' ')[1];
             }
