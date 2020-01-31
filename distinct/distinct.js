@@ -7,11 +7,11 @@ module.exports = function (RED) {
         node.on("input", function (msg, send, done) {
             if(typeof lastMsg == "undefined" || lastMsg != msg.payload){
                 lastMsg = msg.payload;
-                node.status({ fill: "green", shape: "ring", text: "Distinct" });
+                node.status({ fill: "green", shape: "dot", text: "Distinct" });
                 send([msg, null]);
                 done();
             } else {
-                node.status({ fill: "red", shape: "ring", text: "Repeated" });
+                node.status({ fill: "red", shape: "dot", text: "Repeated" });
                 send([null, msg]);
                 done();
             }

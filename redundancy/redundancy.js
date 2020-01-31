@@ -81,13 +81,13 @@ module.exports = function(RED) {
                 );
             }
             if(node.context().global.get("master")){
-                node.status({ fill: "green", shape: "ring", text: "I'm Master"}); 
+                node.status({ fill: "green", shape: "dot", text: "I'm Master"}); 
             }
             else if (msg.payload.master == "true") {
                 masterExists = true;
                 node.context().global.set("master", false);
                 clearTimeout(timeout);
-                node.status({ fill: "yellow", shape: "ring", text: "I'm Slave. Master is "+ msg.hostip});
+                node.status({ fill: "yellow", shape: "dot", text: "I'm Slave. Master is "+ msg.hostip});
             }
 
             //update ip list
@@ -102,7 +102,7 @@ module.exports = function(RED) {
             if(msg.payload == "internal-sync"){
                 syncPayload.payload.master = node.context().global.get("master");
                 send([null, null, syncPayload]);
-                node.status({ fill: "green", shape: "ring", text: "Sync Ping"});
+                node.status({ fill: "green", shape: "dot", text: "Sync Ping"});
                 done();
             }
         });

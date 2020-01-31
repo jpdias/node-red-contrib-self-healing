@@ -13,7 +13,7 @@ module.exports = function(RED) {
                     if (error) {
                         node.status({
                             fill: "red",
-                            shape: "ring",
+                            shape: "dot",
                             text: "Error"
                         });
                         node.send([null, { payload: "error" }]);
@@ -21,7 +21,7 @@ module.exports = function(RED) {
                     } else {
                         node.status({
                             fill: "green",
-                            shape: "ring",
+                            shape: "dot",
                             text: "Ok"
                         });
                         node.send([
@@ -44,7 +44,7 @@ module.exports = function(RED) {
             .on("error", function(err) {
                 node.status({
                     fill: "red",
-                    shape: "ring",
+                    shape: "dot",
                     text: "Node Missconfig"
                 });
                 done(err);
@@ -64,7 +64,7 @@ module.exports = function(RED) {
                 if (error) {
                     node.status({
                         fill: "red",
-                        shape: "ring",
+                        shape: "dot",
                         text: "Error"
                     });
                     done(error);
@@ -76,7 +76,7 @@ module.exports = function(RED) {
             .on("error", function(err) {
                 node.status({
                     fill: "red",
-                    shape: "ring",
+                    shape: "dot",
                     text: "Node Missconfig"
                 });
                 done(err);
@@ -102,7 +102,7 @@ module.exports = function(RED) {
                     if (error) {
                         node.status({
                             fill: "red",
-                            shape: "ring",
+                            shape: "dot",
                             text: "Node Missconfig"
                         });
                         done(error);
