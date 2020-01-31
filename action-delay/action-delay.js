@@ -35,13 +35,13 @@ module.exports = function (RED) {
             newMsgTimestamp = new Date().getTime();
             if (newMsgTimestamp - lastMsgTimestamp >= delayInMilis && allActions.length == 0) {
                 //pass message, all clear and good
-                node.status({ fill: "green", shape: "ring", text: "Dispatched" });
+                node.status({ fill: "green", shape: "dot", text: "Dispatched" });
                 lastMsgTimestamp = newMsgTimestamp;
                 send([msg, null]);
                 done();
                 return;
             } else if (newMsgTimestamp - lastMsgTimestamp < delayInMilis) {
-                node.status({ fill: "yellow", shape: "ring", text: "Delayed" });
+                node.status({ fill: "yellow", shape: "dot", text: "Delayed" });
                 newMsg = msg;
                 newMsg.timestamp = newMsgTimestamp;
                 lastMsgTimestamp = newMsgTimestamp;

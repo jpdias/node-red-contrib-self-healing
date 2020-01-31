@@ -13,7 +13,7 @@ module.exports = function(RED) {
     function modeCompensate(node, mode, history, histSize, send, done) {
         node.status({
             fill: "yellow",
-            shape: "ring",
+            shape: "dot",
             text: "Timeout. Sending Mode"
         });
         let modeval = mode(history);
@@ -29,7 +29,7 @@ module.exports = function(RED) {
     function lastCompensate(node, history, histSize, send, done) {
         node.status({
             fill: "yellow",
-            shape: "ring",
+            shape: "dot",
             text: "Timeout. Sending Last"
         });
         let last = history[history.length - 1];
@@ -48,7 +48,7 @@ module.exports = function(RED) {
         });
         node.status({
             fill: "yellow",
-            shape: "ring",
+            shape: "dot",
             text: "Timeout. Sending Min"
         });
         history.push(min);
@@ -66,7 +66,7 @@ module.exports = function(RED) {
         });
         node.status({
             fill: "yellow",
-            shape: "ring",
+            shape: "dot",
             text: "Timeout. Sending Max"
         });
         history.push(max);
@@ -85,7 +85,7 @@ module.exports = function(RED) {
         let avg = sum / history.length;
         node.status({
             fill: "yellow",
-            shape: "ring",
+            shape: "dot",
             text: "Timeout. Sending Mean"
         });
         history.push(avg);
@@ -156,13 +156,13 @@ module.exports = function(RED) {
                 }
                 history.push(msg.payload);
                 node.context().set("history" + node.id, history);
-                node.status({ fill: "green", shape: "ring", text: "Ok" });
+                node.status({ fill: "green", shape: "dot", text: "Ok" });
                 send([msg, null]);
                 done();
             } else {
                 node.status({
                     fill: "red",
-                    shape: "ring",
+                    shape: "dot",
                     text: "Payload Not a Number"
                 });
             }

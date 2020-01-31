@@ -25,9 +25,9 @@
   "license": "ISC",
   "dependencies": {
     "ajv": "^6.10.2",
+    "arpping": "^0.2.0",
     "asn1": "^0.2.4",
-    "libnmap": "^0.4.19",
-    "local-devices": "^3.0.0",
+    "oui": "^10.0.41",
     "request": "^2.88.0"
   },
   "devDependencies": {

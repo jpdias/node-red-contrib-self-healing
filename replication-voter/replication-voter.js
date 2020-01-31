@@ -16,11 +16,11 @@ module.exports = function(RED) {
 
     sendOut = (node, msg, done, majority) => {
       if (majority) {
-        node.status({ fill: "green", shape: "ring", text: "Majority" });
+        node.status({ fill: "green", shape: "dot", text: "Majority" });
         node.send([msg, null]);
         done();
       } else {
-        node.status({ fill: "yellow", shape: "ring", text: "No majority" });
+        node.status({ fill: "yellow", shape: "dot", text: "No majority" });
         node.send([null, msg]);
         done();
       }
@@ -48,7 +48,7 @@ module.exports = function(RED) {
         }
       }
       else {
-        node.status({ fill: "red", shape: "ring", text: "Error: Unexpected Input" });
+        node.status({ fill: "red", shape: "dot", text: "Error: Unexpected Input" });
         allValues = [];
         done();
       }
