@@ -25,17 +25,18 @@ module.exports = function (RED) {
         arpping.discover(config.baseip, (err, hosts) => {
             let newDevList = [];
             if (err) {
+                node.status({ fill: "red", shape: "dot", text: JSON.stringify(err) });
+                console.log(err);
                 done();
-                node.status({ fill: "red", shape: "dot", text: "Error" });
-                return console.log(err);
             }
             for (const fdev of hosts) {
                 let idsha = crypto.createHash('sha256').update(fdev.mac).digest('hex');
+                let mnf = oui(fdev.mac.substring(0, 8)).split("\n")[0] ? oui(fdev.mac.substring(0, 8)).split("\n")[0] : ""
                 let dev = {
                     id: idsha,
                     ip: fdev.ip,
                     type: fdev.type,
-                    manufacturer: oui(fdev.mac.substring(0, 8)).split("\n")[0]
+                    manufacturer: mnf
                 };
                 newDevList.push(dev);
                 if (!containsDevice(dev, devices)) {
@@ -51,6 +52,7 @@ module.exports = function (RED) {
             }
             devices = newDevList;
             firstScanComplete = true;
+            node.status({ fill: "green", shape: "dot", text: "Scan Complete" });
             if(config.emit){
                 send([{payload: devices}, null, null]);
                 done();
@@ -65,7 +67,6 @@ module.exports = function (RED) {
         node.emit("input", {"payload": "internal-sync"});
 
         node.on("input", function (msg, send, done) {
-            
             if(!started){
                 devScan(config, done, node, msg, send);
                 setInterval(() => {
