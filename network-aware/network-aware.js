@@ -31,7 +31,13 @@ module.exports = function (RED) {
             }
             for (const fdev of hosts) {
                 let idsha = crypto.createHash('sha256').update(fdev.mac).digest('hex');
-                let mnf = oui(fdev.mac.substring(0, 8)) ? oui(fdev.mac.substring(0, 8)).split("\n")[0] : ""
+                let mnf = oui(fdev.mac.substring(0, 8)) 
+                
+                if(typeof mnf != "string"){
+                    mnf = ""
+                } else {
+                    mnf = oui(fdev.mac.substring(0, 8)).split("\n")[0]
+                }
                 let dev = {
                     id: idsha,
                     ip: fdev.ip,
