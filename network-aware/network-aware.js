@@ -1,7 +1,4 @@
-var arpping = require('./arpping.js')({
-    timeout: 10,
-    includeEndpoints: true
-});
+const netList = require('network-list');
 const crypto = require('crypto');
 const oui = require('oui');
 
@@ -30,27 +27,36 @@ module.exports = function (RED) {
 
     function devScan(config, done, node, msg, send) {
         node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
-        arpping.discover(config.baseip, (err, hosts) => {
-            let newDevList = [];
+
+        let opts = {
+            ip: config.baseip,
+            timeout: 10,
+            vendor: false
+        }
+
+        let newDevList = [];
+        netList.scanEach(opts, (err, obj) => {
             if (err) {
                 node.status({ fill: "red", shape: "dot", text: JSON.stringify(err) });
                 console.log(err);
                 done();
             }
-            for (const fdev of hosts) {
+            if(obj.alive){
                 let idsha = uuidv4();
                 let mnf = "unknown"
-                if(typeof fdev.mac == "string"){
-                    idsha = crypto.createHash('sha256').update(fdev.mac).digest('hex');
-                    mnf = oui(fdev.mac.substring(0, 8)) 
+                if(typeof obj.mac == "string"){
+                    idsha = crypto.createHash('sha256').update(obj.mac).digest('hex');
+                    mnf = oui(obj.mac.substring(0, 8)) 
                 }
                 
                 if(mnf != "unknown"){
-                    mnf = oui(fdev.mac.substring(0, 8)).split("\n")[0]
+                    mnf = oui(obj.mac.substring(0, 8)).split("\n")[0]
                 }
                 let dev = {
                     id: idsha,
-                    ip: fdev.ip,
+                    ip: obj.ip,
+                    alive: obj.alive,
+                    hostname: obj.hostname,
                     manufacturer: mnf
                 };
                 newDevList.push(dev);
@@ -59,20 +65,20 @@ module.exports = function (RED) {
                     send([null, {payload: dev}, null]);
                 }
             }
-            for (const oldDev of devices) {
-                if (!containsDevice(oldDev, newDevList)) {
-                    node.status({ fill: "red", shape: "dot", text: "device gone" });
-                    send([null, null, {payload: oldDev}]);
-                }
+        })
+        for (const oldDev of devices) {
+            if (!containsDevice(oldDev, newDevList)) {
+                node.status({ fill: "red", shape: "dot", text: "device gone" });
+                send([null, null, {payload: oldDev}]);
             }
-            devices = newDevList;
-            firstScanComplete = true;
-            node.status({ fill: "green", shape: "dot", text: "Scan Complete" });
-            if(config.emit){
-                send([{payload: devices}, null, null]);
-                done();
-            }
-        });
+        }
+        devices = newDevList;
+        firstScanComplete = true;
+        node.status({ fill: "green", shape: "dot", text: "Scan Complete" });
+        if(config.emit){
+            send([{payload: devices}, null, null]);
+            done();
+        }
     }
 
     function NetworkAware(config) {
