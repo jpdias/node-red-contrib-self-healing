@@ -89,17 +89,19 @@ var arpping = {
                 console.log(err);
                 return callback(err);
             }
+            var ip = ""
+            var mac = ""
             if (osType == 'Linux') {
                 if (stdout.indexOf('wlan0') == -1) return callback(new Error('No wifi connection'));
                 var wlan0 = stdout.split('wlan0')[1].split('\n');
-                var ip = wlan0[1].slice(wlan0[1].indexOf('inet ')).split(' ')[1];
-                var mac = wlan0[3].slice(wlan0[3].indexOf('ether ')).split(' ')[1];
+                ip = wlan0[1].slice(wlan0[1].indexOf('inet ')).split(' ')[1];
+                mac = wlan0[3].slice(wlan0[3].indexOf('ether ')).split(' ')[1];
             }
             else {
                 var en0 = stdout.slice(stdout.indexOf('en0')).split('\n');
                 if (en0[4].indexOf('status: inactive') > -1) return callback(new Error('No wifi connection'));
-                var ip = en0[3].split(' ')[1];
-                var mac = en0[1].split(' ')[1];
+                ip = en0[3].split(' ')[1];
+                mac = en0[1].split(' ')[1];
             }
 
             arpping.myIP = ip;

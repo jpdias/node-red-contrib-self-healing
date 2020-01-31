@@ -20,6 +20,14 @@ module.exports = function (RED) {
         return false;
     }
 
+    function uuidv4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
+      
+
     function devScan(config, done, node, msg, send) {
         node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
         arpping.discover(config.baseip, (err, hosts) => {
@@ -30,7 +38,11 @@ module.exports = function (RED) {
                 done();
             }
             for (const fdev of hosts) {
-                let idsha = crypto.createHash('sha256').update(fdev.mac).digest('hex');
+                let idsha = uuidv4();
+                if(typeof fdev.mac == "string"){
+                    idsha = crypto.createHash('sha256').update(fdev.mac).digest('hex');
+                }
+                
                 let mnf = oui(fdev.mac.substring(0, 8)) 
                 
                 if(typeof mnf != "string"){
@@ -41,7 +53,6 @@ module.exports = function (RED) {
                 let dev = {
                     id: idsha,
                     ip: fdev.ip,
-                    type: fdev.type,
                     manufacturer: mnf
                 };
                 newDevList.push(dev);
