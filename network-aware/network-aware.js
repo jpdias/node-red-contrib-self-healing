@@ -73,9 +73,10 @@ module.exports = function (RED) {
                 send([{payload: devices}, null, null]);
                 done();
             }
-
-
-        })
+        }).catch(err => { 
+            node.status({ fill: "red", shape: "dot", text: JSON.stringify(err.message) });
+            node.info('caught', err.message); 
+        });
     }
 
     function NetworkAware(config) {
