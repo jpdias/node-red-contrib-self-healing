@@ -27,6 +27,7 @@
     "ajv": "^6.10.2",
     "asn1": "^0.2.4",
     "child_process": "^1.0.2",
+    "local-devices": "^3.0.0",
     "network-list": "^1.1.5",
     "os": "^0.1.1",
     "oui": "^10.0.41",

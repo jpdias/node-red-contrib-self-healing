@@ -1,4 +1,4 @@
-const netList = require('network-list');
+const find = require('local-devices');
 const crypto = require('crypto');
 const oui = require('oui');
 
@@ -28,19 +28,8 @@ module.exports = function (RED) {
     function devScan(config, done, node, msg, send) {
         node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
 
-        let opts = {
-            ip: config.baseip,
-            timeout: 10,
-            vendor: false
-        }
-
         let newDevList = [];
-        netList.scanEach(opts, (err, obj) => {
-            if (err) {
-                node.status({ fill: "red", shape: "dot", text: JSON.stringify(err) });
-                console.log(err);
-                done();
-            }
+        find().then(obj => {
             if(obj.alive){
                 let idsha = uuidv4();
                 let mnf = "unknown"
@@ -55,8 +44,6 @@ module.exports = function (RED) {
                 let dev = {
                     id: idsha,
                     ip: obj.ip,
-                    alive: obj.alive,
-                    hostname: obj.hostname,
                     manufacturer: mnf
                 };
                 newDevList.push(dev);
