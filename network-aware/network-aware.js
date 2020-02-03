@@ -30,7 +30,6 @@ module.exports = function (RED) {
 
         let newDevList = [];
         find(config.baseip).then(devicesScan => {
-            console.log(devicesScan);
             for (var obj of devicesScan){
                 let idsha = uuidv4();
                 let mnf = "unknown"
@@ -68,7 +67,7 @@ module.exports = function (RED) {
             }
             devices = newDevList;
             firstScanComplete = true;
-            node.status({ fill: "green", shape: "dot", text: "Scan Complete" });
+            node.status({ fill: "green", shape: "dot", text: "Scan Complete: " +  new Date().toISOString()});
             if(config.emit){
                 send([{payload: devices}, null, null]);
                 done();
