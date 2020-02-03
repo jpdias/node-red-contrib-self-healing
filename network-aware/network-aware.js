@@ -29,13 +29,18 @@ module.exports = function (RED) {
         node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
 
         let newDevList = [];
-        find("192.168.0.1/24").then(obj => {
-            if(obj.alive){
+        find(config.baseip).then(devices => {
+            devices.forEach(obj => {
                 let idsha = uuidv4();
                 let mnf = "unknown"
+                let name = "unknown"
                 if(typeof obj.mac == "string"){
                     idsha = crypto.createHash('sha256').update(obj.mac).digest('hex');
                     mnf = oui(obj.mac.substring(0, 8)) 
+                }
+
+                if(typeof obj.name == "string"){
+                    name = obj.name
                 }
                 
                 if(mnf != "unknown"){
@@ -44,6 +49,7 @@ module.exports = function (RED) {
                 let dev = {
                     id: idsha,
                     ip: obj.ip,
+                    name: name,
                     manufacturer: mnf
                 };
                 newDevList.push(dev);
@@ -51,7 +57,7 @@ module.exports = function (RED) {
                     node.status({ fill: "red", shape: "dot", text: "new device" });
                     send([null, {payload: dev}, null]);
                 }
-            }
+            });
         })
         for (const oldDev of devices) {
             if (!containsDevice(oldDev, newDevList)) {
