@@ -29,8 +29,9 @@ module.exports = function (RED) {
         node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
 
         let newDevList = [];
-        find(config.baseip).then(devices => {
-            devices.forEach(obj => {
+        find(config.baseip).then(devicesScan => {
+            console.log(devicesScan);
+            for (var obj of devicesScan){
                 let idsha = uuidv4();
                 let mnf = "unknown"
                 let name = "unknown"
@@ -57,21 +58,24 @@ module.exports = function (RED) {
                     node.status({ fill: "red", shape: "dot", text: "new device" });
                     send([null, {payload: dev}, null]);
                 }
-            });
-        })
-        for (const oldDev of devices) {
-            if (!containsDevice(oldDev, newDevList)) {
-                node.status({ fill: "red", shape: "dot", text: "device gone" });
-                send([null, null, {payload: oldDev}]);
             }
-        }
-        devices = newDevList;
-        firstScanComplete = true;
-        node.status({ fill: "green", shape: "dot", text: "Scan Complete" });
-        if(config.emit){
-            send([{payload: devices}, null, null]);
-            done();
-        }
+
+            for (const oldDev of devices) {
+                if (!containsDevice(oldDev, newDevList)) {
+                    node.status({ fill: "red", shape: "dot", text: "device gone" });
+                    send([null, null, {payload: oldDev}]);
+                }
+            }
+            devices = newDevList;
+            firstScanComplete = true;
+            node.status({ fill: "green", shape: "dot", text: "Scan Complete" });
+            if(config.emit){
+                send([{payload: devices}, null, null]);
+                done();
+            }
+
+
+        })
     }
 
     function NetworkAware(config) {
