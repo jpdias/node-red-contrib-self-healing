@@ -29,7 +29,7 @@ module.exports = function (RED) {
         node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
 
         let newDevList = [];
-        find().then(obj => {
+        find("192.168.0.1/24").then(obj => {
             if(obj.alive){
                 let idsha = uuidv4();
                 let mnf = "unknown"
