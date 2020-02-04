@@ -3,8 +3,7 @@ const crypto = require('crypto');
 const oui = require('oui');
 
 module.exports = function (RED) {
-
-    var devices = new Array();
+    
     var started = false;
     var firstScanComplete = false;
 
@@ -27,14 +26,14 @@ module.exports = function (RED) {
 
     function devScan(config, done, node, msg, send) {
         node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
-
+        
         let newDevList = [];
         find(config.baseip).then(devicesScan => {
-            for (var obj of devicesScan){
+            for (var obj of devicesScan) {
                 let idsha = uuidv4();
                 let mnf = "unknown"
                 let name = "unknown"
-                if(typeof obj.mac == "string"){
+                if(typeof obj.mac == "string"){ //if not mac, set uuid
                     idsha = crypto.createHash('sha256').update(obj.mac).digest('hex');
                     mnf = oui(obj.mac.substring(0, 8)) 
                 }
@@ -53,23 +52,23 @@ module.exports = function (RED) {
                     manufacturer: mnf
                 };
                 newDevList.push(dev);
-                if (!containsDevice(dev, devices)) {
-                    node.status({ fill: "red", shape: "dot", text: "new device" });
+                if (!containsDevice(dev, node.context().get("devices"))) {
+                    node.status({ fill: "red", shape: "dot", text: "device up" });
                     send([null, {payload: dev}, null]);
                 }
             }
 
-            for (const oldDev of devices) {
+            for (const oldDev of node.context().get("devices")) {
                 if (!containsDevice(oldDev, newDevList)) {
-                    node.status({ fill: "red", shape: "dot", text: "device gone" });
+                    node.status({ fill: "red", shape: "dot", text: "device down" });
                     send([null, null, {payload: oldDev}]);
                 }
             }
-            devices = newDevList;
+            node.context().set("devices", newDevList);
             firstScanComplete = true;
             node.status({ fill: "green", shape: "dot", text: "Scan Complete: " +  new Date().toISOString()});
             if(config.emit){
-                send([{payload: devices}, null, null]);
+                send([{payload: newDevList}, null, null]);
                 done();
             }
         }).catch(err => { 
@@ -81,6 +80,7 @@ module.exports = function (RED) {
     function NetworkAware(config) {
         RED.nodes.createNode(this, config);
         var node = this;
+        node.context().set("devices", []);
 
         node.emit("input", {"payload": "internal-sync"});
 
@@ -92,7 +92,7 @@ module.exports = function (RED) {
                 }, parseInt(config.scanInterval)*1000);
                 started = true;
             }else if (firstScanComplete){
-                send([{payload: devices}, null, null]);
+                send([{payload: node.context().get("devices")}, null, null]);
                 done();
             }
         });
