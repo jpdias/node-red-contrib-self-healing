@@ -59,7 +59,7 @@ module.exports = function (RED) {
                 }
             }
 
-            for (const oldDev of node.context().get("devices")) {
+            for (let oldDev of node.context().get("devices")) {
                 if (!containsDevice(oldDev, newDevList)) {
                     node.status({ fill: "red", shape: "dot", text: "device down" });
                     send([null, null, {payload: oldDev}]);
@@ -70,7 +70,6 @@ module.exports = function (RED) {
             node.status({ fill: "green", shape: "dot", text: "Scan Complete: " +  new Date().toISOString()});
             if(config.emit){
                 send([{payload: newDevList}, null, null]);
-                done();
             }
         }).catch(err => { 
             node.status({ fill: "red", shape: "dot", text: JSON.stringify(err.message) });
