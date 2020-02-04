@@ -49,7 +49,8 @@ module.exports = function (RED) {
                     id: idsha,
                     ip: obj.ip,
                     name: name,
-                    manufacturer: mnf
+                    manufacturer: mnf,
+                    timestamp: new Date().toISOString()
                 };
                 newDevList.push(dev);
                 if (!containsDevice(dev, node.context().get("devices"))) {
@@ -93,7 +94,8 @@ module.exports = function (RED) {
                 started = true;
             }else if (firstScanComplete){
                 send([{payload: node.context().get("devices")}, null, null]);
-                done();
+            } else {
+                node.status({ fill: "yellow", shape: "dot", text: "Running first scan" });
             }
         });
     }
