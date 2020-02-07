@@ -62,13 +62,13 @@ module.exports = function (RED) {
             node.log("hey hey 0")
             return newDevList
         }).then((newDevList) => {
-            for (let oldDev of node.context().get("devices")) {
+            node.context().get("devices").forEach(oldDev => {
                 node.log("Checking for old/removed devices");
                 if (!containsDevice(oldDev, newDevList)) {
                     node.status({ fill: "red", shape: "dot", text: "device down" });
                     send([null, null, {payload: oldDev}]);
                 }
-            }
+            })
             node.context().set("devices", newDevList);
             firstScanComplete = true;
             node.status({ fill: "green", shape: "dot", text: "Scan Complete: " +  new Date().toISOString()});
