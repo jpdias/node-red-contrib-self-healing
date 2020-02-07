@@ -55,6 +55,7 @@ module.exports = function (RED) {
                 newDevList.push(dev);
                 node.log("Checking for new devices");
                 if (!containsDevice(dev, node.context().get("devices"))) {
+                    node.log("Device new: " + dev.ip);
                     node.status({ fill: "red", shape: "dot", text: "device up" });
                     send([null, {payload: dev}, null]);
                 }
@@ -66,6 +67,7 @@ module.exports = function (RED) {
                 node.log("Checking for old/removed devices");
                 if (!containsDevice(oldDev, newDevList)) {
                     node.status({ fill: "red", shape: "dot", text: "device down" });
+                    node.log("Device Removed: " + oldDev.ip);
                     send([null, null, {payload: oldDev}]);
                 }
             })
