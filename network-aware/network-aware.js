@@ -8,12 +8,7 @@ module.exports = function (RED) {
     var firstScanComplete = false;
 
     function containsDevice(obj, list) {
-        for (let index = 0; index < list.length; index++) {
-            if(list[index].id  == obj.id){
-                return true;
-            }
-        }
-        return false;
+        return list.some((element) => element.id  == obj.id)
     }
 
     function uuidv4() {
@@ -26,7 +21,7 @@ module.exports = function (RED) {
 
     function devScan(config, done, node, msg, send) {
         node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
-        if(Array.isArray(node.context().get("devices"))){
+        if(!Array.isArray(node.context().get("devices"))){
             node.context().set("devices", new Array());
         }
         find(config.baseip).then(devicesScan => {
