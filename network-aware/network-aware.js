@@ -26,10 +26,10 @@ module.exports = function (RED) {
 
     function devScan(config, done, node, msg, send) {
         node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
-        
-        let newDevList = [];
+
         find(config.baseip).then(devicesScan => {
-            for (var obj of devicesScan) {
+            let newDevList = new Array();
+            devicesScan.forEach(obj => {
                 let idsha = uuidv4();
                 let mnf = "unknown"
                 let name = "unknown"
@@ -53,13 +53,17 @@ module.exports = function (RED) {
                     timestamp: new Date().toISOString()
                 };
                 newDevList.push(dev);
+                node.log("Checking for new devices");
                 if (!containsDevice(dev, node.context().get("devices"))) {
                     node.status({ fill: "red", shape: "dot", text: "device up" });
                     send([null, {payload: dev}, null]);
                 }
-            }
-
+            })
+            node.log("hey hey 0")
+            return newDevList
+        }).then((newDevList) => {
             for (let oldDev of node.context().get("devices")) {
+                node.log("Checking for old/removed devices");
                 if (!containsDevice(oldDev, newDevList)) {
                     node.status({ fill: "red", shape: "dot", text: "device down" });
                     send([null, null, {payload: oldDev}]);
@@ -68,12 +72,13 @@ module.exports = function (RED) {
             node.context().set("devices", newDevList);
             firstScanComplete = true;
             node.status({ fill: "green", shape: "dot", text: "Scan Complete: " +  new Date().toISOString()});
+            node.log("hey hey 1");
             if(config.emit){
                 send([{payload: newDevList}, null, null]);
             }
         }).catch(err => { 
             node.status({ fill: "red", shape: "dot", text: JSON.stringify(err.message) });
-            node.info('caught', err.message); 
+            node.log('caught', err.message); 
         });
     }
 
