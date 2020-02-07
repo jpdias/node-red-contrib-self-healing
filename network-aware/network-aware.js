@@ -8,13 +8,7 @@ module.exports = function (RED) {
     var firstScanComplete = false;
 
     function containsDevice(obj, list) {
-        for (let index = 0; index < list.length; index++) {
-            let element = list[index];
-            if(element.id  == obj.id){
-                return true;
-            }
-        }
-        return false;   
+        return list.some((element) => element.id  == obj.id)
     }
 
     function uuidv4() {
@@ -27,8 +21,8 @@ module.exports = function (RED) {
 
     function devScan(config, done, node, msg, send) {
         node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
-        if(typeof node.context().get("devices") != Array){
-            node.context().set("devices", []);
+        if(Array.isArray(node.context().get("devices"))){
+            node.context().set("devices", new Array());
         }
         find(config.baseip).then(devicesScan => {
             let newDevList = new Array();
@@ -91,7 +85,7 @@ module.exports = function (RED) {
         node.emit("input", {"payload": "internal-sync"});
         node.on("input", function (msg, send, done) {
             if(!started){
-                node.context().set("devices", []);
+                node.context().set("devices", new Array());
                 devScan(config, done, node, msg, send);
                 setInterval(() => {
                     devScan(config, done, node, msg, send);
