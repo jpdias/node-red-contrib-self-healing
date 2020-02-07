@@ -57,7 +57,7 @@ module.exports = function (RED) {
                 if (!containsDevice(dev, node.context().get("devices"))) {
                     node.log("Device new: " + dev.ip);
                     node.status({ fill: "red", shape: "dot", text: "device up" });
-                    send([null, {payload: dev}, null]);
+                    send(null, {payload: dev}, null);
                 }
             })
             node.log("hey hey 0")
@@ -68,7 +68,7 @@ module.exports = function (RED) {
                 if (!containsDevice(oldDev, newDevList)) {
                     node.status({ fill: "red", shape: "dot", text: "device down" });
                     node.log("Device Removed: " + oldDev.ip);
-                    send([null, null, {payload: oldDev}]);
+                    send(null, null, {payload: oldDev});
                 }
             })
             node.context().set("devices", newDevList);
@@ -76,8 +76,9 @@ module.exports = function (RED) {
             node.status({ fill: "green", shape: "dot", text: "Scan Complete: " +  new Date().toISOString()});
             node.log("hey hey 1");
             if(config.emit){
-                send([{payload: newDevList}, null, null]);
+                send({payload: newDevList}, null, null);
             }
+            done();
         }).catch(err => { 
             node.status({ fill: "red", shape: "dot", text: JSON.stringify(err.message) });
             node.log('caught', err.message); 
@@ -99,7 +100,7 @@ module.exports = function (RED) {
                 }, parseInt(config.scanInterval)*1000);
                 started = true;
             }else if (firstScanComplete){
-                send([{payload: node.context().get("devices")}, null, null]);
+                send({payload: node.context().get("devices")}, null, null);
             } else {
                 node.status({ fill: "yellow", shape: "dot", text: "Running first scan" });
             }
