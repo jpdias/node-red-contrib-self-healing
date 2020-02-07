@@ -53,14 +53,14 @@ module.exports = function (RED) {
                     timestamp: new Date().toISOString()
                 };
                 newDevList.push(dev);
-                node.log("Checking for new devices");
+                node.log("foreach"+JSON.stringify(node.context().get("devices")));
                 if (!containsDevice(dev, node.context().get("devices"))) {
                     node.log("Device new: " + dev.ip);
                     node.status({ fill: "red", shape: "dot", text: "device up" });
                     send(null, {payload: dev}, null);
                 }
             })
-            node.log("hey hey 0")
+            node.log("return"+JSON.stringify(node.context().get("devices")));
             return newDevList
         }).then((newDevList) => {
             node.context().get("devices").forEach(oldDev => {
@@ -74,7 +74,7 @@ module.exports = function (RED) {
             node.context().set("devices", newDevList);
             firstScanComplete = true;
             node.status({ fill: "green", shape: "dot", text: "Scan Complete: " +  new Date().toISOString()});
-            node.log("hey hey 1");
+            node.log("complete"+JSON.stringify(node.context().get("devices")));
             if(config.emit){
                 send({payload: newDevList}, null, null);
             }
@@ -88,12 +88,10 @@ module.exports = function (RED) {
     function NetworkAware(config) {
         RED.nodes.createNode(this, config);
         var node = this;
-        node.context().set("devices", []);
-
         node.emit("input", {"payload": "internal-sync"});
-
         node.on("input", function (msg, send, done) {
             if(!started){
+                node.context().set("devices", []);
                 devScan(config, done, node, msg, send);
                 setInterval(() => {
                     devScan(config, done, node, msg, send);
