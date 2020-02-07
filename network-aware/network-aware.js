@@ -27,7 +27,9 @@ module.exports = function (RED) {
 
     function devScan(config, done, node, msg, send) {
         node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
-
+        if(typeof node.context().get("devices") != Array){
+            node.context().set("devices", []);
+        }
         find(config.baseip).then(devicesScan => {
             let newDevList = new Array();
             devicesScan.forEach(obj => {
@@ -54,14 +56,12 @@ module.exports = function (RED) {
                     timestamp: new Date().toISOString()
                 };
                 newDevList.push(dev);
-                node.log("foreach"+JSON.stringify(node.context().get("devices")));
                 if (!containsDevice(dev, node.context().get("devices"))) {
                     node.log("Device new: " + dev.ip);
                     node.status({ fill: "red", shape: "dot", text: "device up" });
                     send([null, {payload: dev}, null]);
                 }
             })
-            node.log("return"+JSON.stringify(node.context().get("devices")));
             return newDevList
         }).then((newDevList) => {
             node.context().get("devices").forEach(oldDev => {
@@ -75,7 +75,6 @@ module.exports = function (RED) {
             node.context().set("devices", newDevList);
             firstScanComplete = true;
             node.status({ fill: "green", shape: "dot", text: "Scan Complete: " +  new Date().toISOString()});
-            node.log("complete"+JSON.stringify(node.context().get("devices")));
             if(config.emit){
                 send([{payload: newDevList}, null, null]);
             }
@@ -99,7 +98,9 @@ module.exports = function (RED) {
                 }, parseInt(config.scanInterval)*1000);
                 started = true;
             }else if (firstScanComplete){
-                send([{payload: node.context().get("devices")}, null, null]);
+                if(typeof node.context().get("devices") == Array){
+                    send([{payload: node.context().get("devices")}, null, null]);
+                }
             } else {
                 node.status({ fill: "yellow", shape: "dot", text: "Running first scan" });
             }
