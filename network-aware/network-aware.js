@@ -8,7 +8,12 @@ module.exports = function (RED) {
     var firstScanComplete = false;
 
     function containsDevice(obj, list) {
-        return list.some((element) => element.id  == obj.id)
+        for (let index = 0; index < list.length; index++) {
+            if(list[index].id  == obj.id){
+                return true;
+            }
+        }
+        return false;
     }
 
     function uuidv4() {
@@ -92,7 +97,7 @@ module.exports = function (RED) {
                 }, parseInt(config.scanInterval)*1000);
                 started = true;
             }else if (firstScanComplete){
-                if(typeof node.context().get("devices") == Array){
+                if(Array.isArray(node.context().get("devices"))){
                     send([{payload: node.context().get("devices")}, null, null]);
                 }
             } else {
