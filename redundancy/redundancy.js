@@ -15,9 +15,10 @@ module.exports = function(RED) {
         return ips[0];
     }
 
-    /*setMaster if none exists*/
+    var master = false;
     var masterExists = false;
-    var syncPayload = {"payload": {"sync": "ping", "master": false}};
+    var ips = new Set();
+    var thisip = "";
 
     function getMajor(res){
         return res.reduce(function(a, b) {
@@ -29,82 +30,95 @@ module.exports = function(RED) {
     }
 
     //Bully Algorithm
-    function setMaster(node, send, done) {
-        let isMaster = false;
-        let res = Array.from(node.context().get("ips"));
-        let major = null;
-        if(res.lenght >= 0){
-            major = getMajor(res)
+    function setMaster(node) {
+        if(masterExists){
+            return
         }
+
+        let major = 0;
         
-        if (res.lenght == 0 &&
-            !node.context().global.get("master") &&
-            !masterExists) {
-            node.context().global.set("master", true);
-            isMaster = true;
-        } else if (
-            major <= parseInt(getIp().slice(-2)) &&
-            !node.context().global.get("master") &&
-            !masterExists
-        ) {
-            node.context().global.set("master", true);
-            isMaster = true;
+        if(ips.size > 0){
+            major = getMajor(ips)
         }
-        syncPayload.payload.master = node.context().global.get("master");
-        send([{ "payload": {"master": isMaster} }, { "payload": node.context().get("ips") }, syncPayload]);
-        done();
+        console.log(ips.size)
+        console.log(master)
+        console.log(ips)
+        if (ips.size == 0 && !master) {
+            master = true;
+            masterExists = true;
+        } else if (major <= thisip && !master) {
+            master = true;
+            masterExists = true;
+        } else {
+            master = false;
+        }
+
+        node.send([
+            { "payload": {"master": master} }, 
+            { "payload": Array.from(ips) }, 
+            { "payload": {"sync": "ping", "master": master}}
+        ]);
+    }
+
+    var init = false;
+
+    function aliveBeat(node) {
+        node.send([
+            { "payload": {"master": master} }, 
+            { "payload": Array.from(ips) }, 
+            { "payload": {"sync": "ping", "master": master}}
+        ])
     }
 
     function RedundancyManager(config) {
         RED.nodes.createNode(this, config);
         var node = this;
-        var timeout = "undefined";
-        node.context().global.set("master", false);
-        node.context().set("ips", new Set());
-        let interval = parseInt(config.pingInterval) < 15 ? 15 : 30;
+        var voting = "undefined";
+        var alive = "undefined";
+        thisip = parseInt(getIp().slice(-2))
 
         node.emit("input", {"payload": "internal-sync"});
 
-        setInterval(() => {
-            node.emit("input", {"payload": "internal-sync"});
-        }, interval*1000);
-
         node.on("input", function(msg, send, done) {
 
-            if (timeout == "undefined"){
-                timeout = setTimeout(
+            if (voting == "undefined" && !init){
+                voting = setInterval(
                 setMaster,
                 parseInt(config.timeout) * 1000,
-                node,
-                send,
-                done
+                node
                 );
             }
-            if(node.context().global.get("master")){
+
+            if (alive == "undefined" && !init){
+                alive = setInterval( 
+                    aliveBeat,
+                    parseInt(config.pingInterval) * 1000,
+                    node
+                );
+                init = true;
+            }
+
+            if(master){
                 node.status({ fill: "green", shape: "dot", text: "I'm Master"}); 
             }
-            else if (msg.payload.master == "true") {
+            else if (msg.payload.master && !master) {
+                console.log(ips.size)
+                console.log(master)
+                console.log(ips)
+                master = false;
                 masterExists = true;
-                node.context().global.set("master", false);
-                clearTimeout(timeout);
-                node.status({ fill: "yellow", shape: "dot", text: "I'm Slave. Master is "+ msg.hostip});
+                node.status({ fill: "yellow", shape: "dot", text: "Master is "+ msg.hostip});
+            } else if (msg.payload.master && master && getMajor(ips) > thisip){
+                master = false;
+                masterExists = true;
             }
 
             //update ip list
-            let allips = node.context().get("ips");
             if (typeof msg.hostip != "undefined") {
-                console.log(">>"+JSON.stringify(node.context().get("ips")))
-                allips.add(msg.hostip);
-                node.context().set("ips", allips);
+                console.log(">>"+JSON.stringify(ips))
+                ips.add(msg.hostip);
             }
 
-            //
-            if(msg.payload == "internal-sync"){
-                syncPayload.payload.master = node.context().global.get("master");
-                send([null, null, syncPayload]);
-                node.status({ fill: "green", shape: "dot", text: "Sync Ping"});
-                done();
-            }
         });
     }
 
