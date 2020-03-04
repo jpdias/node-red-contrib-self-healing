@@ -17,6 +17,7 @@ module.exports = function(RED) {
 
     var master = false;
     var masterExists = false;
+    var lastAlive = {};
     var ips = new Set();
     var thisip = "";
 
@@ -30,7 +31,7 @@ module.exports = function(RED) {
     }
 
     //Bully Algorithm
-    function setMaster(node) {
+    function setMaster(send) {
         if(masterExists){
             return
         }
@@ -46,14 +47,16 @@ module.exports = function(RED) {
         if (ips.size == 0 && !master) {
             master = true;
             masterExists = true;
+            ips = new Set();
         } else if (major <= thisip && !master) {
             master = true;
             masterExists = true;
+            ips = new Set();
         } else {
             master = false;
         }
 
-        node.send([
+        send([
             { "payload": {"master": master} }, 
             { "payload": Array.from(ips) }, 
             { "payload": {"sync": "ping", "master": master}}
@@ -62,8 +65,8 @@ module.exports = function(RED) {
 
     var init = false;
 
-    function aliveBeat(node) {
-        node.send([
+    function aliveBeat(send) {
+        send([
             { "payload": {"master": master} }, 
             { "payload": Array.from(ips) }, 
             { "payload": {"sync": "ping", "master": master}}
@@ -81,19 +84,16 @@ module.exports = function(RED) {
 
         node.on("input", function(msg, send, done) {
 
-            if (voting == "undefined" && !init){
+            if (voting == "undefined" && alive == "undefined" && !init){
                 voting = setInterval(
-                setMaster,
-                parseInt(config.timeout) * 1000,
-                node
+                    setMaster,
+                    parseInt(config.timeout) * 1000,
+                    send
                 );
-            }
-
-            if (alive == "undefined" && !init){
                 alive = setInterval( 
                     aliveBeat,
                     parseInt(config.pingInterval) * 1000,
-                    node
+                    send
                 );
                 init = true;
             }
@@ -116,6 +116,8 @@ module.exports = function(RED) {
             //update ip list
             if (typeof msg.hostip != "undefined") {
                 console.log(">>"+JSON.stringify(ips))
+                var d = new Date();
+                lastAlive[msg.hostip.replace(".","-")] = d.getMilliseconds();
                 ips.add(msg.hostip);
             }
 
