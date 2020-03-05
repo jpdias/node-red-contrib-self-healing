@@ -47,11 +47,9 @@ module.exports = function(RED) {
         if (ips.size == 0 && !master) {
             master = true;
             masterExists = true;
-            ips = new Set();
         } else if (major <= thisip && !master) {
             master = true;
             masterExists = true;
-            ips = new Set();
         } else {
             master = false;
         }
@@ -65,7 +63,20 @@ module.exports = function(RED) {
 
     var init = false;
 
-    function aliveBeat(send) {
+    function aliveBeat(timeout, send) {
+
+        let d = new Date();
+        for (let [key, value] of Object.entries(lastAlive)) {
+            //console.log(`${key}: ${value}`);
+            if( d.getMilliseconds() - value.last >= timeout){
+                if(value.isMaster){
+                    masterExists = false;
+                }
+                ips.delete(key.replace("-","."));
+                delete lastAlive[key];
+            }
+        }
+
         send([
             { "payload": {"master": master} }, 
             { "payload": Array.from(ips) }, 
@@ -75,9 +86,9 @@ module.exports = function(RED) {
 
     function RedundancyManager(config) {
         RED.nodes.createNode(this, config);
-        var node = this;
-        var voting = "undefined";
-        var alive = "undefined";
+        let node = this;
+        let voting = "undefined";
+        let alive = "undefined";
         thisip = parseInt(getIp().slice(-2))
 
         node.emit("input", {"payload": "internal-sync"});
@@ -87,12 +98,13 @@ module.exports = function(RED) {
             if (voting == "undefined" && alive == "undefined" && !init){
                 voting = setInterval(
                     setMaster,
-                    parseInt(config.timeout) * 1000,
+                    parseInt(config.frequency) * 1000,
                     send
                 );
                 alive = setInterval( 
                     aliveBeat,
                     parseInt(config.pingInterval) * 1000,
+                    parseInt(config.timeout) * 1000,
                     send
                 );
                 init = true;
@@ -117,7 +129,10 @@ module.exports = function(RED) {
             if (typeof msg.hostip != "undefined") {
                 console.log(">>"+JSON.stringify(ips))
                 var d = new Date();
-                lastAlive[msg.hostip.replace(".","-")] = d.getMilliseconds();
+                lastAlive[msg.hostip.replace(".","-")] = { 
+                        last: d.getMilliseconds(),
+                        isMaster: msg.payload.master
+                    };
                 ips.add(msg.hostip);
             }
 
