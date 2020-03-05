@@ -72,7 +72,7 @@ module.exports = function(RED) {
                 if(value.isMaster){
                     console.log("hey")
                     masterExists = false;
-                    setMaster(send);
+                    setMaster(send, node);
                 }
                 ips.delete(key.replace("-","."));
                 delete lastAlive[key];
@@ -88,7 +88,7 @@ module.exports = function(RED) {
 
     function RedundancyManager(config) {
         RED.nodes.createNode(this, config);
-        let node = this;
+        var node = this;
         let voting = "undefined";
         let alive = "undefined";
 
