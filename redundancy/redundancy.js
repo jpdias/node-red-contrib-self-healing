@@ -44,14 +44,14 @@ module.exports = function(RED) {
         if (ips.size == 0 && !master) {
             master = true;
             masterExists = true;
-            node.status({ fill: "green", shape: "dot", text: "I'm Master"}); 
+            node.status({ fill: "green", shape: "dot", text: "xI'm Master"}); 
         } else if (major <= thisip && !master) {
             master = true;
             masterExists = true;
-            node.status({ fill: "green", shape: "dot", text: "I'm Master"}); 
+            node.status({ fill: "green", shape: "dot", text: "yI'm Master"}); 
         } else {
             master = false;
-            node.status({ fill: "yellow", shape: "dot", text: "Master is"}); 
+            node.status({ fill: "yellow", shape: "dot", text: "zMaster is"}); 
         }
 
         send([
@@ -136,8 +136,6 @@ module.exports = function(RED) {
                 node.status({ fill: "yellow", shape: "dot", text: "Master is "+ msg.hostip});
                 master = false;
                 masterExists = true;
-            } else if(master) {
-                node.status({ fill: "green", shape: "dot", text: "I'm Master"}); 
             }
 
         });
