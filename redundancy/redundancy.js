@@ -24,7 +24,7 @@ module.exports = function(RED) {
     function getMajor(res){
         return Array.from(res).reduce(function(a, b) {
             return Math.max(parseInt(a.split('.')[3]), parseInt(b.split('.')[3]))
-        });
+        }, 0);
     }
 
     //Bully Algorithm
