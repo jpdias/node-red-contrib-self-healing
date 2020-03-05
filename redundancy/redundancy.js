@@ -44,14 +44,14 @@ module.exports = function(RED) {
         if (ips.size == 0 && !master) {
             master = true;
             masterExists = true;
-            node.status({ fill: "green", shape: "dot", text: "xI'm Master"}); 
+            node.status({ fill: "green", shape: "dot", text: "I'm Master"}); 
         } else if (major <= thisip && !master) {
             master = true;
             masterExists = true;
-            node.status({ fill: "green", shape: "dot", text: "yI'm Master"}); 
+            node.status({ fill: "green", shape: "dot", text: "I'm Master"}); 
         } else {
             master = false;
-            node.status({ fill: "yellow", shape: "dot", text: "zMaster is"}); 
+            node.status({ fill: "yellow", shape: "dot", text: "Master is"}); 
         }
 
         send([
@@ -65,11 +65,10 @@ module.exports = function(RED) {
 
     function aliveBeat(timeout, send, node) {
 
-        let d = new Date();
-        console.log(lastAlive);
+        console.log(JSON.stringify(lastAlive));
         for (let [key, value] of Object.entries(lastAlive)) {
             console.log(`${key}: ${value}`);
-            if(d.getMilliseconds() - value.last >= timeout){
+            if(Date.now() - value.last >= timeout){
                 if(value.isMaster){
                     console.log("hey")
                     masterExists = false;
@@ -101,7 +100,7 @@ module.exports = function(RED) {
             if (typeof msg.hostip != "undefined") {
                 var d = new Date();
                 lastAlive[msg.hostip.replace(".","-")] = { 
-                        last: d.getMilliseconds(),
+                        last: Date.now(),
                         isMaster: msg.payload.master
                     };
                 ips.add(msg.hostip);
@@ -126,10 +125,12 @@ module.exports = function(RED) {
                 init = true;
             }
 
+            console.log(ips.size)
+            console.log(master)
+            console.log(ips)
+            console.log(getMajor(ips) > thisip)
+
             if (msg.payload.master && !master) {
-                console.log(ips.size)
-                console.log(master)
-                console.log(ips)
                 master = false;
                 masterExists = true;
                 node.status({ fill: "yellow", shape: "dot", text: "Master is "+ msg.hostip});
