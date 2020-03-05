@@ -66,10 +66,12 @@ module.exports = function(RED) {
     function aliveBeat(timeout, send, node) {
 
         let d = new Date();
+        console.log(lastAlive);
         for (let [key, value] of Object.entries(lastAlive)) {
-            //console.log(`${key}: ${value}`);
-            if( d.getMilliseconds() - value.last >= timeout){
+            console.log(`${key}: ${value}`);
+            if(d.getMilliseconds() - value.last >= timeout){
                 if(value.isMaster){
+                    console.log("hey")
                     masterExists = false;
                     setMaster(send);
                 }
@@ -97,7 +99,6 @@ module.exports = function(RED) {
 
             //update ip list
             if (typeof msg.hostip != "undefined") {
-                console.log(">>"+JSON.stringify(Array.from(ips)))
                 var d = new Date();
                 lastAlive[msg.hostip.replace(".","-")] = { 
                         last: d.getMilliseconds(),
