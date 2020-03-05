@@ -92,7 +92,7 @@ module.exports = function(RED) {
         let alive = "undefined";
 
         node.emit("input", {"payload": "internal-sync"});
-
+        node.status({ fill: "yellow", shape: "dot", text: "Sync in Progress"});
         node.on("input", function(msg, send, done) {
 
             //update ip list
