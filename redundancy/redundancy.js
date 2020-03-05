@@ -38,9 +38,7 @@ module.exports = function(RED) {
         if(ips.size > 0){
             major = getMajor(ips).split('.')[3]
         }
-        console.log(ips.size)
-        console.log(master)
-        console.log(ips)
+
         if (ips.size == 0 && !master) {
             master = true;
             masterExists = true;
@@ -65,9 +63,8 @@ module.exports = function(RED) {
 
     function aliveBeat(timeout, send, node) {
 
-        console.log(JSON.stringify(lastAlive));
         for (let [key, value] of Object.entries(lastAlive)) {
-            console.log(`${key}: ${value}`);
+            //console.log(`${key}: ${JSON.stringity(value)}`);
             if(Date.now() - value.last >= timeout){
                 if(value.isMaster){
                     console.log("hey")
