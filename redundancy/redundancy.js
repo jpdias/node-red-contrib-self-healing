@@ -125,10 +125,7 @@ module.exports = function(RED) {
                 init = true;
             }
 
-            if(master){
-                node.status({ fill: "green", shape: "dot", text: "I'm Master"}); 
-            }
-            else if (msg.payload.master && !master) {
+            if (msg.payload.master && !master) {
                 console.log(ips.size)
                 console.log(master)
                 console.log(ips)
@@ -136,8 +133,11 @@ module.exports = function(RED) {
                 masterExists = true;
                 node.status({ fill: "yellow", shape: "dot", text: "Master is "+ msg.hostip});
             } else if (msg.payload.master && master && getMajor(ips) > thisip){
+                node.status({ fill: "yellow", shape: "dot", text: "Master is "+ msg.hostip});
                 master = false;
                 masterExists = true;
+            } else if(master) {
+                node.status({ fill: "green", shape: "dot", text: "I'm Master"}); 
             }
 
         });
