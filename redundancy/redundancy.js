@@ -19,14 +19,11 @@ module.exports = function(RED) {
     var masterExists = false;
     var lastAlive = {};
     var ips = new Set();
-    var thisip = "";
+    var thisip = 0;
 
     function getMajor(res){
-        return res.reduce(function(a, b) {
-            return Math.max(
-                Array.from(a.split('.')).map(item => parseInt(item)).reduce((a, b) => a + b, 0),
-                Array.from(b.split('.')).map(item => parseInt(item)).reduce((a, b) => a + b, 0),
-            );
+        return Array.from(res).reduce(function(a, b) {
+            return Math.max(parseInt(a.split('.')[3]), parseInt(b.split('.')[3]))
         });
     }
 
@@ -39,7 +36,7 @@ module.exports = function(RED) {
         let major = 0;
         
         if(ips.size > 0){
-            major = getMajor(ips)
+            major = getMajor(ips).split('.')[3]
         }
         console.log(ips.size)
         console.log(master)
@@ -93,13 +90,25 @@ module.exports = function(RED) {
         let node = this;
         let voting = "undefined";
         let alive = "undefined";
-        thisip = parseInt(getIp().slice(-2))
 
         node.emit("input", {"payload": "internal-sync"});
 
         node.on("input", function(msg, send, done) {
 
+            //update ip list
+            if (typeof msg.hostip != "undefined") {
+                console.log(">>"+JSON.stringify(Array.from(ips)))
+                var d = new Date();
+                lastAlive[msg.hostip.replace(".","-")] = { 
+                        last: d.getMilliseconds(),
+                        isMaster: msg.payload.master
+                    };
+                ips.add(msg.hostip);
+            }
+
             if (voting == "undefined" && alive == "undefined" && !init){
+                thisip = parseInt(getIp().split('.')[3])
+
                 voting = setInterval(
                     setMaster,
                     parseInt(config.frequency) * 1000,
@@ -129,17 +138,6 @@ module.exports = function(RED) {
             } else if (msg.payload.master && master && getMajor(ips) > thisip){
                 master = false;
                 masterExists = true;
-            }
-
-            //update ip list
-            if (typeof msg.hostip != "undefined") {
-                console.log(">>"+JSON.stringify(ips))
-                var d = new Date();
-                lastAlive[msg.hostip.replace(".","-")] = { 
-                        last: d.getMilliseconds(),
-                        isMaster: msg.payload.master
-                    };
-                ips.add(msg.hostip);
             }
 
         });
