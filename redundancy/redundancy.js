@@ -71,6 +71,7 @@ module.exports = function(RED) {
             if( d.getMilliseconds() - value.last >= timeout){
                 if(value.isMaster){
                     masterExists = false;
+                    setMaster(send);
                 }
                 ips.delete(key.replace("-","."));
                 delete lastAlive[key];
