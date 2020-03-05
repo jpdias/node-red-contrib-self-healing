@@ -31,7 +31,7 @@ module.exports = function(RED) {
     }
 
     //Bully Algorithm
-    function setMaster(send) {
+    function setMaster(send, node) {
         if(masterExists){
             return
         }
@@ -47,11 +47,14 @@ module.exports = function(RED) {
         if (ips.size == 0 && !master) {
             master = true;
             masterExists = true;
+            node.status({ fill: "green", shape: "dot", text: "I'm Master"}); 
         } else if (major <= thisip && !master) {
             master = true;
             masterExists = true;
+            node.status({ fill: "green", shape: "dot", text: "I'm Master"}); 
         } else {
             master = false;
+            node.status({ fill: "yellow", shape: "dot", text: "Master is"}); 
         }
 
         send([
@@ -63,7 +66,7 @@ module.exports = function(RED) {
 
     var init = false;
 
-    function aliveBeat(timeout, send) {
+    function aliveBeat(timeout, send, node) {
 
         let d = new Date();
         for (let [key, value] of Object.entries(lastAlive)) {
@@ -100,13 +103,15 @@ module.exports = function(RED) {
                 voting = setInterval(
                     setMaster,
                     parseInt(config.frequency) * 1000,
-                    send
+                    send,
+                    node
                 );
                 alive = setInterval( 
                     aliveBeat,
                     parseInt(config.pingInterval) * 1000,
                     parseInt(config.timeout) * 1000,
-                    send
+                    send,
+                    node
                 );
                 init = true;
             }
