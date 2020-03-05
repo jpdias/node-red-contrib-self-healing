@@ -95,7 +95,6 @@ module.exports = function(RED) {
         node.emit("input", {"payload": "internal-sync"});
         node.status({ fill: "yellow", shape: "dot", text: "Sync in Progress"});
         node.on("input", function(msg, send, done) {
-
             //update ip list
             if (typeof msg.hostip != "undefined") {
                 var d = new Date();
@@ -108,7 +107,10 @@ module.exports = function(RED) {
 
             if (voting == "undefined" && alive == "undefined" && !init){
                 thisip = parseInt(getIp().split('.')[3])
-
+                send([
+                    null, null, 
+                    { "payload": {"sync": "ping", "master": master}}
+                ])
                 voting = setInterval(
                     setMaster,
                     parseInt(config.frequency) * 1000,
