@@ -28,8 +28,9 @@
         category: "SHEN",
         defaults: {
             name: {value: ""},
-            timeout: {value:"5", required:true, validate:RED.validators.number()},
-            pingInterval: {value:"30", required:true, validate:RED.validators.number()}
+            frequency: {value:"30", required:true, validate:RED.validators.number()},
+            timeout: {value:"15", required:true, validate:RED.validators.number()},
+            pingInterval: {value:"5", required:true, validate:RED.validators.number()}
         },
         icon: "status.png",
         color: "#74b9ff",
