@@ -21,6 +21,7 @@ module.exports = function(RED) {
     var ips = new Set();
     var thisip = 0;
 
+    //last octect
     function getMajor(res){
         return Array.from(res).reduce(function(a, b) {
             return Math.max(parseInt(a.split('.')[3]), parseInt(b.split('.')[3]))
