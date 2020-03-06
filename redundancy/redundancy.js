@@ -30,6 +30,7 @@ module.exports = function(RED) {
 
     //Bully Algorithm
     function setMaster(send, node) {
+
         if(masterExists){
             return
         }
@@ -60,8 +61,6 @@ module.exports = function(RED) {
         ]);
     }
 
-    var init = false;
-
     function aliveBeat(timeout, send, node) {
 
         for (let [key, value] of Object.entries(lastAlive)) {
@@ -89,9 +88,12 @@ module.exports = function(RED) {
         var node = this;
         let voting = "undefined";
         let alive = "undefined";
+        let init = false;
 
         node.emit("input", {"payload": "internal-sync"});
+
         node.status({ fill: "yellow", shape: "dot", text: "Sync in Progress"});
+
         node.on("input", function(msg, send, done) {
             //update ip list
             if (typeof msg.hostip != "undefined") {
@@ -103,7 +105,15 @@ module.exports = function(RED) {
             }
 
             if (voting == "undefined" && alive == "undefined" && !init){
+
                 thisip = parseInt(getIp().split('.')[3])
+
+                master = false;
+                masterExists = false;
+                lastAlive = {};
+                ips = new Set();
+                thisip = 0;
+
                 send([
                     null, null, 
                     { "payload": {"sync": "ping", "master": master}}
