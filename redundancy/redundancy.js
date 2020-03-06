@@ -36,7 +36,7 @@ module.exports = function(RED) {
         let major = 0;
         
         if(ips.size > 0){
-            major = getMajor(ips).split('.')[3]
+            major = getMajor(ips)
         }
 
         if (ips.size == 0 && !master) {
@@ -94,7 +94,6 @@ module.exports = function(RED) {
         node.on("input", function(msg, send, done) {
             //update ip list
             if (typeof msg.hostip != "undefined") {
-                var d = new Date();
                 lastAlive[msg.hostip.replace(".","-")] = { 
                         last: Date.now(),
                         isMaster: msg.payload.master
@@ -123,11 +122,6 @@ module.exports = function(RED) {
                 );
                 init = true;
             }
-
-            console.log(ips.size)
-            console.log(master)
-            console.log(ips)
-            console.log(getMajor(ips) > thisip)
 
             if (msg.payload.master && !master) {
                 master = false;
