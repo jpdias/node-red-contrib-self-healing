@@ -11,39 +11,39 @@ This work is part of an on-going PhD thesis in Software Engineering and Internet
 
 ## Available Nodes
 
-### action-delay 
+### :package: action-delay 
 
 Delay a command (message) in order to meet the actuator response capacity (e.g. avoid overload).
 
-### compensate	
+### :package: compensate	
 
 Compensate missing values (detected by disruptions on the periodicity of incoming mesages) with a pre-defined strategy (e.g. average of the last 10 readings, last value or maximum value of the last 10 readings).
 
-### compensate-confiability 
+### :package: compensate-confiability 
 
 Similar to `compensate` but gives an additional output with a confiability metric (function can be defined, e.g. decay logarithmically for each followed value compensed).
 
-### distinct
+### :package: distinct
 
 Drop message if it is equal to the last one recieved (e.g. ignore repeated actions such as keep pushing the `on` button of a light system).
 
-### flow-control
+### :package: flow-control
 
 Enable and disable Node-RED flows during runtime (local or remote instances, using the available REST API).
 
-### network-aware
+### :package: network-aware
 
 Continuosly scan the network to find new or removed devices. Can be combined with a `device-registry`.
 
-### redundancy
+### :package: redundancy
 
 Manage redundant instances of Node-RED (setting a master instance). Works only on the local network (uses [n2n](https://flows.nodered.org/node/node-red-contrib-n2n) communication).
 
-### replication-voter
+### :package: replication-voter
 
 Picks a value (e.g. sensor reading) from an array values based on a pre-defined majority.
 
-### threshold-check
+### :package: threshold-check
 
 Checks for reading (value) sanity (e.g. checks if the reading is between the sensor possible output values).
 
@@ -51,11 +51,11 @@ Checks for reading (value) sanity (e.g. checks if the reading is between the sen
 
 ## Todo Nodes
 
-### Device Registry
+### :package: device-registry
 
 Store a list of the available devices in the network.
 
-### Phase Shifter
+### :package: phase-shifter
 
 Drop values if they are within a given threshold (e.g. two close temperature readings).
 
