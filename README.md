@@ -65,9 +65,13 @@ Drop values if they are within a given threshold (e.g. two close temperature rea
 
 ## How to Use
 
+- Installing Node-RED (Official Docs): [https://nodered.org/docs/getting-started/](https://nodered.org/docs/getting-started/)
+
+### Installing node-red-contrib-self-healing (SHEN)
+
 - Clone or download this repository.
 - In your node-red user directory, typically ~/.node-red (in Windows something like `C:\Users\<my_name>\.node_red`), run: `npm install <path_to_downloaded_folder>/node-red-contrib-self-healing`
 - Start (or restart) Node-RED.
 - Nodes should be available under the SHEN tab of the *node palette*.
 
-- [Official Documentation](https://nodered.org/docs/creating-nodes/first-node#testing-your-node-in-node-red)
+- [Installing Costum Nodes - Official Documentation](https://nodered.org/docs/creating-nodes/first-node#testing-your-node-in-node-red)
