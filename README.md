@@ -47,8 +47,6 @@ Picks a value (e.g. sensor reading) from an array values based on a pre-defined 
 
 Checks for reading (value) sanity (e.g. checks if the reading is between the sensor possible output values).
 
-
-
 ## Todo Nodes
 
 ### :package: device-registry
@@ -59,11 +57,17 @@ Store a list of the available devices in the network.
 
 Drop values if they are within a given threshold (e.g. two close temperature readings).
 
-
-
 ## Known Issues
 
 - Lack of description on how to configure nodes.
 - Lack of standardization on inputs and outputs.
 - Some edge cases still break the *nodes* functionality.
 
+## How to Use
+
+- Clone or download this repository.
+- In your node-red user directory, typically ~/.node-red (in Windows something like `C:\Users\<my_name>\.node_red`), run: `npm install node-red-contrib-self-healing` (`node-red-contrib-self-healing` correspond to the downloaded folder)
+- Start (or restart) Node-RED.
+- Nodes should be available under the SHEN tab of the *node palette*.
+
+- [Official Documentation](https://nodered.org/docs/creating-nodes/first-node#testing-your-node-in-node-red)
