@@ -62,7 +62,7 @@ Drop values if they are within a given threshold (e.g. two close temperature rea
 
 - Lack of description on how to configure nodes.
 - Lack of standardization on inputs and outputs.
-- Some edge cases still break the *nodes* functionality.
+- Lack of proper unit testing. Some edge cases still break the *nodes* functionality.
 
 ## How to Use
 
