@@ -3,9 +3,10 @@
 ![Logo](https://i.imgur.com/AynqSQm.png)
 
 ## node-red-contrib-self-healing
+
 ### **!Under Active Development!** 
 
-A collection of nodes for making Node-RED more resilient by adding self-healing capabilities.
+A collection of nodes for making Node-RED more resilient by adding self-healing capabilities. This project is at an early development stage.
 
 This work is part of an on-going PhD thesis in Software Engineering and Internet-of-Things at the Faculty of Engineering, University of Porto (FEUP). Work supervised by Prof. [Hugo Sereno Ferreia](http://hugosereno.eu/) and Prof. [João Pascoal Faria](https://sigarra.up.pt/feup/en/FUNC_GERAL.FORMVIEW?P_CODIGO=210006). With collaboration of Prof. [André Restivo](https://web.fe.up.pt/~arestivo/page/).
 
@@ -68,6 +69,8 @@ Drop values if they are within a given threshold (e.g. two close temperature rea
 - Installing Node-RED (Official Docs): [https://nodered.org/docs/getting-started/](https://nodered.org/docs/getting-started/)
 
 ### Installing node-red-contrib-self-healing (SHEN)
+
+SHEN is not yet available in the Node-RED node registry (npm) due to its early development stage.
 
 - Clone or download this repository.
 - In your node-red user directory, typically ~/.node-red (in Windows something like `C:\Users\<my_name>\.node_red`), run: `npm install <path_to_downloaded_folder>/node-red-contrib-self-healing`
