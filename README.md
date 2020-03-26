@@ -1,6 +1,8 @@
 # SHEN: Self-Healing Extensions for Node-RED 
-## node-red-contrib-self-healing
 
+![Logo](https://i.imgur.com/AynqSQm.png)
+
+## node-red-contrib-self-healing
 ### **!Under Active Development!** 
 
 A collection of nodes for making Node-RED more resilient by adding self-healing capabilities.
