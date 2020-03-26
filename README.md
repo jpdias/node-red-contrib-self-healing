@@ -47,6 +47,8 @@ Picks a value (e.g. sensor reading) from an array values based on a pre-defined 
 
 Checks for reading (value) sanity (e.g. checks if the reading is between the sensor possible output values).
 
+
+
 ## Todo Nodes
 
 ### Device Registry
@@ -56,4 +58,12 @@ Store a list of the available devices in the network.
 ### Phase Shifter
 
 Drop values if they are within a given threshold (e.g. two close temperature readings).
+
+
+
+## Known Issues
+
+- Lack of description on how to configure nodes.
+- Lack of standardization on inputs and outputs.
+- Some edge cases still break the *nodes* functionality.
 
