@@ -14,7 +14,7 @@ This work is part of an on-going PhD thesis in Software Engineering and Internet
 
 ### :package: action-delay 
 
-Delay a command (message) in order to meet the actuator response capacity (e.g. avoid overload).
+Delay a command (message) in order to meet the actuator response capacity (e.g. avoid overload). Similar to [rate-limit-messages](https://cookbook.nodered.org/basic/rate-limit-messages), but with different strategies.
 
 ### :package: compensate	
 
@@ -23,10 +23,6 @@ Compensate missing values (detected by disruptions on the periodicity of incomin
 ### :package: compensate-confiability 
 
 Similar to `compensate` but gives an additional output with a confiability metric (function can be defined, e.g. decay logarithmically for each followed value compensed).
-
-### :package: distinct
-
-Drop message if it is equal to the last one recieved (e.g. ignore repeated actions such as keep pushing the `on` button of a light system).
 
 ### :package: flow-control
 
