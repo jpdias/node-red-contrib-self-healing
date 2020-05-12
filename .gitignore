@@ -99,3 +99,9 @@ public/
 .dynamodb/
 
 # End of https://www.gitignore.io/api/node,code
+
+/docker-testbed/data/portainer_data
+
+*.backup
+
+flows_cred.json

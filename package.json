@@ -18,11 +18,9 @@
       "network-aware": "network-aware/network-aware.js"
     }
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "node_modules/node-red/red/red.js",
   "author": "JP Dias",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "ajv": "^6.10.2",
     "asn1": "^0.2.4",
@@ -31,7 +29,8 @@
     "network-list": "^1.1.5",
     "os": "^0.1.1",
     "oui": "^10.0.41",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "node-red": "^1.0.6"
   },
   "devDependencies": {
     "eslint": "^6.7.2"
