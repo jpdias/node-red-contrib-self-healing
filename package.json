@@ -14,7 +14,6 @@
       "threshold-check": "threshold-check/threshold-check.js",
       "redundancy-manager": "redundancy/redundancy.js",
       "action-delay": "action-delay/action-delay.js",
-      "distinct": "distinct/distinct.js",
       "network-aware": "network-aware/network-aware.js"
     }
   },

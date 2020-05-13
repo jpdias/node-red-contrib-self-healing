@@ -507,6 +507,24 @@
      "file": "/usr/src/node-red/node_modules/node-red-node-serialport/25-serial.js"
     }
    }
+  },
+  "node-red-contrib-n2n": {
+   "name": "node-red-contrib-n2n",
+   "version": "0.0.2",
+   "local": false,
+   "nodes": {
+    "autodiscover": {
+     "name": "autodiscover",
+     "types": [
+      "n2n in",
+      "n2n out"
+     ],
+     "enabled": true,
+     "local": false,
+     "module": "node-red-contrib-n2n",
+     "file": "/usr/src/node-red/node_modules/node-red-contrib-n2n/n2n.js"
+    }
+   }
   }
  },
  "_credentialSecret": "4927e17eb941744f946c2dc0d2599bf1992c6ed63b14591cbfc796f4b7cfb165",

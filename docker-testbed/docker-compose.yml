@@ -48,9 +48,7 @@ services:
     volumes:
       - ./data/mosquitto-data/config/:/mosquitto/config/
     ports:
-      - "1883:1883"
-      - "1884:1884"
-      - "9001:9001"
+      - "2224:1883"
     restart: always
     
   portainer:
