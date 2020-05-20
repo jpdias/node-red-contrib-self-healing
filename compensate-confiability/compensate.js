@@ -109,7 +109,6 @@ module.exports = function (RED) {
         var node = this;
         compensatedCounter = 0;
         history = [];
-        var schedule = "undefined";
         node.on("input", function (msg, send, done) {
             let strategy = config.strategy;
 
