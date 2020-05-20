@@ -2,6 +2,7 @@
 
 import paho.mqtt.client as mqttClient
 import time
+import random
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -15,12 +16,12 @@ def on_connect(client, userdata, flags, rc):
 Connected = False   #global variable for the state of the connection
  
 broker_address= "localhost"
-port = 1883
+port = 12345
 
 client = mqttClient.Client("Python")               #create new instance
 #client.username_pw_set("root")
 client.on_connect= on_connect                      #attach function to callback
-client.connect(broker_address, port=2222)          #connect to broker
+client.connect(broker_address, port=port)          #connect to broker
  
 client.loop_start()        #start the loop
  
@@ -31,9 +32,11 @@ while Connected != True:    #Wait for connection
 try:
     while True:
         print("sending")
-        value = "\{temperature\:22\}"
+        tempval = random.uniform(18, 22) 
+        value = '{"temperature":' + str(tempval) + '}'
+        print(value)
         client.publish("sensor/temperature",value)
-        raw_input()
+        time.sleep(5)
 except KeyboardInterrupt:
     client.disconnect()
     client.loop_stop()

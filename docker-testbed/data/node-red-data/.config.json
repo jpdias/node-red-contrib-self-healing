@@ -468,14 +468,6 @@
      "module": "node-red-contrib-self-healing",
      "file": "/usr/src/node-red/node_modules/node-red-contrib-self-healing/action-delay/action-delay.js"
     },
-    "distinct": {
-     "name": "distinct",
-     "types": [],
-     "enabled": true,
-     "local": false,
-     "module": "node-red-contrib-self-healing",
-     "file": "/usr/src/node-red/node_modules/node-red-contrib-self-healing/distinct/distinct.js"
-    },
     "network-aware": {
      "name": "network-aware",
      "types": [
