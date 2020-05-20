@@ -1,8 +1,9 @@
 module.exports = function (RED) {
     var compensatedCounter = 0;
-
-    function confidenceLevel(compensatedCounter, history) {
-        return (1 / compensatedCounter + 1 / history.length) >= 1 ? 1 : (1 / compensatedCounter + 1 / history.length);
+    var history = []
+    var scheduler;
+    function confidenceLevel(compensatedCounter) {
+        return (1 / compensatedCounter) >= 1 ? 1 : (1 / compensatedCounter);
     }    
 
     const mode = myArray =>
@@ -17,8 +18,8 @@ module.exports = function (RED) {
             text: "Timeout. Sending Mode"
         });
         let modeval = mode(history);
-        node.context().set("history" + node.id, history);
-        send([{ payload: modeval }, { payload: history[history.length - 1] }, { payload:  confidenceLevel(compensatedCounter, history)  }]);
+        
+        send([{ payload: modeval, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() }, { payload: history[history.length - 1]  }, { payload:  confidenceLevel(compensatedCounter)  }]);
         done();    }
 
     function lastCompensate(node, history, histSize, send, done) {
@@ -28,8 +29,8 @@ module.exports = function (RED) {
             text: "Timeout. Sending Last"
         });
         let last = history[history.length - 1];
-        node.context().set("history" + node.id, history);
-        send([{ payload: last }, { payload: history[history.length - 1] }, { payload: confidenceLevel(compensatedCounter, history) }]);
+        
+        send([{ payload: last, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() }, { payload: history[history.length - 1]  }, { payload: confidenceLevel(compensatedCounter) }]);
         done();
     }
 
@@ -42,8 +43,8 @@ module.exports = function (RED) {
             shape: "dot",
             text: "Timeout. Sending Min"
         });
-        node.context().set("history" + node.id, history);
-        send([{ payload: min }, { payload: history[history.length - 1] }, { payload: confidenceLevel(compensatedCounter, history) }]);
+        
+        send([{ payload: min, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() }, { payload: history[history.length - 1]  }, { payload: confidenceLevel(compensatedCounter) }]);
         done();
     }
 
@@ -56,8 +57,8 @@ module.exports = function (RED) {
             shape: "dot",
             text: "Timeout. Sending Max"
         });
-        node.context().set("history" + node.id, history);
-        send([{ payload: max }, { payload: history[history.length - 1] }, { payload: confidenceLevel(compensatedCounter, history) }]);
+        
+        send([{ payload: max, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString()  }, { payload: history[history.length - 1]}, { payload: confidenceLevel(compensatedCounter) }]);
         done();
     }
 
@@ -71,13 +72,12 @@ module.exports = function (RED) {
             shape: "dot",
             text: "Timeout. Sending Mean"
         });
-        node.context().set("history" + node.id, history);
-        send([{ payload: avg }, { payload: history[history.length - 1] }, { payload: confidenceLevel(compensatedCounter, history) }]);
+        
+        send([{ payload: avg, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() }, { payload: history[history.length - 1]  }, { payload: confidenceLevel(compensatedCounter) }]);
         done();
     }
 
     function sendMessage(node, send, done, strategy, histSize) {
-        let history = node.context().get("history" + node.id);
         if (history.length > 0) {
             compensatedCounter++;
             switch (strategy) {
@@ -99,19 +99,22 @@ module.exports = function (RED) {
                 default:
                     break;
             }
+        } else {
+            node.status({ fill: "red", shape: "dot", text: "There is no historical data" });
         }
     }
 
     function CompensateConfiability(config) {
         RED.nodes.createNode(this, config);
         var node = this;
+        compensatedCounter = 0;
+        history = [];
         var schedule = "undefined";
-        node.context().set("history" + node.id, []);
         node.on("input", function (msg, send, done) {
             let strategy = config.strategy;
-            let history = node.context().get("history" + node.id);
-            if (schedule == "undefined")
-                schedule = setInterval(
+
+            if (!scheduler && typeof msg.payload === "number"){
+                scheduler = setInterval(
                     sendMessage,
                     parseInt(config.timeout) * 1000,
                     node,
@@ -120,25 +123,25 @@ module.exports = function (RED) {
                     strategy,
                     config.msghistory
                 );
+            }
+            clearInterval(scheduler);
             if (typeof msg.payload === "number") {
-                clearInterval(schedule);
-                schedule = setInterval(
-                    sendMessage,
-                    parseInt(config.timeout) * 1000,
-                    node,
-                    send,
-                    done,
-                    strategy,
-                    config.msghistory
-                );
                 if (history.length > config.msghistory) {
                     history.shift();
                 }
                 history.push(msg.payload);
-                node.context().set("history" + node.id, history);
                 node.status({ fill: "green", shape: "dot", text: "Ok" });
-                compensatedCounter === 0 ? 0 : compensatedCounter--;
-                send([msg, null, { payload: 1 }]);
+                compensatedCounter == 0 ? compensatedCounter = 0 : compensatedCounter--;
+                send([{payload: msg.payload, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString()}, null, { payload: 1 }]);
+                scheduler = setInterval(
+                    sendMessage,
+                    parseInt(config.timeout) * 1000,
+                    node,
+                    send,
+                    done,
+                    strategy,
+                    config.msghistory
+                );
                 done();
             } else {
                 node.status({
