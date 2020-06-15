@@ -2,6 +2,7 @@ module.exports = function (RED) {
     var compensatedCounter = 0;
     var history = []
     var scheduler;
+    var strategy;
     function confidenceLevel(compensatedCounter) {
         return (1 / compensatedCounter) >= 1 ? 1 : (1 / compensatedCounter);
     }    
@@ -11,6 +12,23 @@ module.exports = function (RED) {
             (a, b, i, arr) =>
                 arr.filter(v => JSON.stringify(v) === JSON.stringify(a)).length >= arr.filter(v => JSON.stringify(v) === JSON.stringify(b)).length ? a : b, null);
 
+    /*function linearprediction(node, mode, history, histSize, send, done){
+        /*
+        Linear Prediction itself can be termed as a system identification problem, 
+        where the parametersof an auto-regressive series are estimated within the series itself 
+
+        linear prediction problem can be formulated
+        in very simple terms and can be defined in the more general context of linear
+        estimation and linear filtering (understood as smoothing)
+        
+       node.status({
+            fill: "yellow",
+            shape: "dot",
+            text: "Timeout. Sending linear prediction."
+        });
+
+    }*/
+
     function modeCompensate(node, mode, history, histSize, send, done) {
         node.status({
             fill: "yellow",
@@ -18,9 +36,14 @@ module.exports = function (RED) {
             text: "Timeout. Sending Mode"
         });
         let modeval = mode(history);
-        
-        send([{ payload: modeval, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() }, { payload: history[history.length - 1]  }, { payload:  confidenceLevel(compensatedCounter)  }]);
-        done();    }
+
+        send([
+            { payload: modeval, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() },
+            { payload: history[history.length - 1]  },
+            { payload:  confidenceLevel(compensatedCounter)  }
+        ]);
+        done();    
+    }
 
     function lastCompensate(node, history, histSize, send, done) {
         node.status({
@@ -29,8 +52,11 @@ module.exports = function (RED) {
             text: "Timeout. Sending Last"
         });
         let last = history[history.length - 1];
-        
-        send([{ payload: last, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() }, { payload: history[history.length - 1]  }, { payload: confidenceLevel(compensatedCounter) }]);
+        send([
+            { payload: last, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() }, 
+            { payload: history[history.length - 1]  }, 
+            { payload: confidenceLevel(compensatedCounter) }
+        ]);
         done();
     }
 
@@ -43,7 +69,6 @@ module.exports = function (RED) {
             shape: "dot",
             text: "Timeout. Sending Min"
         });
-        
         send([{ payload: min, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() }, { payload: history[history.length - 1]  }, { payload: confidenceLevel(compensatedCounter) }]);
         done();
     }
@@ -57,12 +82,18 @@ module.exports = function (RED) {
             shape: "dot",
             text: "Timeout. Sending Max"
         });
-        
-        send([{ payload: max, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString()  }, { payload: history[history.length - 1]}, { payload: confidenceLevel(compensatedCounter) }]);
+        send([
+            { payload: max, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString()  },
+            { payload: history[history.length - 1]},
+            { payload: confidenceLevel(compensatedCounter) }
+        ]);
         done();
     }
 
     function meanCompensate(history, node, histSize, send, done) {
+        /*
+        Moving Average (MA) Model (since hist only contains the "histSize" values)
+        */
         let sum = history.reduce(function (a, b) {
             return a + b;
         });
@@ -72,8 +103,11 @@ module.exports = function (RED) {
             shape: "dot",
             text: "Timeout. Sending Mean"
         });
-        
-        send([{ payload: avg, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() }, { payload: history[history.length - 1]  }, { payload: confidenceLevel(compensatedCounter) }]);
+        send([
+            { payload: avg, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() }, 
+            { payload: history[history.length - 1]  }, 
+            { payload: confidenceLevel(compensatedCounter) }
+        ]);
         done();
     }
 
@@ -109,9 +143,8 @@ module.exports = function (RED) {
         var node = this;
         compensatedCounter = 0;
         history = [];
+        strategy = config.strategy;
         node.on("input", function (msg, send, done) {
-            let strategy = config.strategy;
-
             if (!scheduler && typeof msg.payload === "number"){
                 scheduler = setInterval(
                     sendMessage,
@@ -131,6 +164,7 @@ module.exports = function (RED) {
                 history.push(msg.payload);
                 node.status({ fill: "green", shape: "dot", text: "Ok" });
                 compensatedCounter == 0 ? compensatedCounter = 0 : compensatedCounter--;
+
                 send([{payload: msg.payload, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString()}, null, { payload: 1 }]);
                 scheduler = setInterval(
                     sendMessage,

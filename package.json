@@ -26,10 +26,10 @@
     "child_process": "^1.0.2",
     "local-devices": "git+https://github.com/Miosame/local-devices.git",
     "network-list": "^1.1.5",
+    "node-red": "^1.0.6",
     "os": "^0.1.1",
     "oui": "^10.0.41",
-    "request": "^2.88.0",
-    "node-red": "^1.0.6"
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "eslint": "^6.7.2"
