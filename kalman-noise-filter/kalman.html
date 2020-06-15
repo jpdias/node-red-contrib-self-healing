@@ -1,0 +1,31 @@
+<script type="text/javascript">
+    RED.nodes.registerType('kalman-noise-filter',{
+        category: 'function',
+        color: '#74b9ff',
+        defaults: {
+            r: {value:0.01},
+            q: {value:3}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "status.png",
+        label: function() {
+            return this.name || 'kalman-noise-filter';
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="kalman-noise-filter">
+    <div class="form-row">
+        <label for="node-input-r"><i class="icon-tag"></i> R</label>
+        <input type="text" id="node-input-r" placeholder="0.01">
+    </div>
+    <div class="form-row">
+        <label for="node-input-q"><i class="icon-tag"></i> Q</label>
+        <input type="text" id="node-input-q" placeholder="3">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="kalman-noise-filter">
+    <p>A simple node that apply kalman filter to the message payloads</p>
+</script>

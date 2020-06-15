@@ -5,7 +5,7 @@ module.exports = function (RED) {
     var strategy;
     function confidenceLevel(compensatedCounter) {
         return (1 / compensatedCounter) >= 1 ? 1 : (1 / compensatedCounter);
-    }    
+    }
 
     const mode = myArray =>
         myArray.reduce(
@@ -38,11 +38,9 @@ module.exports = function (RED) {
         let modeval = mode(history);
 
         send([
-            { payload: modeval, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() },
-            { payload: history[history.length - 1]  },
-            { payload:  confidenceLevel(compensatedCounter)  }
+            { payload: modeval, confidenceLevel: confidenceLevel(compensatedCounter), timestamp: Date.now().toString() }
         ]);
-        done();    
+        done();
     }
 
     function lastCompensate(node, history, histSize, send, done) {
@@ -53,9 +51,7 @@ module.exports = function (RED) {
         });
         let last = history[history.length - 1];
         send([
-            { payload: last, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() }, 
-            { payload: history[history.length - 1]  }, 
-            { payload: confidenceLevel(compensatedCounter) }
+            { payload: last, confidenceLevel: confidenceLevel(compensatedCounter), timestamp: Date.now().toString() }
         ]);
         done();
     }
@@ -69,7 +65,7 @@ module.exports = function (RED) {
             shape: "dot",
             text: "Timeout. Sending Min"
         });
-        send([{ payload: min, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() }, { payload: history[history.length - 1]  }, { payload: confidenceLevel(compensatedCounter) }]);
+        send([{ payload: min, confidenceLevel: confidenceLevel(compensatedCounter), timestamp: Date.now().toString() }]);
         done();
     }
 
@@ -83,9 +79,7 @@ module.exports = function (RED) {
             text: "Timeout. Sending Max"
         });
         send([
-            { payload: max, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString()  },
-            { payload: history[history.length - 1]},
-            { payload: confidenceLevel(compensatedCounter) }
+            { payload: max, confidenceLevel: confidenceLevel(compensatedCounter), timestamp: Date.now().toString() }
         ]);
         done();
     }
@@ -104,9 +98,7 @@ module.exports = function (RED) {
             text: "Timeout. Sending Mean"
         });
         send([
-            { payload: avg, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString() }, 
-            { payload: history[history.length - 1]  }, 
-            { payload: confidenceLevel(compensatedCounter) }
+            { payload: avg, confidenceLevel: confidenceLevel(compensatedCounter), timestamp: Date.now().toString() }
         ]);
         done();
     }
@@ -145,7 +137,7 @@ module.exports = function (RED) {
         history = [];
         strategy = config.strategy;
         node.on("input", function (msg, send, done) {
-            if (!scheduler && typeof msg.payload === "number"){
+            if (!scheduler && typeof msg.payload === "number") {
                 scheduler = setInterval(
                     sendMessage,
                     parseInt(config.timeout) * 1000,
@@ -165,7 +157,7 @@ module.exports = function (RED) {
                 node.status({ fill: "green", shape: "dot", text: "Ok" });
                 compensatedCounter == 0 ? compensatedCounter = 0 : compensatedCounter--;
 
-                send([{payload: msg.payload, confidenceLevel: confidenceLevel(compensatedCounter), timestamp:  Date.now().toString()}, null, { payload: 1 }]);
+                send([{ payload: msg.payload, confidenceLevel: confidenceLevel(compensatedCounter), timestamp: Date.now().toString() }]);
                 scheduler = setInterval(
                     sendMessage,
                     parseInt(config.timeout) * 1000,

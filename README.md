@@ -24,6 +24,16 @@ Compensate missing values (detected by disruptions on the periodicity of incomin
 
 Similar to `compensate` but gives an additional output with a confiability metric (function can be defined, e.g. decay logarithmically for each followed value compensed).
 
+### :package: kalman-noise-filter
+
+Kalman noise filter based on the work of Bulten et al.
+
+> R models the process noise and describes how noisy our system internally is. Or, in other words, how much noise can we expect from the system itself? As our system is constant we can set this to a (very) low value. Q resembles the measurement noise; how much noise is caused by our measurements? As we expect that our measurements will contain most of the noise, it makes sense to set this parameter to a high number (especially in comparison to the process noise).
+
+> In real life scenario's you usually make an estimate of R and Q based on measurements or domain knowledge. For this example we assume we know the noise levels.
+
+> W. Bulten, A. C. V. Rossum and W. F. G. Haselager, "Human SLAM, Indoor Localisation of Devices and Users," 2016 IEEE First International Conference on Internet-of-Things Design and Implementation (IoTDI), Berlin, 2016, pp. 211-222, doi: 10.1109/IoTDI.2015.19.
+
 ### :package: flow-control
 
 Enable and disable Node-RED flows during runtime (local or remote instances, using the available REST API).
