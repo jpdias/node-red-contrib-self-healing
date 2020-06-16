@@ -61,6 +61,11 @@ Checks for reading (value) sanity (e.g. checks if the reading is between the sen
 
 Provides a heartbeat probe for MQTT and HTTP. For HTTP an endpoint must be provided, for MQTT an `MQTT in` node should be connected.
 
+### :package: timing-check
+
+Checks for timing issues on data inputs. There are 3 outputs that refer to data comming on expected time, too slow or too fast. A frequency in seconds along with a margin (float: 0-1) should be provided.
+
+
 ## Todo Nodes
 
 ### :package: device-registry
