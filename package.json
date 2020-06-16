@@ -16,7 +16,8 @@
       "redundancy-manager": "redundancy/redundancy.js",
       "action-delay": "action-delay/action-delay.js",
       "network-aware": "network-aware/network-aware.js",
-      "heartbeat": "heartbeat/heartbeat.js"
+      "heartbeat": "heartbeat/heartbeat.js",
+      "timing": "timing-check/timing.js"
     }
   },
   "main": "node_modules/node-red/red/red.js",
