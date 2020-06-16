@@ -3,7 +3,7 @@ module.exports = function (RED) {
     const https = require('https');
 
     function failedTrigger(node) {
-        node.send({ payload: { status: 0, statusMessage: "Dead" } })
+        node.send({ payload: { status: 0, statusMessage: "Timeout" } , timestamp: Date.now().toString() })
     }
 
     function Heartbeat(config) {
@@ -12,51 +12,51 @@ module.exports = function (RED) {
         this.interval_id = null;
         this.repeat = config.frequency;
         this.httpendpoint = config.httpendpoint;
-        this.httpprobe = config.httpprobe;
+        this.protocol = config.protocol;
         var node = this;
 
         node.repeaterSetup = function () {
             this.interval_id = setInterval(function () {
                 node.emit("input", {});
-            }, this.repeat);
+            }, this.repeat * 1000); //from milis to seconds
         };
 
-        if (config.protocol == "http") {
+        if (this.protocol == "http") {
             node.repeaterSetup();
         }
 
-        this.on("input", function (msg) {
-            if (config.protocol == "http") {
-                if (this.httpprobe) {
-                    https.get(this.httpendpoint, (resp) => {
-                        const { statusCode, statusMessage } = resp;
-                        if (statusCode !== 200) {
-                            node.status({
-                                fill: "green",
-                                shape: "dot",
-                                text: "Ok"
-                            });
-                            node.send({ payload: { status: statusCode, statusMessage: statusMessage } })
-                        }
-                        else {
-                            node.status({
-                                fill: "red",
-                                shape: "circle",
-                                text: "Failed"
-                            });
-                            node.send({ payload: { status: statusCode, statusMessage: statusMessage } })
-                        }
-
-                    }).on("error", (err) => {
+        this.on("input", function () {
+            if (this.protocol == "http") {
+            
+                https.get(this.httpendpoint, (resp) => {
+                    const { statusCode, statusMessage } = resp;
+                    if (statusCode == 200) {
+                        node.status({
+                            fill: "green",
+                            shape: "dot",
+                            text: "Ok"
+                        });
+                        node.send({ payload: { status: statusCode, statusMessage: statusMessage }, timestamp: Date.now().toString()  })
+                    }
+                    else {
                         node.status({
                             fill: "red",
-                            shape: "dot",
-                            text: "Error"
+                            shape: "circle",
+                            text: "Failed"
                         });
-                        node.send({ payload: { status: 0, statusMessage: err.message } })
+                        node.send({ payload: { status: statusCode, statusMessage: statusMessage }, timestamp: Date.now().toString()  })
+                    }
+
+                }).on("error", (err) => {
+                    node.status({
+                        fill: "red",
+                        shape: "dot",
+                        text: "Error"
                     });
-                }
-            } else if (config.protocol == "mqtt") {
+                    node.send({ payload: { status: 0, statusMessage: err.message }, timestamp: Date.now().toString() })
+                });
+            
+            } else if (this.protocol == "mqtt") {
                 if (!this.interval_id) {
                     this.interval_id = setInterval(
                         failedTrigger,

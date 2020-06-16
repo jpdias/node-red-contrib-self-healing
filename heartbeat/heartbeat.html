@@ -1,11 +1,13 @@
 <script type="text/javascript">
     RED.nodes.registerType('heartbeat',{
-        category: 'function',
+        category: 'SHEN',
         color: '#74b9ff',
         defaults: {
-            broker: {type:"mqtt-broker"}
+            frequency: { value: 30, required: true, validate:RED.validators.number() },
+            protocol: { required: true },
+            httpendpoint: { required: false, validate:RED.validators.regex(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/)},
         },
-        inputs:0,
+        inputs:1,
         outputs:1,
         icon: "status.png",
         label: function() {

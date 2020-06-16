@@ -4,6 +4,9 @@
 
 ## node-red-contrib-self-healing
 
+
+[![DOI](https://zenodo.org/badge/doi/10.1007/978-3-030-50426-7_27.svg)](http://dx.doi.org/10.1007/978-3-030-50426-7_27)  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ### **!Under Active Development!** 
 
 A collection of nodes for making Node-RED more resilient by adding self-healing capabilities. This project is at an early development stage.
@@ -53,6 +56,10 @@ Picks a value (e.g. sensor reading) from an array values based on a pre-defined 
 ### :package: threshold-check
 
 Checks for reading (value) sanity (e.g. checks if the reading is between the sensor possible output values).
+
+### :package: heartbeat
+
+Provides a heartbeat probe for MQTT and HTTP. For HTTP an endpoint must be provided, for MQTT an `MQTT in` node should be connected.
 
 ## Todo Nodes
 
