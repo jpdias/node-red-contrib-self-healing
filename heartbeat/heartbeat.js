@@ -13,6 +13,7 @@ module.exports = function (RED) {
         this.repeat = config.frequency;
         this.httpendpoint = config.httpendpoint;
         this.protocol = config.protocol;
+        this.onfail = config.onfail;
         var node = this;
 
         node.repeaterSetup = function () {
@@ -36,7 +37,9 @@ module.exports = function (RED) {
                             shape: "dot",
                             text: "Ok"
                         });
-                        node.send({ payload: { status: statusCode, statusMessage: statusMessage }, timestamp: Date.now().toString()  })
+                        if(!this.onfail){
+                            node.send({ payload: { status: statusCode, statusMessage: statusMessage }, timestamp: Date.now().toString()  })
+                        }
                     }
                     else {
                         node.status({
@@ -65,7 +68,11 @@ module.exports = function (RED) {
                     );
                 }
                 clearInterval(this.interval_id);
-                node.send({ payload: { status: 200, statusMessage: "Alive" } })
+
+                if(!this.onfail){
+                    node.send({ payload: { status: 200, statusMessage: "Alive" } })
+                }
+                
                 this.interval_id = setInterval(
                     failedTrigger,
                     parseInt(this.repeat) * 1000,

@@ -5,7 +5,8 @@
         defaults: {
             frequency: { value: 30, required: true, validate:RED.validators.number() },
             protocol: { required: true },
-            httpendpoint: { required: false, validate:RED.validators.regex(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/)},
+            onfail: { required: true, value: false },
+            httpendpoint: { required: false},
         },
         inputs:1,
         outputs:1,
@@ -31,6 +32,10 @@
     <div class="form-row">
         <label for="node-input-httpendpoint"><i class="icon-tag"></i>HTTP Endpoint</label>
         <input type="text" id="node-input-httpendpoint" placeholder="https://google.com">
+    </div>
+    <div class="form-row">
+        <label for="node-input-onfail"><i class="icon-tag"></i>Only send msg on fail</label>
+        <input type="checkbox" id="node-input-onfail">
     </div>
 </script>
 
