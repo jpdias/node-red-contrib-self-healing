@@ -65,16 +65,16 @@ Provides a heartbeat probe for MQTT and HTTP. For HTTP an endpoint must be provi
 
 Checks for timing issues on data inputs. There are 3 outputs that refer to data comming on expected time, too slow or too fast. A frequency in seconds along with a margin (float: 0-1) should be provided.
 
+### :package: readings-watcher
+
+Drop values if they are in or out of a given threshold (e.g. two close temperature readings).
+
 
 ## Todo Nodes
 
 ### :package: device-registry
 
 Store a list of the available devices in the network.
-
-### :package: phase-shifter
-
-Drop values if they are within a given threshold (e.g. two close temperature readings).
 
 ## Known Issues
 

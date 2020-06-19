@@ -8,19 +8,18 @@ module.exports = function (RED) {
         this.lastvalue = null;
 
         this.on('input', function (msg) {
-            if(typeof msg.payload != Number){
+            if(isNaN(msg.payload)){
                 node.status({
                     fill: "red",
                     shape: "circle",
                     text: "NaN"
                 });
-                node.done();
                 return;
             }
             if(!this.lastvalue){
                 node.status({
                     fill: "green",
-                    shape: "circle",
+                    shape: "dot",
                     text: "First value"
                 });
                 this.lastvalue = msg.payload;
@@ -31,7 +30,7 @@ module.exports = function (RED) {
                 if(this.maxchange && diff >= this.maxchange){
                     node.status({
                         fill: "red",
-                        shape: "circle",
+                        shape: "dot",
                         text: "max change"
                     });
                     msg.timestamp = Date.now().toString();
@@ -39,7 +38,7 @@ module.exports = function (RED) {
                 } else if (this.minchange && diff <= this.minchange){
                     node.status({
                         fill: "red",
-                        shape: "circle",
+                        shape: "dot",
                         text: "minimal change"
                     });
                     msg.timestamp = Date.now().toString();
@@ -47,13 +46,13 @@ module.exports = function (RED) {
                 } else {
                     node.status({
                         fill: "green",
-                        shape: "circle",
+                        shape: "dot",
                         text: "ok"
                     });
+                    this.lastvalue = msg.payload;
                     msg.timestamp = Date.now().toString();
                     node.send([msg,null,null]);
                 }
-                this.lastvalue = msg.payload;
             }
         });
     }
