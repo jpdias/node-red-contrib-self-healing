@@ -5,13 +5,13 @@
 ## node-red-contrib-self-healing
 
 
-[![DOI](https://zenodo.org/badge/doi/10.1007/978-3-030-50426-7_27.svg)](http://dx.doi.org/10.1007/978-3-030-50426-7_27)  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![DOI](https://zenodo.org/badge/doi/10.1007/978-3-030-50426-7_27.svg)](http://dx.doi.org/10.1007/978-3-030-50426-7_27) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-### **!Under Active Development!** 
+### **! Under Active Development ! ** 
 
 A collection of nodes for making Node-RED more resilient by adding self-healing capabilities. This project is at an early development stage.
 
-This work is part of an on-going PhD thesis in Software Engineering and Internet-of-Things at the Faculty of Engineering, University of Porto (FEUP). Work supervised by Prof. [Hugo Sereno Ferreia](http://hugosereno.eu/) and Prof. [João Pascoal Faria](https://sigarra.up.pt/feup/en/FUNC_GERAL.FORMVIEW?P_CODIGO=210006). With collaboration of Prof. [André Restivo](https://web.fe.up.pt/~arestivo/page/).
+This work is part of an ongoing PhD thesis in Software Engineering and Internet-of-Things at the Faculty of Engineering, University of Porto (FEUP). Work supervised by Prof. [Hugo Sereno Ferreia](http://hugosereno.eu/) and Prof. [João Pascoal Faria](https://sigarra.up.pt/feup/en/FUNC_GERAL.FORMVIEW?P_CODIGO=210006). With collaboration of Prof. [André Restivo](https://web.fe.up.pt/~arestivo/page/).
 
 ## Available Nodes
 
@@ -31,11 +31,11 @@ Similar to `compensate` but gives an additional output with a confiability metri
 
 Kalman noise filter based on the work of Bulten et al.
 
-> R models the process noise and describes how noisy our system internally is. Or, in other words, how much noise can we expect from the system itself? As our system is constant we can set this to a (very) low value. Q resembles the measurement noise; how much noise is caused by our measurements? As we expect that our measurements will contain most of the noise, it makes sense to set this parameter to a high number (especially in comparison to the process noise).
+> R models the process noise and describes how noisy our system internally is. Or, in other words, how much noise can we expect from the system itself? Our system is constant we can set this to a (very) low value. Q resembles the measurement noise; how much noise is caused by our measurements? As we expect that our measurements will contain most of the noise, it makes sense to set this parameter to a high number (especially in comparison to the process noise).
 
 > In real life scenario's you usually make an estimate of R and Q based on measurements or domain knowledge. For this example we assume we know the noise levels.
 
-> W. Bulten, A. C. V. Rossum and W. F. G. Haselager, "Human SLAM, Indoor Localisation of Devices and Users," 2016 IEEE First International Conference on Internet-of-Things Design and Implementation (IoTDI), Berlin, 2016, pp. 211-222, doi: 10.1109/IoTDI.2015.19.
+> W. Bulten, A. C. V. Rossum and W. F. G. Haselager, **Human SLAM, Indoor Localisation of Devices and Users,** 2016 IEEE First International Conference on Internet-of-Things Design and Implementation (IoTDI), Berlin, 2016, pp. 211-222, doi: 10.1109/IoTDI.2015.19.
 
 ### :package: flow-control
 
@@ -79,8 +79,8 @@ Drop values if they are within a given threshold (e.g. two close temperature rea
 ## Known Issues
 
 - Lack of description on how to configure nodes.
-- Lack of standardization on inputs and outputs.
-- Lack of proper unit testing. Some edge cases still break the *nodes* functionality.
+- No standardization on inputs and outputs.
+- Lack of proper unit testing. Some edge cases still break the *node's* functionality.
 
 ## How to Use
 
@@ -95,4 +95,4 @@ SHEN is not yet available in the Node-RED node registry (npm) due to its early d
 - Start (or restart) Node-RED.
 - Nodes should be available under the SHEN tab of the *node palette*.
 
-- [Installing Costum Nodes - Official Documentation](https://nodered.org/docs/creating-nodes/first-node#testing-your-node-in-node-red)
+- [Installing Costum Nodes -- Official Documentation](https://nodered.org/docs/creating-nodes/first-node#testing-your-node-in-node-red)

@@ -1,0 +1,33 @@
+<script type="text/javascript">
+    RED.nodes.registerType('readings-watcher',{
+        category: 'SHEN',
+        color: '#74b9ff',
+        defaults: {
+            minchange: {required:false, validate:RED.validators.number()},
+            maxchange: {required:false, validate:RED.validators.number()}
+        },
+        inputs:1,
+        outputs:3,
+        inputLabels: "number",
+        outputLabels: ["ok", "min change", "max change"],
+        icon: "status.png",
+        label: function() {
+            return this.name || 'readings-watcher';
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="readings-watcher">
+    <div class="form-row">
+        <label for="node-input-minchange"><i class="icon-tag"></i> Minimum change between readings (0-1)</label>
+        <input type="text" id="node-input-minchange" placeholder="0.01">
+    </div>
+    <div class="form-row">
+        <label for="node-input-maxchange"><i class="icon-tag"></i> Maximum change between readings (0-1)</label>
+        <input type="text" id="node-input-maxchange" placeholder="0.01">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="readings-watcher">
+    <p></p>
+</script>

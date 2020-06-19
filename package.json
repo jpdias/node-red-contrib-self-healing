@@ -17,7 +17,8 @@
       "action-delay": "action-delay/action-delay.js",
       "network-aware": "network-aware/network-aware.js",
       "heartbeat": "heartbeat/heartbeat.js",
-      "timing": "timing-check/timing.js"
+      "timing": "timing-check/timing.js",
+      "readings-watcher": "readings-watcher/readings-watcher.js"
     }
   },
   "main": "node_modules/node-red/red/red.js",
