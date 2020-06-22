@@ -1,12 +1,13 @@
 {
   "name": "node-red-contrib-self-healing",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "SHEN: Self-healing extensions for Node-RED.",
   "keywords": [
-    "node-red", "self-healing"
+    "node-red",
+    "self-healing"
   ],
   "homepage": "http://jpdias.me/node-red-contrib-self-healing/",
-  "bugs": "https://github.com/jpdias/node-red-contrib-self-healing/issues", 
+  "bugs": "https://github.com/jpdias/node-red-contrib-self-healing/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/jpdias/node-red-contrib-self-healing.git"
