@@ -106,8 +106,8 @@ If you find this code useful in your research, please consider citing:
 
 
     @inproceedings{DiasICCS2020,
-        author="Dias, Jo{\~a}o Pedro and Lima, Bruno and Faria, Jo{\~a}o Pascoal and Restivo, Andr{\'e} and Ferreira, Hugo Sereno",
-        editor="Krzhizhanovskaya, Valeria V. and Z{\'a}vodszky, G{\'a}bor and Lees, Michael H. and Dongarra, Jack J. and Sloot, Peter M. A. and Brissos, S{\'e}rgio and Teixeira, Jo{\~a}o",
+        author="Dias, Joao Pedro and Lima, Bruno and Faria, Joao Pascoal and Restivo, Andre and Ferreira, Hugo Sereno",
+        editor="Krzhizhanovskaya, Valeria V. and Zavodszky, Gabor and Lees, Michael H. and Dongarra, Jack J. and Sloot, Peter M. A. and Brissos, Sergio and Teixeira, Joao",
         title="Visual Self-healing Modelling for Reliable Internet-of-Things Systems",
         booktitle="Computational Science -- ICCS 2020",
         year="2020",
