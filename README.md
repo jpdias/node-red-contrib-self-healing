@@ -5,7 +5,10 @@
 ## node-red-contrib-self-healing
 
 
-[![DOI](https://zenodo.org/badge/doi/10.1007/978-3-030-50426-7_27.svg)](http://dx.doi.org/10.1007/978-3-030-50426-7_27) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![DOI](https://zenodo.org/badge/doi/10.1007/978-3-030-50426-7_27.svg)](http://dx.doi.org/10.1007/978-3-030-50426-7_27)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![View this project on NPM](https://www.npmjs.com/package/node-red-contrib-self-healing)](https://img.shields.io/npm/v/badges.svg)
+[![View this project on NPM](https://www.npmjs.com/package/node-red-contrib-self-healing)](https://img.shields.io/npm/dm/badges.svg)
 
 ### **! Under Active Development ! ** 
 
@@ -96,3 +99,21 @@ SHEN is not yet available in the Node-RED node registry (npm) due to its early d
 - Nodes should be available under the SHEN tab of the *node palette*.
 
 - [Installing Costum Nodes -- Official Documentation](https://nodered.org/docs/creating-nodes/first-node#testing-your-node-in-node-red)
+
+### Citing this Work
+
+If you find this code useful in your research, please consider citing:
+
+
+    @inproceedings{DiasICCS2020,
+        author="Dias, Jo{\~a}o Pedro and Lima, Bruno and Faria, Jo{\~a}o Pascoal and Restivo, Andr{\'e} and Ferreira, Hugo Sereno",
+        editor="Krzhizhanovskaya, Valeria V. and Z{\'a}vodszky, G{\'a}bor and Lees, Michael H. and Dongarra, Jack J. and Sloot, Peter M. A. and Brissos, S{\'e}rgio and Teixeira, Jo{\~a}o",
+        title="Visual Self-healing Modelling for Reliable Internet-of-Things Systems",
+        booktitle="Computational Science -- ICCS 2020",
+        year="2020",
+        publisher="Springer International Publishing",
+        address="Cham",
+        pages="357--370",
+        isbn="978-3-030-50426-7"
+    }
+
