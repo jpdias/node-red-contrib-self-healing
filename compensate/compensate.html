@@ -21,6 +21,11 @@
             <option>mean</option>
         </select>
     </div>
+    <p> Confidence does an eval of a valid JS expression. Both compensated values counter (compensatedCounter) and history values (history) can be used. Example: (1 / compensatedCounter) >= 1 ? 1 : (1 / compensatedCounter) </p>
+    <div class="form-row">
+        <label for="node-input-confidenceFormula"><i class="fa fa-tag"></i> Confidence Formula</label>
+        <input type="text" id="node-input-confidenceFormula" placeholder="compensatedCounter">
+    </div>
 </script>
 
 <script type="text/x-red" data-help-name="sensor-compensate">
@@ -36,15 +41,16 @@
             name: { value: "" },
             msghistory: {value:10,required:true,validate:RED.validators.number()},
             timeout: {value:5,required:true,validate:RED.validators.number()},
-            strategy: {value:"last",required:true}
+            strategy: {value:"last",required:true},
+            confidenceFormula: {value:"",required:false}
         },
         icon: "status.png",
         color: "#74b9ff",
         inputs: 1,
-        outputs: 2,
+        outputs: 1,
         align: 'left',
         inputLabels: "number",
-        outputLabels: ["msg", "fault"],
+        outputLabels: ["msg"],
         label: function () {
             return this.name || "Sensor Compensate";
         }

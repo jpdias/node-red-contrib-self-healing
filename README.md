@@ -26,9 +26,7 @@ Delay a command (message) in order to meet the actuator response capacity (e.g. 
 
 Compensate missing values (detected by disruptions on the periodicity of incoming mesages) with a pre-defined strategy (e.g. average of the last 10 readings, last value or maximum value of the last 10 readings).
 
-### :package: compensate-confiability 
-
-Similar to `compensate` but gives an additional output with a confiability metric (function can be defined, e.g. decay logarithmically for each followed value compensed).
+It can also provide a "confidence" level on the compensated values. Confidence metric results from an `eval` of a valid JS expression. Both compensated values counter (`compensatedCounter`) and history values (`history`) can be used. Example: `(1 / compensatedCounter) >= 1 ? 1 : (1 / compensatedCounter)`.
 
 ### :package: kalman-noise-filter
 
