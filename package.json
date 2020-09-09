@@ -32,18 +32,18 @@
   "author": "JP Dias",
   "license": "MIT",
   "dependencies": {
-    "ajv": "^6.10.2",
+    "ajv": "^6.12.4",
     "asn1": "^0.2.4",
     "child_process": "^1.0.2",
     "kalmanjs": "^1.1.0",
     "local-devices": "git+https://github.com/Miosame/local-devices.git",
     "network-list": "^1.1.5",
-    "node-red": "^1.0.6",
+    "node-red": "^1.1.3",
     "os": "^0.1.1",
-    "oui": "^10.0.41",
-    "request": "^2.88.0"
+    "oui": "^10.0.47",
+    "request": "^2.88.2"
   },
   "devDependencies": {
-    "eslint": "^6.7.2"
+    "eslint": "^6.8.0"
   }
 }
