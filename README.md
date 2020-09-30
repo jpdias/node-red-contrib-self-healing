@@ -87,9 +87,7 @@ Store a list of the available devices in the network.
 
 - Installing Node-RED (Official Docs): [https://nodered.org/docs/getting-started/](https://nodered.org/docs/getting-started/)
 
-### Installing node-red-contrib-self-healing (SHEN)
-
-SHEN is not yet available in the Node-RED node registry (npm) due to its early development stage.
+### Installing node-red-contrib-self-healing for development
 
 - Clone or download this repository.
 - In your node-red user directory, typically ~/.node-red (in Windows something like `C:\Users\<my_name>\.node_red`), run: `npm install <path_to_downloaded_folder>/node-red-contrib-self-healing`
