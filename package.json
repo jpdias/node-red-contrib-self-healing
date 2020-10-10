@@ -17,7 +17,6 @@
       "flow-control": "flow-control/flow-control.js",
       "replication-voter": "replication-voter/replication-voter.js",
       "compensate": "compensate/compensate.js",
-      "compensate-confiability": "compensate-confiability/compensate.js",
       "kalman-noise-filter": "kalman-noise-filter/kalman.js",
       "threshold-check": "threshold-check/threshold-check.js",
       "redundancy-manager": "redundancy/redundancy.js",
@@ -25,7 +24,8 @@
       "network-aware": "network-aware/network-aware.js",
       "heartbeat": "heartbeat/heartbeat.js",
       "timing": "timing-check/timing.js",
-      "readings-watcher": "readings-watcher/readings-watcher.js"
+      "readings-watcher": "readings-watcher/readings-watcher.js",
+      "test-node": "test-node/test-node.js"
     }
   },
   "main": "node_modules/node-red/red/red.js",
@@ -44,6 +44,13 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
-    "eslint": "^6.8.0"
+    "eslint": "^6.8.0",
+    "node-red-node-test-helper": "^0.2.5",
+    "mocha": "*"
+  },
+  "scripts": {
+    "start": "node-red",
+    "test": "mocha \"test/**/*_spec.js\"",
+    "mocha": "mocha"
   }
 }
