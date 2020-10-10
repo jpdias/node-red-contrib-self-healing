@@ -1,46 +1,49 @@
 <script type="text/x-red" data-template-name="flow-control">
-    <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-targetHost"><i class="fa fa-tag"></i> targetHost</label>
-        <input type="text" id="node-input-targetHost" placeholder="targetHost">
-    </div>
-    <div class="form-row">
-        <label for="node-input-targetPort"><i class="fa fa-tag"></i> targetPort</label>
-        <input type="number" id="node-input-targetPort" placeholder="targetPort">
-    </div>
-    <div class="form-row">
-        <label for="node-input-targetFlow"><i class="fa fa-tag"></i> targetFlow</label>
-        <input type="text" id="node-input-targetFlow" placeholder="targetFlow">
-    </div>
+  <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+      <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+  </div>
+  <div class="form-row">
+      <label for="node-input-targetHost"><i class="fa fa-tag"></i> targetHost</label>
+      <input type="text" id="node-input-targetHost" placeholder="targetHost">
+  </div>
+  <div class="form-row">
+      <label for="node-input-targetPort"><i class="fa fa-tag"></i> targetPort</label>
+      <input type="number" id="node-input-targetPort" placeholder="targetPort">
+  </div>
+  <div class="form-row">
+      <label for="node-input-targetFlow"><i class="fa fa-tag"></i> targetFlow</label>
+      <input type="text" id="node-input-targetFlow" placeholder="targetFlow">
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="flow-control">
-   <p>Some useful help text to introduce the node.</p>
-   <p>Some more information about the node.</p>
+  <p>Some useful help text to introduce the node.</p>
+  <p>Some more information about the node.</p>
 </script>
 
-
 <script type="text/javascript">
-    RED.nodes.registerType('flow-control', {
-        category: "SHEN",
-        defaults: {
-            name: {value: ""},
-            targetHost: {value:"localhost",required:true},
-            targetFlow: {value:"029asd.as31092",required:true},
-            targetPort: {value:1880,required:true,validate:RED.validators.number()},
-        },
-        icon: "status.png",
-        color: "#74b9ff",
-        inputs: 1,
-        outputs: 2,
-        align: 'left',
-        inputLabels: "boolean",
-        outputLabels: ["success", "fault"],
-        label: function () {
-            return this.name || "Flow Enabled";
-        }
-    });
+  RED.nodes.registerType("flow-control", {
+    category: "SHEN",
+    defaults: {
+      name: { value: "" },
+      targetHost: { value: "localhost", required: true },
+      targetFlow: { value: "029asd.as31092", required: true },
+      targetPort: {
+        value: 1880,
+        required: true,
+        validate: RED.validators.number(),
+      },
+    },
+    icon: "status.png",
+    color: "#74b9ff",
+    inputs: 1,
+    outputs: 2,
+    align: "left",
+    inputLabels: "boolean",
+    outputLabels: ["success", "fault"],
+    label: function () {
+      return this.name || "Flow Enabled";
+    },
+  });
 </script>
