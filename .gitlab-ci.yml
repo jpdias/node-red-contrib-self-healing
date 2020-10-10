@@ -8,7 +8,18 @@ default:
       - .npm/
 
 stages:
+  - start
   - test
+
+start:
+  stage: start
+  script:
+    - echo "Starting pipeline"
+
+run_tests:
+  stage: test
+  script:
+    - npm test
 
 format_check:
   stage: test
