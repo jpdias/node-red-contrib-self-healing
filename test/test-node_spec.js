@@ -36,7 +36,6 @@ describe("test-node Node", function () {
     });
   });
 
-
   it("should return integer value", function (done) {
     var flow = [
       /*
