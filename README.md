@@ -1,16 +1,15 @@
-# SHEN: Self-Healing Extensions for Node-RED 
+# SHEN: Self-Healing Extensions for Node-RED
 
 ![Logo](https://i.imgur.com/AynqSQm.png)
 
 ## node-red-contrib-self-healing
-
 
 [![DOI](https://zenodo.org/badge/doi/10.1007/978-3-030-50426-7_27.svg)](http://dx.doi.org/10.1007/978-3-030-50426-7_27)
 [![npm version badge](https://img.shields.io/npm/v/node-red-contrib-self-healing.svg)](https://www.npmjs.org/package/node-red-contrib-self-healing)
 [![downloads badge](https://img.shields.io/npm/dm/node-red-contrib-self-healing.svg)](https://www.npmjs.com/package/node-red-contrib-self-healing)
 [![license: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-### **! Under Active Development ! ** 
+### **! Under Active Development ! **
 
 A collection of nodes for making Node-RED more resilient by adding self-healing capabilities. This project is at an early development stage.
 
@@ -18,11 +17,11 @@ This work is part of an ongoing PhD thesis in Software Engineering and Internet-
 
 ## Available Nodes
 
-### :package: action-delay 
+### :package: action-delay
 
 Delay a command (message) in order to meet the actuator response capacity (e.g. avoid overload). Similar to [rate-limit-messages](https://cookbook.nodered.org/basic/rate-limit-messages), but with different strategies.
 
-### :package: compensate	
+### :package: compensate
 
 Compensate missing values (detected by disruptions on the periodicity of incoming mesages) with a pre-defined strategy (e.g. average of the last 10 readings, last value or maximum value of the last 10 readings).
 
@@ -70,7 +69,6 @@ Checks for timing issues on data inputs. There are 3 outputs that refer to data 
 
 Drop values if they are in or out of a given threshold (e.g. two close temperature readings).
 
-
 ## Todo Nodes
 
 ### :package: device-registry
@@ -81,7 +79,7 @@ Store a list of the available devices in the network.
 
 - Lack of description on how to configure nodes.
 - No standardization on inputs and outputs.
-- Lack of proper unit testing. Some edge cases still break the *node's* functionality.
+- Lack of proper unit testing. Some edge cases still break the _node's_ functionality.
 
 ## How to Use
 
@@ -92,14 +90,13 @@ Store a list of the available devices in the network.
 - Clone or download this repository.
 - In your node-red user directory, typically ~/.node-red (in Windows something like `C:\Users\<my_name>\.node_red`), run: `npm install <path_to_downloaded_folder>/node-red-contrib-self-healing`
 - Start (or restart) Node-RED.
-- Nodes should be available under the SHEN tab of the *node palette*.
+- Nodes should be available under the SHEN tab of the _node palette_.
 
 - [Installing Costum Nodes -- Official Documentation](https://nodered.org/docs/creating-nodes/first-node#testing-your-node-in-node-red)
 
 ### Citing this Work
 
 If you find this code useful in your research, please consider citing:
-
 
     @inproceedings{DiasICCS2020,
         author="Dias, Joao Pedro and Lima, Bruno and Faria, Joao Pascoal and Restivo, Andre and Ferreira, Hugo Sereno",
@@ -112,4 +109,3 @@ If you find this code useful in your research, please consider citing:
         pages="357--370",
         isbn="978-3-030-50426-7"
     }
-
