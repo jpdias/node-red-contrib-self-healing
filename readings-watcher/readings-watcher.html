@@ -3,13 +3,14 @@
     category: "SHEN",
     color: "#74b9ff",
     defaults: {
-      minchange: { required: false, validate: RED.validators.number() },
-      maxchange: { required: false, validate: RED.validators.number() },
+      minchange: { required: false, validate: RED.validators.number(), value: 0.0 },
+      maxchange: { required: false, validate: RED.validators.number(), value: 1.0 },
+      stuckat: { required: false, validate: RED.validators.number(), value: 0 },
     },
     inputs: 1,
-    outputs: 3,
+    outputs: 4,
     inputLabels: "number",
-    outputLabels: ["ok", "min change", "max change"],
+    outputLabels: ["ok", "min change", "max change", "stuck at"],
     icon: "status.png",
     label: function () {
       return this.name || "readings-watcher";
@@ -17,17 +18,37 @@
   });
 </script>
 
-<script type="text/x-red" data-template-name="readings-watcher">
+<script type="text/html" data-template-name="readings-watcher">
   <div class="form-row">
-      <label for="node-input-minchange"><i class="icon-tag"></i> Minimum change between readings (0-1)</label>
-      <input type="text" id="node-input-minchange" placeholder="0.01">
+      <h3>Enable/Disable Strategies: </h3>
+
+      <label for="node-input-minchange-strat" style="width:55%;">Minimum change % (0-1)</label>
+      <input type="checkbox" id="node-input-minchange-strat" style="width:20%;">
+
+      <label for="node-input-maxchange-strat" style="width:55%;">Maximum change % (0-1)</label>
+      <input type="checkbox" id="node-input-maxchange-strat" style="width:20%;">
+
+      <label for="node-input-stuck-strat" style="width:55%;">Stuck at same reading</label>
+      <input type="checkbox" id="node-input-stuck-strat" style="width:20%;">
   </div>
-  <div class="form-row">
-      <label for="node-input-maxchange"><i class="icon-tag"></i> Maximum change between readings (0-1)</label>
-      <input type="text" id="node-input-maxchange" placeholder="0.01">
+  <div>
+    <h3>Values: </h3>
+    <div class="form-row">
+        <label for="node-input-minchange" style="width:80%;"><i class="icon-tag"></i> Minimum change between readings (0-1): </label>
+        <input type="text" id="node-input-minchange" placeholder="0.0">
+    </div>
+    <div class="form-row">
+        <label for="node-input-maxchange" style="width:80%;"><i class="icon-tag"></i> Maximum change between readings (0-1): </label>
+        <input type="text" id="node-input-maxchange" placeholder="1.0">
+    </div>
+    <div class="form-row">
+      <label for="node-input-stuck" style="width:80%;"><i class="icon-tag"></i> Trigger after X repeated readings: </label>
+      <input type="text" id="node-input-stuck" placeholder="0">
+    </div>
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="readings-watcher">
-  <p></p>
+<script type="text/html" data-help-name="readings-watcher">
+  <p>A node to check sequencial readings with 3 different strategies</p>
+  <p>A node to verify sequencial readings</p>
 </script>
