@@ -1,0 +1,29 @@
+<script type="text/javascript">
+    RED.nodes.registerType('balancing', {
+        category: "SHEN",
+        defaults: {
+            name: {value: ""},
+        },
+        inputs: 1,
+        outputs: 0,
+        color: "#74b9ff",
+        label: function() {
+            return this.name || 'balancing';
+        },
+
+        icon: "status.png",
+        align: 'left',
+    });
+
+</script>
+
+<script type="text/x-red" data-template-name="balancing">
+    <div class ="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="balancing">
+    <p>This node is used to balance the workload through multiple flows.</p>
+</script>
