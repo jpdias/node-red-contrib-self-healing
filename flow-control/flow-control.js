@@ -1,4 +1,4 @@
-var request = require("request");
+const request = require("request");
 
 module.exports = function (RED) {
   function setErrorStatus(errMsg, error, node, send, done) {
@@ -79,9 +79,9 @@ module.exports = function (RED) {
 
   function FlowControl(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
+    const node = this;
     node.on("input", function (msg, send, done) {
-      let targetUrl = `http://${config.targetHost}:${config.targetPort}/flow/${config.targetFlow}`;
+      const targetUrl = `http://${config.targetHost}:${config.targetPort}/flow/${config.targetFlow}`;
 
       if (typeof msg.payload === "boolean") {
         getSetFlowStatus(targetUrl, node, msg, send, done, config);
