@@ -3,27 +3,38 @@
         category: "SHEN",
         defaults: {
             name: {value: ""},
+            outputs: {value: 3},
+            algorithm: {value: "1"}
         },
         inputs: 1,
-        outputs: 0,
         color: "#74b9ff",
         label: function() {
             return this.name || 'balancing';
         },
-
         icon: "status.png",
         align: 'left',
     });
-
 </script>
 
-<script type="text/x-red" data-template-name="balancing">
-    <div class ="form-row">
+<script type="text/html" data-template-name="balancing">
+    <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
+    <div class="form-row">
+        <label for="node-input-outputs"><i class="fa fa-tag"></i> Number of outputs</label>
+        <input type="number" id="node-input-outputs">
+    </div>
+    <div class="form-row">
+        <label for node-input-algorithm><i class="fa fa-tag"></i> Distribution Algorithm</label>
+        <select type="text" id="node-input-algorithm">
+            <option value="1">Round Robin (recommended)</option>
+            <option value="2">Weighted Round Robin</option>
+            <option value="3">Random Distribution</option>
+        </select>
+    </div>
 </script>
 
-<script type="text/x-red" data-help-name="balancing">
-    <p>This node is used to balance the workload through multiple flows.</p>
+<script type="text/html" data-help-name="balancing">
+    <p>This node is used to balance the distribute messages through multiple flows.</p>
 </script>
