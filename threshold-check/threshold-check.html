@@ -35,10 +35,10 @@
         label: this._("node-red:inject.previous"),
         hasValue: false,
       };
-      let meanValueType = { 
-        value: "mean", 
-        label: "Mean", 
-        hasValue: true 
+      let meanValueType = {
+        value: "mean",
+        label: "Mean",
+        hasValue: true,
       };
       let operators = [
         { value: "eq", type: "==" },
@@ -75,7 +75,7 @@
 
         let propertyField = rule.find(".node-input-rule-property");
         propertyField.typedInput("width", newWidth - 30);
- 
+
         let valueField = rule.find(".node-input-rule-value");
         valueField.typedInput("width", newWidth - selectWidth - 49);
 
@@ -93,7 +93,7 @@
 
         let withinField2 = rule.find(".node-input-rule-within-value2");
         withinField2.typedInput("width", newWidth - selectWidth - 49);
-        
+
         let failMsgField = rule.find(".node-input-rule-msg");
         failMsgField.width(newWidth - 130);
       }
@@ -132,7 +132,8 @@
             let propertyField = $("<input/>", {
               class: "node-input-rule-property",
               type: "text",
-            }).appendTo(row)
+            })
+              .appendTo(row)
               .typedInput({
                 default: "msg",
                 types: ["msg", "flow", "global", "num"],
@@ -161,7 +162,8 @@
               class: "node-input-rule-value",
               type: "text",
               style: "margin-left: 5px; width: 145px;",
-            }).appendTo(row1)
+            })
+              .appendTo(row1)
               .typedInput({
                 default: "str",
                 types: [
@@ -178,7 +180,8 @@
               class: "node-input-rule-regex-value",
               type: "text",
               style: "margin-left: 5px; width: 145px;",
-            }).appendTo(row1)
+            })
+              .appendTo(row1)
               .typedInput({
                 default: "re",
                 types: ["msg", "flow", "global", "re"],
@@ -198,7 +201,8 @@
               class: "node-input-rule-btwn-value",
               type: "text",
               style: "margin-left: 5px;",
-            }).appendTo(row1)
+            })
+              .appendTo(row1)
               .typedInput({
                 default: "num",
                 types: [
@@ -213,13 +217,16 @@
 
             let btwnAndLabel = $("<span/>", {
               class: "node-input-rule-btwn-label",
-            }).text(" " + andLabel + " ").appendTo(row3);
+            })
+              .text(" " + andLabel + " ")
+              .appendTo(row3);
 
             let btwnValue2Field = $("<input/>", {
               class: "node-input-rule-btwn-value2",
               type: "text",
               style: "margin-left:2px;",
-            }).appendTo(row3)
+            })
+              .appendTo(row3)
               .typedInput({
                 default: "num",
                 types: [
@@ -236,7 +243,8 @@
               class: "node-input-rule-within-value",
               type: "text",
               style: "margin-left: 5px;",
-            }).appendTo(row1)
+            })
+              .appendTo(row1)
               .typedInput({
                 default: "num",
                 types: ["msg", "flow", "global", "num"],
@@ -244,13 +252,16 @@
 
             let withinOfLabel = $("<span/>", {
               class: "node-input-rule-btwn-label",
-            }).text("of").appendTo(row4);
+            })
+              .text("of")
+              .appendTo(row4);
 
             let withinValue2Field = $("<input/>", {
               class: "node-input-rule-within-value2",
               type: "text",
               style: "margin-left: 5px;",
-            }).appendTo(row4)
+            })
+              .appendTo(row4)
               .typedInput({
                 default: "msg",
                 types: [
@@ -273,11 +284,15 @@
             $("<label/>", {
               for: "node-input-rule-case-" + i,
               style: "margin-left: 3px;",
-            }).text(caseLabel).appendTo(row2);
+            })
+              .text(caseLabel)
+              .appendTo(row2);
 
-            $("<span>", { 
-              class: "node-input-rule-msg-label" 
-            }).text("Fail Message").appendTo(row5);
+            $("<span>", {
+              class: "node-input-rule-msg-label",
+            })
+              .text("Fail Message")
+              .appendTo(row5);
 
             let failMsgField = $("<input/>", {
               class: "node-input-rule-msg",
@@ -412,15 +427,19 @@
       let node = this;
       let rules = $("#node-input-rule-container").editableList("items");
       let ruleset;
-      
+
       node.rules = [];
 
       rules.each(function (i) {
         let ruleDOM = $(this);
 
         let rule = {};
-        rule.property = ruleDOM.find(".node-input-rule-property").typedInput("value");
-        rule.propertyType = ruleDOM.find(".node-input-rule-property").typedInput("type");
+        rule.property = ruleDOM
+          .find(".node-input-rule-property")
+          .typedInput("value");
+        rule.propertyType = ruleDOM
+          .find(".node-input-rule-property")
+          .typedInput("type");
         rule.type = ruleDOM.find("select").val();
 
         if (
@@ -460,7 +479,9 @@
           } else if (rule.type === "type") {
             rule.value = ruleDOM.find(".node-input-rule-type").val();
           } else {
-            rule.value = ruleDOM.find(".node-input-rule-value").typedInput("value");
+            rule.value = ruleDOM
+              .find(".node-input-rule-value")
+              .typedInput("value");
             rule.valueType = ruleDOM
               .find(".node-input-rule-value")
               .typedInput("type");
@@ -499,38 +520,67 @@
 
 <script type="text/html" data-template-name="threshold-check">
   <div class="form-row">
-      <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
-      <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    <label for="node-input-name"
+      ><i class="fa fa-tag"></i>
+      <span data-i18n="node-red:common.label.name"></span
+    ></label>
+    <input
+      type="text"
+      id="node-input-name"
+      data-i18n="[placeholder]node-red:common.label.name"
+    />
   </div>
   <div class="form-row node-input-rule-container-row">
-      <ol id="node-input-rule-container"></ol>
+    <ol id="node-input-rule-container"></ol>
   </div>
 </script>
 
 <script type="text/html" data-help-name="threshold-check">
   <p>A node to check messages based on property values.</p>
   <h3>Properties</h3>
-    <dl class="message-properties">
-      <dt>name<span class="property-type">string</span></dt>
-        <dd> name of node to be displayed in editor</dd>
-      <dt>property</dt>
-        <dd> msg, flow or global property to be tested</dd>
-      <dt>test</dt>
-        <dd>test to be performed on property</dd>
-      <dt>fail message<span class="property-type">string</span></dt>
-        <dd>message that describes the test that failed<dd>
-    </dl>
+  <dl class="message-properties">
+    <dt>name<span class="property-type">string</span></dt>
+    <dd>name of node to be displayed in editor</dd>
+    <dt>property</dt>
+    <dd>msg, flow or global property to be tested</dd>
+    <dt>test</dt>
+    <dd>test to be performed on property</dd>
+    <dt>fail message<span class="property-type">string</span></dt>
+    <dd>message that describes the test that failed</dd>
+    <dd></dd>
+  </dl>
+
   <h3>Inputs</h3>
-    <dl class="message-properties">
-      <p>Any</p>
-    </dl>
+  <dl class="message-properties">
+    <p>Any</p>
+  </dl>
   <h3>Outputs</h3>
-    <dl class="message-properties">
-      <p>Input message is passed unchanged if it passed all tests.</p>
-    </dl>
+  <dl class="message-properties">
+    <p>Input message is passed unchanged if it passed all tests.</p>
+  </dl>
   <h3>Details</h3>
-    <p>Node is configured with a set of rules that define the conditions for properties to be valid data. Tests are able to probe inside of objects and arrays using Javascript descriptors, including the length of strings and arrays.</p>
-    <p>When a message arrives, the selected properties are evaluated against each of the defined rules. The message is then sent to the output only if <i>all</i> of the rules pass.</p>
-    <p><code>previous value</code> refers to the previous value received for the tested property. <code>Mean</code> is a sliding window mean of the specified number of previous values received for the tested property.</p> <p>An <i>assertion</i> error is thrown if any rule fails. The error is attached to the original message which can be caught by a Catch node.</p>
-    <p>The <code>Fail Message</code> for the first test that failed is displayed on the node and appended to the error message.</p>
+  <p>
+    Node is configured with a set of rules that define the conditions for
+    properties to be valid data. Tests are able to probe inside of objects and
+    arrays using Javascript descriptors, including the length of strings and
+    arrays.
+  </p>
+  <p>
+    When a message arrives, the selected properties are evaluated against each
+    of the defined rules. The message is then sent to the output only if
+    <i>all</i> of the rules pass.
+  </p>
+  <p>
+    <code>previous value</code> refers to the previous value received for the
+    tested property. <code>Mean</code> is a sliding window mean of the specified
+    number of previous values received for the tested property.
+  </p>
+  <p>
+    An <i>assertion</i> error is thrown if any rule fails. The error is attached
+    to the original message which can be caught by a Catch node.
+  </p>
+  <p>
+    The <code>Fail Message</code> for the first test that failed is displayed on
+    the node and appended to the error message.
+  </p>
 </script>

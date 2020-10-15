@@ -3,60 +3,116 @@ module.exports = function (RED) {
 
   var operators = {
     eq: {
-      apply(a, b) { return a == b;},
-      describe(a, b) { return "" + a + "==" + b; },
+      apply(a, b) {
+        return a == b;
+      },
+      describe(a, b) {
+        return "" + a + "==" + b;
+      },
     },
     neq: {
-      apply(a, b) { return a != b; },
-      describe(a, b) { return "" + a + "!=" + b; }
+      apply(a, b) {
+        return a != b;
+      },
+      describe(a, b) {
+        return "" + a + "!=" + b;
+      },
     },
     lt: {
-      apply(a, b) { return a < b; },
-      describe(a, b) { return "" + a + "<" + b; }
+      apply(a, b) {
+        return a < b;
+      },
+      describe(a, b) {
+        return "" + a + "<" + b;
+      },
     },
     lte: {
-      apply(a, b) { return a <= b; },
-      describe(a, b) { return "" + a + "<=" + b; }
+      apply(a, b) {
+        return a <= b;
+      },
+      describe(a, b) {
+        return "" + a + "<=" + b;
+      },
     },
     gt: {
-      apply(a, b) { return a > b; },
-      describe(a, b) { return "" + a + ">" + b; }
+      apply(a, b) {
+        return a > b;
+      },
+      describe(a, b) {
+        return "" + a + ">" + b;
+      },
     },
     gte: {
-      apply(a, b) { return a >= b; },
-      describe(a, b) { return "" + a + ">=" + b; }
+      apply(a, b) {
+        return a >= b;
+      },
+      describe(a, b) {
+        return "" + a + ">=" + b;
+      },
     },
     btwn: {
-      apply(a, b, c) { return a >= b && a <= c; },
-      describe(a, b, c) { return "" + a + " is between " + b + " and " + c; }
+      apply(a, b, c) {
+        return a >= b && a <= c;
+      },
+      describe(a, b, c) {
+        return "" + a + " is between " + b + " and " + c;
+      },
     },
     within: {
-      apply(a, b, c) { return a >= c - b && a <= c + b },
-      describe(a, b, c) { return "" + a + " is within " + b + " of " + c; }
+      apply(a, b, c) {
+        return a >= c - b && a <= c + b;
+      },
+      describe(a, b, c) {
+        return "" + a + " is within " + b + " of " + c;
+      },
     },
     cont: {
-      apply(a, b) { return (a + "").indexOf(b) != -1; },
-      describe(a, b) { return "" + a + " contains " + b; }
+      apply(a, b) {
+        return (a + "").indexOf(b) != -1;
+      },
+      describe(a, b) {
+        return "" + a + " contains " + b;
+      },
     },
     regex: {
-      apply(a, b, _, d) { return (a + "").match(new RegExp(b, d ? "i" : "")); },
-      describe(a, b, _, d) { return "" + a + " " + b + " case insensitive: " + d; }
+      apply(a, b, _, d) {
+        return (a + "").match(new RegExp(b, d ? "i" : ""));
+      },
+      describe(a, b, _, d) {
+        return "" + a + " " + b + " case insensitive: " + d;
+      },
     },
     true: {
-      apply(a) {return a === true; },
-      describe(a) { return "" + a + " is true"; },
+      apply(a) {
+        return a === true;
+      },
+      describe(a) {
+        return "" + a + " is true";
+      },
     },
     false: {
-      apply(a) { return a === false; },
-      describe(a) { return "" + a + " is false"; }
+      apply(a) {
+        return a === false;
+      },
+      describe(a) {
+        return "" + a + " is false";
+      },
     },
     null: {
-      apply(a) { return typeof a == "undefined" || a === null; },
-      describe(a) { return "" + a + " is null"; }
+      apply(a) {
+        return typeof a == "undefined" || a === null;
+      },
+      describe(a) {
+        return "" + a + " is null";
+      },
     },
     nnull: {
-      apply(a) { return typeof a != "undefined" && a !== null; },
-      describe(a) { return "" + a + " is not null"; }
+      apply(a) {
+        return typeof a != "undefined" && a !== null;
+      },
+      describe(a) {
+        return "" + a + " is not null";
+      },
     },
     type: {
       apply(a, b) {
@@ -74,7 +130,7 @@ module.exports = function (RED) {
           " is " +
           b
         );
-      }
+      },
     },
   };
 
