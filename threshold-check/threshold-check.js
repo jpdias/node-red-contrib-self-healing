@@ -2,108 +2,79 @@ module.exports = function (RED) {
   "use strict";
 
   var operators = {
-    eq: function (a, b) {
-      return a == b;
+    eq: {
+      apply(a, b) { return a == b;},
+      describe(a, b) { return "" + a + "==" + b; },
     },
-    neq: function (a, b) {
-      return a != b;
+    neq: {
+      apply(a, b) { return a != b; },
+      describe(a, b) { return "" + a + "!=" + b; }
     },
-    lt: function (a, b) {
-      return a < b;
+    lt: {
+      apply(a, b) { return a < b; },
+      describe(a, b) { return "" + a + "<" + b; }
     },
-    lte: function (a, b) {
-      return a <= b;
+    lte: {
+      apply(a, b) { return a <= b; },
+      describe(a, b) { return "" + a + "<=" + b; }
     },
-    gt: function (a, b) {
-      return a > b;
+    gt: {
+      apply(a, b) { return a > b; },
+      describe(a, b) { return "" + a + ">" + b; }
     },
-    gte: function (a, b) {
-      return a >= b;
+    gte: {
+      apply(a, b) { return a >= b; },
+      describe(a, b) { return "" + a + ">=" + b; }
     },
-    btwn: function (a, b, c) {
-      return a >= b && a <= c;
+    btwn: {
+      apply(a, b, c) { return a >= b && a <= c; },
+      describe(a, b, c) { return "" + a + " is between " + b + " and " + c; }
     },
-    within: function (a, b, c) {
-      return a >= c - b && a <= c + b;
+    within: {
+      apply(a, b, c) { return a >= c - b && a <= c + b },
+      describe(a, b, c) { return "" + a + " is within " + b + " of " + c; }
     },
-    cont: function (a, b) {
-      return (a + "").indexOf(b) != -1;
+    cont: {
+      apply(a, b) { return (a + "").indexOf(b) != -1; },
+      describe(a, b, c) { return "" + a + " contains " + b; }
     },
-    regex: function (a, b, c, d) {
-      return (a + "").match(new RegExp(b, d ? "i" : ""));
+    regex: {
+      apply(a, b, c, d) { return (a + "").match(new RegExp(b, d ? "i" : "")); },
+      describe(a, b, c, d) { return "" + a + " " + b + " case insensitive: " + d; }
     },
-    true: function (a) {
-      return a === true;
+    true: {
+      apply(a) {return a === true; },
+      describe(a) { return "" + a + " is true"; },
     },
-    false: function (a) {
-      return a === false;
+    false: {
+      apply(a) { return a === false; },
+      describe(a) { return "" + a + " is false"; }
     },
-    null: function (a) {
-      return typeof a == "undefined" || a === null;
+    null: {
+      apply(a) { return typeof a == "undefined" || a === null; },
+      describe(a) { return "" + a + " is null"; }
     },
-    nnull: function (a) {
-      return typeof a != "undefined" && a !== null;
+    nnull: {
+      apply(a) { return typeof a != "undefined" && a !== null; },
+      describe(a) { return "" + a + " is not null"; }
     },
-    type: function (a, b) {
-      if (b == "array") return Array.isArray(a);
-      else if (b == "buffer") return Buffer.isBuffer(a);
-      else return typeof a == b && !Array.isArray(a) && !Buffer.isBuffer(a);
-    },
-  };
-
-  var operatorsDesc = {
-    eq: function (a, b) {
-      return "" + a + "==" + b;
-    },
-    neq: function (a, b) {
-      return "" + a + "!=" + b;
-    },
-    lt: function (a, b) {
-      return "" + a + "<" + b;
-    },
-    lte: function (a, b) {
-      return "" + a + "<=" + b;
-    },
-    gt: function (a, b) {
-      return "" + a + ">" + b;
-    },
-    gte: function (a, b) {
-      return "" + a + ">=" + b;
-    },
-    btwn: function (a, b, c) {
-      return "" + a + " is between " + b + " and " + c;
-    },
-    within: function (a, b, c) {
-      return "" + a + " is within " + b + " of " + c;
-    },
-    cont: function (a, b) {
-      return "" + a + " contains " + b;
-    },
-    regex: function (a, b, c, d) {
-      return "" + a + " " + b + " case insensitive: " + d;
-    },
-    true: function (a) {
-      return "" + a + " is true";
-    },
-    false: function (a) {
-      return "" + a + " is false";
-    },
-    null: function (a) {
-      return "" + a + " is null";
-    },
-    nnull: function (a) {
-      return "" + a + " is not null";
-    },
-    type: function (a, b) {
-      return (
-        (Array.isArray(a)
-          ? "array"
-          : Buffer.isBuffer(a)
-          ? "buffer"
-          : typeof a) +
-        " is " +
-        b
-      );
+    type: {
+      apply(a, b) {
+        if (b == "array") return Array.isArray(a);
+        else if (b == "buffer") return Buffer.isBuffer(a);
+        else return typeof a == b && !Array.isArray(a) && !Buffer.isBuffer(a);
+      },
+      describe(a, b) {
+        return (
+          (Array.isArray(a)
+            ? "array"
+            : Buffer.isBuffer(a)
+            ? "buffer"
+            : typeof a) +
+          " is " +
+          b
+        );
+      }
     },
   };
 
@@ -199,7 +170,7 @@ module.exports = function (RED) {
                 msg
               );
             }
-            pass = operators[rule.type](test, v1, v2, rule.case);
+            pass = operators[rule.type].apply(test, v1, v2, rule.case);
           }
 
           rule.previousValue.push(test);
@@ -228,7 +199,7 @@ module.exports = function (RED) {
                   ":" +
                   rule.property +
                   ": " +
-                  operatorsDesc[rule.type](test, v1, v2, rule.case) +
+                  operators[rule.type].describe(test, v1, v2, rule.case) +
                   " " +
                   rule.failMsg,
               },
