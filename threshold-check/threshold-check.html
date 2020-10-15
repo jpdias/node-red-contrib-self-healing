@@ -11,40 +11,29 @@
 <script type="text/x-red" data-help-name="threshold-check">
   <p>A node to check messages based on property values.</p>
   <h3>Properties</h3>
-  <dl class="message-properties">
-      <dt>name
-          <span class="property-type">string</span>
-      </dt>
-      <dd> name of node to be displayed in editor</dd>
+    <dl class="message-properties">
+      <dt>name<span class="property-type">string</span></dt>
+        <dd> name of node to be displayed in editor</dd>
       <dt>property</dt>
-      <dd> msg, flow or global property to be tested</dd>
+        <dd> msg, flow or global property to be tested</dd>
       <dt>test</dt>
-      <dd>test to be performed on property</dd>
+        <dd>test to be performed on property</dd>
       <dt>fail message<span class="property-type">string</span></dt>
-      <dd>message that describes the test that failed<dd>
-  </dl>
+        <dd>message that describes the test that failed<dd>
+    </dl>
   <h3>Inputs</h3>
-  <dl class="message-properties">
-  <p>Any</p>
-  </dl>
+    <dl class="message-properties">
+      <p>Any</p>
+    </dl>
   <h3>Outputs</h3>
-  <dl class="message-properties">
-  <p>Input message is passed unchanged if it passed all tests.</p>
-  </dl>
+    <dl class="message-properties">
+      <p>Input message is passed unchanged if it passed all tests.</p>
+    </dl>
   <h3>Details</h3>
-  <p>Node is configured with a set of rules that define the conditions for properties to be valid data.
-   Tests are able to probe inside of objects and arrays using Javascript descriptors, including
-   the length of strings and arrays.</p>
-  <p>When a message arrives, the selected properties are evaluated against each
-  of the defined rules. The message is then sent to the output only if <i>all</i>
-  of the rules pass.</p>
-  <p><code>previous value</code> refers to the previous value received for the tested property.
-  <code>Mean</code> is a sliding window mean of the specified number of previous values received
-  for the tested property.</p>
-  <p>An <i>assertion</i> error is thrown if any rule fails. The error is attached to the original
-  message which can be caught by a Catch node.</p>
-  <p>The <code>Fail Message</code> for the first test that failed is displayed on the node and appended
-  to the error message.</p>
+    <p>Node is configured with a set of rules that define the conditions for properties to be valid data. Tests are able to probe inside of objects and arrays using Javascript descriptors, including the length of strings and arrays.</p>
+    <p>When a message arrives, the selected properties are evaluated against each of the defined rules. The message is then sent to the output only if <i>all</i> of the rules pass.</p>
+    <p><code>previous value</code> refers to the previous value received for the tested property. <code>Mean</code> is a sliding window mean of the specified number of previous values received for the tested property.</p> <p>An <i>assertion</i> error is thrown if any rule fails. The error is attached to the original message which can be caught by a Catch node.</p>
+    <p>The <code>Fail Message</code> for the first test that failed is displayed on the node and appended to the error message.</p>
 </script>
 
 <script type="text/javascript">
