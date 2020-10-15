@@ -5,6 +5,9 @@
     "node": true,
     "mocha": true
   },
+  "rules": {
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+  },
   "extends": ["eslint:recommended", "prettier"],
   "globals": {
     "Atomics": "readonly",
