@@ -1,40 +1,48 @@
-<script type="text/x-red" data-template-name="replication-voter">
-  <div class="form-row">
-      <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
-      <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
-  </div>
-  <div class="form-row">
-      <label for="node-input-majority"><i class="fa fa-tag"></i> Majority Value</label>
-      <input type="number" id="node-input-majority" placeholder="2">
-  </div>
-  <div class="form-row">
-      <label for="node-input-countInputs"><i class="fa fa-tag"></i> Number of Expected Inputs (if input is array value is ignored)</label>
-      <input type="number" id="node-input-countInputs" placeholder="3">
-  </div>
-</script>
-
-<script type="text/x-red" data-help-name="replication-voter">
-  <p>Some useful help text to introduce the node.</p>
-  <p>Some more information about the node.</p>
-</script>
-
 <script type="text/javascript">
-  RED.nodes.registerType("replication-voter", {
-    category: "SHEN",
-    defaults: {
-      name: { value: "" },
-      majority: { value: "2", required: true },
-      countInputs: { value: "2", required: false },
-    },
-    icon: "status.png",
-    color: "#74b9ff",
-    inputs: 1,
-    outputs: 2,
-    align: "left",
-    inputLabels: "JSONArray",
-    outputLabels: ["majority", "no-majority(fault)"],
-    label: function () {
-      return this.name || "Replication Voter";
-    },
-  });
+    RED.nodes.registerType("replication-voter", {
+        category: "SHEN",
+        defaults: {
+            name: {
+                value: ""
+            },
+            majority: {
+                value: "2",
+                required: true
+            },
+            countInputs: {
+                value: "2",
+                required: false
+            },
+        },
+        icon: "status.png",
+        color: "#74b9ff",
+        inputs: 1,
+        outputs: 2,
+        align: "left",
+        inputLabels: "JSONArray",
+        outputLabels: ["majority", "no-majority(fault)"],
+        label: function() {
+            return this.name || "Replication Voter";
+        },
+    });
+</script>
+
+<script type="text/html" data-template-name="replication-voter">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-majority"><i class="fa fa-tag"></i> Majority Value</label>
+        <input type="number" id="node-input-majority" placeholder="2">
+    </div>
+    <div class="form-row">
+        <label for="node-input-countInputs"><i class="fa fa-tag"></i> Number of Expected Inputs (if input is array value is ignored)</label>
+        <input type="number" id="node-input-countInputs" placeholder="3">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="replication-voter">
+    <p>Some useful help text to introduce the node.</p>
+    <p>Some more information about the node.</p>
 </script>
