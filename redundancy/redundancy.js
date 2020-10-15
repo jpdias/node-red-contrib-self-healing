@@ -92,7 +92,7 @@ module.exports = function (RED) {
 
     node.status({ fill: "yellow", shape: "dot", text: "Sync in Progress" });
 
-    node.on("input", function (msg, send, done) {
+    node.on("input", function (msg, send, _done) {
       //update ip list
       if (typeof msg.hostip != "undefined") {
         lastAlive[msg.hostip.replace(".", "-")] = {
