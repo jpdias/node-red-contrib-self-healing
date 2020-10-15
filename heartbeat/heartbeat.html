@@ -1,7 +1,8 @@
+<!-- main node definition -->
 <script type="text/javascript">
-    RED.nodes.registerType('heartbeat',{
+    RED.nodes.registerType('heartbeat', {
+        //node definition
         category: 'SHEN',
-        color: '#74b9ff',
         defaults: {
             frequency: { value: 30, required: true, validate:RED.validators.number() },
             protocol: { required: true },
@@ -17,7 +18,8 @@
     });
 </script>
 
-<script type="text/x-red" data-template-name="heartbeat">
+<!-- edit template -->
+<script type="text/html" data-template-name="heartbeat">
     <div class="form-row">
         <label for="node-input-frequency"><i class="icon-tag"></i>Frequency (s)</label>
         <input type="text" id="node-input-frequency" placeholder="30">
@@ -30,15 +32,18 @@
         </select>
     </div>
     <div class="form-row">
-        <label for="node-input-httpendpoint"><i class="icon-tag"></i>HTTP Endpoint</label>
-        <input type="text" id="node-input-httpendpoint" placeholder="https://google.com">
-    </div>
-    <div class="form-row">
         <label for="node-input-onfail"><i class="icon-tag"></i>Only send msg on fail</label>
         <input type="checkbox" id="node-input-onfail">
     </div>
+    <div class="form-row">
+        <label for="node-input-httpendpoint"><i class="icon-tag"></i>HTTP Endpoint</label>
+        <input type="text" id="node-input-httpendpoint" placeholder="https://google.com">
+    </div>
 </script>
 
-<script type="text/x-red" data-help-name="heartbeat">
+<!-- help text -->
+<script type="text/html" data-help-name="heartbeat">
+    <p>This node provides a heartbeat probe for the MQTT and HTTP communication protocols.</p>
+    <h3>Used for making sure that the connection is active.</h3>
     <p>If MQTT is selected, input must be provided</p>
-</script>
+ </script>
