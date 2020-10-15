@@ -27,6 +27,11 @@ format_check:
   script:
     - npm run format-check
 
+lint_check:
+  stage: test
+  script:
+    - npm run lint
+
 github-deploy:
   stage: deploy
   inherit:
