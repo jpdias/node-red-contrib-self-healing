@@ -1,0 +1,51 @@
+default:
+  image: node:lts
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .npm/
+
+stages:
+  - start
+  - test
+  - deploy
+
+start:
+  stage: start
+  script:
+    - echo "Starting pipeline"
+
+run_tests:
+  stage: test
+  script:
+    - npm test
+
+format_check:
+  stage: test
+  script:
+    - npm run format-check
+
+github-deploy:
+  stage: deploy
+  inherit:
+    default: false
+    variables: true
+  only:
+    refs:
+      - master
+  when: manual
+  image: registry.gitlab.com/feup-tbs/ldso2021/t4g2/github-deploy
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - gh repo clone node-red-contrib-self-healing
+    - cd clone node-red-contrib-self-healing
+    - git remote add gitlab "https://${GITLAB_TOKEN_USER}:${GITLAB_TOKEN_PW}@gitlab.com/feup-tbs/ldso2021/t4g2.git"
+    - git fetch gitlab
+    - git checkout -b gitlab-master gitlab/master
+    - git checkout master
+    - git merge --ff-only gitlab-master
+    - git push
+    - gh pr create -R jpdias/node-red-contrib-self-healing -B master -t $PR_TITLE --fill

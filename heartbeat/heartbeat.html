@@ -1,44 +1,48 @@
 <script type="text/javascript">
-    RED.nodes.registerType('heartbeat',{
-        category: 'SHEN',
-        color: '#74b9ff',
-        defaults: {
-            frequency: { value: 30, required: true, validate:RED.validators.number() },
-            protocol: { required: true },
-            onfail: { required: true, value: false },
-            httpendpoint: { required: false},
-        },
-        inputs:1,
-        outputs:1,
-        icon: "status.png",
-        label: function() {
-            return this.name || 'heartbeat';
-        }
-    });
+  RED.nodes.registerType("heartbeat", {
+    category: "SHEN",
+    color: "#74b9ff",
+    defaults: {
+      frequency: {
+        value: 30,
+        required: true,
+        validate: RED.validators.number(),
+      },
+      protocol: { required: true },
+      onfail: { required: true, value: false },
+      httpendpoint: { required: false },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "status.png",
+    label: function () {
+      return this.name || "heartbeat";
+    },
+  });
 </script>
 
 <script type="text/x-red" data-template-name="heartbeat">
-    <div class="form-row">
-        <label for="node-input-frequency"><i class="icon-tag"></i>Frequency (s)</label>
-        <input type="text" id="node-input-frequency" placeholder="30">
-    </div>
-    <div class="form-row">
-        <label for="node-input-protocol"><i class="fa fa-tag"></i> Heartbeat Protocol</label>
-        <select type="text" id="node-input-protocol">
-            <option>http</option>
-            <option>mqtt</option>
-        </select>
-    </div>
-    <div class="form-row">
-        <label for="node-input-httpendpoint"><i class="icon-tag"></i>HTTP Endpoint</label>
-        <input type="text" id="node-input-httpendpoint" placeholder="https://google.com">
-    </div>
-    <div class="form-row">
-        <label for="node-input-onfail"><i class="icon-tag"></i>Only send msg on fail</label>
-        <input type="checkbox" id="node-input-onfail">
-    </div>
+  <div class="form-row">
+      <label for="node-input-frequency"><i class="icon-tag"></i>Frequency (s)</label>
+      <input type="text" id="node-input-frequency" placeholder="30">
+  </div>
+  <div class="form-row">
+      <label for="node-input-protocol"><i class="fa fa-tag"></i> Heartbeat Protocol</label>
+      <select type="text" id="node-input-protocol">
+          <option>http</option>
+          <option>mqtt</option>
+      </select>
+  </div>
+  <div class="form-row">
+      <label for="node-input-httpendpoint"><i class="icon-tag"></i>HTTP Endpoint</label>
+      <input type="text" id="node-input-httpendpoint" placeholder="https://google.com">
+  </div>
+  <div class="form-row">
+      <label for="node-input-onfail"><i class="icon-tag"></i>Only send msg on fail</label>
+      <input type="checkbox" id="node-input-onfail">
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="heartbeat">
-    <p>If MQTT is selected, input must be provided</p>
+  <p>If MQTT is selected, input must be provided</p>
 </script>
