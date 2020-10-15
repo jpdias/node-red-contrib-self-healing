@@ -18,8 +18,54 @@
 </script>
 
 <script type="text/x-red" data-help-name="flow-control">
-  <p>Some useful help text to introduce the node.</p>
-  <p>Some more information about the node.</p>
+  <p>
+    A node to enable or disable a Node-RED flow during runtime (local or remote
+    instances, using the available REST API).
+  </p>
+  <h3>Properties</h3>
+  <dl class="message-properties">
+    <dt>
+      name
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Name of node to be displayed in editor.</dd>
+    <dt>
+      targetHost
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Host on which the flow can be found.</dd>
+    <dt>
+      targetPort
+      <span class="property-type">number</span>
+    </dt>
+    <dd>Port number on which the flow can be found.</dd>
+    <dt>
+      targetFlow
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Id of the flow to enable/disable.</dd>
+  </dl>
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>
+      payload
+      <span class="property-type">boolean</span>
+    </dt>
+    <dd>True to enable flow, false otherwise.</dd>
+  </dl>
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>
+      flow
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Id of the flow changed.</dd>
+    <dt>
+      disabled
+      <span class="property-type">boolean</span>
+    </dt>
+    <dd>Set to true if flow is disabled, set to false otherwise.</dd>
+  </dl>
 </script>
 
 <script type="text/javascript">
