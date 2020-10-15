@@ -36,11 +36,11 @@ module.exports = function (RED) {
     },
     cont: {
       apply(a, b) { return (a + "").indexOf(b) != -1; },
-      describe(a, b, c) { return "" + a + " contains " + b; }
+      describe(a, b) { return "" + a + " contains " + b; }
     },
     regex: {
-      apply(a, b, c, d) { return (a + "").match(new RegExp(b, d ? "i" : "")); },
-      describe(a, b, c, d) { return "" + a + " " + b + " case insensitive: " + d; }
+      apply(a, b, _, d) { return (a + "").match(new RegExp(b, d ? "i" : "")); },
+      describe(a, b, _, d) { return "" + a + " " + b + " case insensitive: " + d; }
     },
     true: {
       apply(a) {return a === true; },
