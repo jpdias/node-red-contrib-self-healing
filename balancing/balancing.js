@@ -1,24 +1,33 @@
 module.exports = function(RED) {
   function Balancing(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
+    let node = this;
+    let numberOutputs = config.outputs;
     /**
      * Algorithm values:
      *   1: Round Robin
      *   2: Weighted Round Robin
      *   3: Random Distribution
      */
-    this.algorithm = config.algorithm; 
-    this.outputs = config.outputs;
+    let algorithm = config.algorithm;
     
-    
+    let lastOutputUsed = 0;
+
     this.on("input", function (msg) {
-      this.outputArray = new Array(this.outputs);
-      this.outputArray.fill(null);
+      let outputArray = new Array(numberOutputs);
+      outputArray.fill(null);
       
-      switch (this.algorithm) {
+      switch (algorithm) {
         case "1":
-          //Round Robin (TODO)
+          //Round Robin
+          outputArray[lastOutputUsed] = msg;
+
+          lastOutputUsed++;
+          if (lastOutputUsed == numberOutputs) {
+              lastOutputUsed = 0;
+          }
+
+          node.send(outputArray);
           break;
     
         case "2":
@@ -27,10 +36,10 @@ module.exports = function(RED) {
      
         case "3":
           //Random Distribution
-          var out = Math.floor((Math.random() * 4));
-          this.outputArray[out] = msg;
+          let out = Math.floor((Math.random() * 4));
+          outputArray[out] = msg;
           
-          node.send(this.outputArray);
+          node.send(outputArray);
           break;
 
         default:
