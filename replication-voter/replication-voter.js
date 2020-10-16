@@ -14,7 +14,7 @@ module.exports = function (RED) {
     var node = this;
     var allValues = [];
 
-    sendOut = (node, msg, done, majority) => {
+    const sendOut = (node, msg, done, majority) => {
       if (majority) {
         node.status({ fill: "green", shape: "dot", text: "Majority" });
         node.send([msg, null]);
