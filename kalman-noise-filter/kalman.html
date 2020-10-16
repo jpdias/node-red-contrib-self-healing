@@ -31,5 +31,61 @@
 </script>
 
 <script type="text/html" data-help-name="kalman-noise-filter">
-  <p>A simple node that apply kalman filter to the message payloads</p>
+  <p>Apply a Kalman Noise Filter to numerical message payloads</p>
+  <p>
+    It uses previous and current measurements and statistics to predict the next
+    value.
+  </p>
+  <p>
+    It assumes that the data is mostly constant, and that the noise is Gaussian.
+  </p>
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>
+      payload <span class="property-type">number | array&ltnumber&gt</span>
+    </dt>
+    <dd>the data you want to filter</dd>
+  </dl>
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>
+      payload <span class="property-type">number | array&ltnumber&gt</span>
+    </dt>
+    <dd>filtered data</dd>
+  </dl>
+  <h3>Details</h3>
+  <p>
+    This node takes the inputs given to it either as a number or an array of
+    numbers and runs them through a thing called a Kalman filter. It is a
+    statistical predictor that is used to reduce the effect of random noise on
+    measurements.
+  </p>
+  <p>
+    It is assumed that the system is unidimensional, in a more or less constant
+    state, and subjected to both internal noise and measurement noise (both
+    gaussian). Therefore it is configurable in two parameters:
+  </p>
+  <ul>
+    <li>
+      Process Noise (R): noise that is internal to the system. e.g. human body
+      temperature, it might not be exactly 37C all the time, but a bit above or
+      below it.
+    </li>
+    <li>Measurement Noise (Q): the noise introduced by the measurement.</li>
+  </ul>
+  <p>
+    The node itself functions in a simple way. It is initialized with its own
+    filter, and sequentially runs the successive values through it, returning
+    the estimations.
+  </p>
+  <h3>References</h3>
+  <ul>
+    <li>
+      <a href="https://en.wikipedia.org/wiki/Kalman_filter">Kalman filter</a> on
+      Wikipedia
+    </li>
+    <li>
+      <a href="https://github.com/wouterbulten/kalmanjs">Implementation used</a>
+    </li>
+  </ul>
 </script>
