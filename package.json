@@ -52,10 +52,10 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
-    "node-red-node-test-helper": "^0.2.5",
-    "mocha": "*",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.12.0",
-    "prettier": "^2.1.2"
+    "mocha": "*",
+    "node-red-node-test-helper": "^0.2.5",
+    "prettier": "2.1.2"
   }
 }
