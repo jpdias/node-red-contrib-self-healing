@@ -288,9 +288,7 @@
               .text(caseLabel)
               .appendTo(row2);
 
-            $("<span>", {
-              class: "node-input-rule-msg-label",
-            })
+            $("<span>", { class: "node-input-rule-msg-label" })
               .text("Fail Message")
               .appendTo(row5);
 
@@ -405,7 +403,7 @@
             });
           },
           resizeItem: resizeRule,
-          sortItems: function (rules) {
+          sortItems: function (opt) {
             let rules = $("#node-input-rule-container").editableList("items");
             rules.each(function (i) {
               $(this)
@@ -418,7 +416,7 @@
           header: $("<p>").css("font-size", "14px").text("Tests"),
         });
 
-      for (var i = 0; i < this.rules.length; i++) {
+      for (let i = 0; i < this.rules.length; i++) {
         let rule = this.rules[i];
         $("#node-input-rule-container").editableList("addItem", rule);
       }

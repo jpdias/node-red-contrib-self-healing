@@ -183,18 +183,16 @@ module.exports = function (RED) {
             msg
           );
 
+          let v1, v2;
           let pass = true;
+          let needPrevious =
+            (rule.valueType === "prev" ||
+              rule.value2Type === "prev" ||
+              rule.valueType === "mean" ||
+              rule.value2Type === "mean") &&
+            rule.previousValue.length == 0;
 
-          if (
-            !(
-              (rule.valueType === "prev" ||
-                rule.value2Type === "prev" ||
-                rule.valueType === "mean" ||
-                rule.value2Type === "mean") &&
-              rule.previousValue.length == 0
-            )
-          ) {
-            let v1, v2;
+          if (!needPrevious) {
             if (rule.valueType === "prev") {
               v1 = rule.previousValue[0];
             } else if (rule.valueType === "mean") {
