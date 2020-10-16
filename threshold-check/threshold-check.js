@@ -1,7 +1,7 @@
 module.exports = function (RED) {
   "use strict";
 
-  var operators = {
+  let operators = {
     eq: {
       apply(a, b) {
         return a == b;
@@ -137,9 +137,9 @@ module.exports = function (RED) {
   function thresholdCheck(n) {
     RED.nodes.createNode(this, n);
     this.rules = n.rules || [];
-    var node = this;
-    for (var i = 0; i < this.rules.length; i += 1) {
-      var rule = this.rules[i];
+    let node = this;
+    for (let i = 0; i < this.rules.length; i += 1) {
+      let rule = this.rules[i];
 
       rule.propertyType = rule.propertyType || "msg";
 
@@ -174,16 +174,16 @@ module.exports = function (RED) {
 
     node.on("input", function (msg, send, done) {
       try {
-        for (var i = 0; i < node.rules.length; i += 1) {
-          var rule = node.rules[i];
-          var test = RED.util.evaluateNodeProperty(
+        for (let i = 0; i < node.rules.length; i += 1) {
+          let rule = node.rules[i];
+          let test = RED.util.evaluateNodeProperty(
             rule.property,
             rule.propertyType,
             node,
             msg
           );
 
-          var pass = true;
+          let pass = true;
 
           if (
             !(
@@ -194,7 +194,7 @@ module.exports = function (RED) {
               rule.previousValue.length == 0
             )
           ) {
-            var v1, v2;
+            let v1, v2;
             if (rule.valueType === "prev") {
               v1 = rule.previousValue[0];
             } else if (rule.valueType === "mean") {
