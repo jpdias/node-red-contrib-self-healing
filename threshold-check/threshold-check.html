@@ -184,7 +184,12 @@
               .appendTo(row1)
               .typedInput({
                 default: "re",
-                types: ["msg", "flow", "global", "re"],
+                types: [
+                  "msg",
+                  "flow",
+                  "global",
+                  "re"
+                ],
               });
 
             let typeField = $("<select/>", {
@@ -378,7 +383,7 @@
               withinValueField.typedInput("type", rule.valueType || "num");
               withinValue2Field.typedInput("value", rule.value2);
               withinValue2Field.typedInput("type", rule.value2Type || "num");
-            } else if (typeof rule.value == "regex") {
+            } else if (rule.type == "regex") {
               regexField.typedInput("value", rule.value);
               regexField.typedInput("type", rule.valueType || "re");
             } else if (typeof rule.value != "undefined") {
@@ -475,23 +480,27 @@
               .find(".node-input-rule-within-value2")
               .typedInput("type");
           } else if (rule.type === "type") {
-            rule.value = ruleDOM.find(".node-input-rule-type").val();
-          } else {
             rule.value = ruleDOM
-              .find(".node-input-rule-value")
+              .find(".node-input-rule-type")
+              .val();
+          } else if (rule.type === "regex") {
+            rule.value = ruleDOM
+              .find(".node-input-rule-regex-value")
               .typedInput("value");
             rule.valueType = ruleDOM
-              .find(".node-input-rule-value")
+              .find(".node-input-rule-regex-value")
               .typedInput("type");
+            rule.case = ruleDOM
+              .find(".node-input-rule-case")
+              .prop("checked");
           }
-          if (rule.type === "regex") {
+          else {
             rule.value = ruleDOM
-              .find(".node-input-rule-regex-value")
+              .find(".node-input-rule-value")
               .typedInput("value");
             rule.valueType = ruleDOM
-              .find(".node-input-rule-regex-value")
+              .find(".node-input-rule-value")
               .typedInput("type");
-            rule.case = ruleDOM.find(".node-input-rule-case").prop("checked");
           }
         }
         rule.failMsg = ruleDOM.find(".node-input-rule-msg").val();
