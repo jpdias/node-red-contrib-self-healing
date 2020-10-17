@@ -32,5 +32,40 @@
 </script>
 
 <script type="text/html" data-help-name="timing">
+  <p>Timing check was created in order to gain awareness of your input flow.</p>
+  <p>
+    It measures the difference between two consecutive messages and determinates
+    if the flow is normal, too fast or too slow based on the values Period and
+    Margin defined for that node.
+  </p>
+  <p>
+    Period is the time interval (in seconds) between two consecutive messages.
+  </p>
+  <p>
+    Margin defines a neighbourhood, such that message arrival must obey a period
+    of: [Period - Margin*Period, Period + Margin*Period] seconds. It is,
+    therefore, a fraction of the period and must be represented in a float
+    between [0, 1].
+  </p>
+  <h3>Input</h3>
   <p>If MQTT is selected, input must be provided</p>
+  <p>Input is a mere message.</p>
+  <h3>Outputs</h3>
+  <p>
+    <b>Normal: </b>
+    If the period between the last message arrival and the current one falls
+    between
+    <i>Period-Margin*Period</i> and <i>Period+Margin*Period</i> seconds then the
+    flow is normal and the message is sent through the first output.
+  </p>
+  <p>
+    <b>Too slow: </b>
+    If it is greater than the stipulated period then the flow is too fast and
+    the message is sent through the second output.
+  </p>
+  <p>
+    <b>Too fast: </b>
+    If it is less than the stipulated period then the flow is too fast and the
+    message is sent through the third output.
+  </p>
 </script>
