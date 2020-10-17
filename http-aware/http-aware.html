@@ -1,0 +1,91 @@
+<script type="text/javascript">
+  RED.nodes.registerType("http-aware", {
+    category: "SHEN",
+    defaults: {
+      name: { value: "" },
+      baseip: { value: "192.168.0.1/24", required: true },
+      scanInterval: {
+        value: 300,
+        required: true,
+        validate: RED.validators.number(),
+      },
+    },
+    icon: "status.png",
+    color: "#74b9ff",
+    inputs: 1,
+    outputs: 2,
+    align: "left",
+    inputLabels: "triggerScan",
+    outputLabels: ["allDevices", "unkownDevices"],
+    label: function () {
+      return this.name || "Http Aware";
+    },
+  });
+</script>
+
+<script type="text/html" data-template-name="http-aware">
+  <div class="form-row">
+    <label for="node-input-name">
+      <i class="fa fa-tag"></i>
+      <span data-i18n="node-red:common.label.name"></span>
+    </label>
+    <input
+      type="text"
+      id="node-input-name"
+      data-i18n="[placeholder]node-red:common.label.name"
+    />
+  </div>
+  <div class="form-row">
+    <label for="node-input-baseip"> <i class="fa fa-tag"></i> Base IP </label>
+    <input id="node-input-baseip" placeholder="192.168.0.1/24" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-scanInterval">
+      <i class="fa fa-tag"></i> scanInterval (s)
+    </label>
+    <input type="number" id="node-input-scanInterval" placeholder="300" />
+  </div>
+</script>
+
+<script type="text/html" data-help-name="http-aware">
+  <p>
+    A node to continuously scan the network to find new or removed devices,
+    using arp tables. Can be combined with the device-registry node.
+  </p>
+  <h3>Properties</h3>
+  <dl class="message-properties">
+    <dt>name<span class="property-type">string</span></dt>
+    <dd>Name of node to be displayed in editor.</dd>
+
+    <dt>baseip<span class="property-type">string</span></dt>
+    <dd>Network IP to be scanned.</dd>
+
+    <dt>scanInterval<span class="property-type">number</span></dt>
+    <dd>Time interval between scans, in seconds.</dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <p>Any message.</p>
+  </dl>
+
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <p>
+      If a scanned device has a valid MAC address, a message is fowarded to
+      allDevices output containing the device information.
+    </p>
+    <p>
+      Otherwise, it is sent to unknownDevices output but without the device id
+      field.
+    </p>
+  </dl>
+
+  <h3>Details</h3>
+  <p>
+    Collects information about the devices connected to the network, using arp
+    tables. This information contains the device id (generated using MAC and IP
+    adresses), ip address, name, manufacturer and timestamp of when it was
+    scanned.
+  </p>
+</script>

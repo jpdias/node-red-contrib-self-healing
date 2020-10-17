@@ -45,7 +45,8 @@
       "balancing": "balancing/balancing.js",
       "checkpoint": "checkpoint/checkpoint.js",
       "resource-monitor": "resource-monitor/resource-monitor.js",
-      "action-audit": "action-audit/action-audit.js"
+      "action-audit": "action-audit/action-audit.js",
+      "http-aware": "http-aware/http-aware.js"
     }
   },
   "main": "node_modules/node-red/red/red.js",
