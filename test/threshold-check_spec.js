@@ -396,7 +396,6 @@ describe("threshold-check node", function () {
     basicRuleTest(trueRuleParams, true, null, done);
   });
 
-  
   /**
    * False rule
    */
@@ -610,7 +609,7 @@ describe("threshold-check node", function () {
       value2: "3",
       valueType2: "mean",
       case: false,
-      failMsg: ""
+      failMsg: "",
     };
 
     let testFlow = [
@@ -652,9 +651,9 @@ describe("threshold-check node", function () {
       });
 
       let testNode = helper.getNode("n1");
-      testNode.receive({ payload: 6});
-      testNode.receive({ payload: 8});
-      testNode.receive({ payload: 7});
+      testNode.receive({ payload: 6 });
+      testNode.receive({ payload: 8 });
+      testNode.receive({ payload: 7 });
 
       setTimeout(() => {
         if (error.exist) {
@@ -676,7 +675,7 @@ describe("threshold-check node", function () {
       value2: "5",
       valueType2: "mean",
       case: false,
-      failMsg: ""
+      failMsg: "",
     };
 
     let testFlow = [
@@ -717,12 +716,12 @@ describe("threshold-check node", function () {
       });
 
       let testNode = helper.getNode("n1");
-      testNode.receive({ payload: 10});
-      testNode.receive({ payload: 12});
-      testNode.receive({ payload: 15});
-      testNode.receive({ payload: 11});
-      testNode.receive({ payload: 35});
-      testNode.receive({ payload: 14});
+      testNode.receive({ payload: 10 });
+      testNode.receive({ payload: 12 });
+      testNode.receive({ payload: 15 });
+      testNode.receive({ payload: 11 });
+      testNode.receive({ payload: 35 });
+      testNode.receive({ payload: 14 });
 
       setTimeout(() => {
         if (error.exist) {

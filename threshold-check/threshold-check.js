@@ -174,7 +174,6 @@ module.exports = function (RED) {
           rule.meanSize = parseInt(rule.value2);
         }
       }
-
     }
 
     node.on("input", function (msg, send, done) {
@@ -213,7 +212,7 @@ module.exports = function (RED) {
                 msg
               );
             }
-            
+
             v2 = rule.value2;
             if (rule.valueType2 === "prev") {
               v2 = rule.previousValue[0];

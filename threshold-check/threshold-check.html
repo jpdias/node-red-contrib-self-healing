@@ -184,12 +184,7 @@
               .appendTo(row1)
               .typedInput({
                 default: "re",
-                types: [
-                  "msg",
-                  "flow",
-                  "global",
-                  "re"
-                ],
+                types: ["msg", "flow", "global", "re"],
               });
 
             let typeField = $("<select/>", {
@@ -480,9 +475,7 @@
               .find(".node-input-rule-within-value2")
               .typedInput("type");
           } else if (rule.type === "type") {
-            rule.value = ruleDOM
-              .find(".node-input-rule-type")
-              .val();
+            rule.value = ruleDOM.find(".node-input-rule-type").val();
           } else if (rule.type === "regex") {
             rule.value = ruleDOM
               .find(".node-input-rule-regex-value")
@@ -490,11 +483,8 @@
             rule.valueType = ruleDOM
               .find(".node-input-rule-regex-value")
               .typedInput("type");
-            rule.case = ruleDOM
-              .find(".node-input-rule-case")
-              .prop("checked");
-          }
-          else {
+            rule.case = ruleDOM.find(".node-input-rule-case").prop("checked");
+          } else {
             rule.value = ruleDOM
               .find(".node-input-rule-value")
               .typedInput("value");
