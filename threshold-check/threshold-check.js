@@ -138,6 +138,7 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, n);
     this.rules = n.rules || [];
     let node = this;
+
     for (let i = 0; i < this.rules.length; i += 1) {
       let rule = this.rules[i];
 
@@ -153,23 +154,27 @@ module.exports = function (RED) {
           rule.valueType = "str";
         }
       }
+
       if (rule.valueType === "num") {
         rule.value = parseFloat(rule.value);
       }
+
       if (typeof rule.value2 !== "undefined") {
-        if (!rule.value2Type) {
+        if (!rule.valueType2) {
           if (!isNaN(parseFloat(rule.value2))) {
-            rule.value2Type = "num";
+            rule.valueType2 = "num";
           } else {
-            rule.value2Type = "str";
+            rule.valueType2 = "str";
           }
         }
-        if (rule.value2Type === "num") {
+
+        if (rule.valueType2 === "num") {
           rule.value2 = parseFloat(rule.value2);
-        } else if (rule.value2Type === "mean") {
+        } else if (rule.valueType2 === "mean") {
           rule.meanSize = parseInt(rule.value2);
         }
       }
+
     }
 
     node.on("input", function (msg, send, done) {
@@ -187,9 +192,9 @@ module.exports = function (RED) {
           let pass = true;
           let needPrevious =
             (rule.valueType === "prev" ||
-              rule.value2Type === "prev" ||
+              rule.valueType2 === "prev" ||
               rule.valueType === "mean" ||
-              rule.value2Type === "mean") &&
+              rule.valueType2 === "mean") &&
             rule.previousValue.length == 0;
 
           if (!needPrevious) {
@@ -208,10 +213,11 @@ module.exports = function (RED) {
                 msg
               );
             }
+            
             v2 = rule.value2;
-            if (rule.value2Type === "prev") {
+            if (rule.valueType2 === "prev") {
               v2 = rule.previousValue[0];
-            } else if (rule.value2Type === "mean") {
+            } else if (rule.valueType2 === "mean") {
               v2 =
                 rule.previousValue.reduce(
                   (previous, current) => (current += previous)
@@ -219,7 +225,7 @@ module.exports = function (RED) {
             } else if (typeof v2 !== "undefined") {
               v2 = RED.util.evaluateNodeProperty(
                 rule.value2,
-                rule.value2Type,
+                rule.valueType2,
                 node,
                 msg
               );
