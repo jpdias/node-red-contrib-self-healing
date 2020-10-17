@@ -48,7 +48,13 @@ module.exports = function (RED) {
             this.status({ fill: "red", shape: "dot", text: "ERROR" });
             msg.payload = { status: 0, statusMessage: err.message };
             msg.timestamp = Date.now().toString();
-            send(msg);
+            if (done) {
+              // Node-RED 1.0 compatible
+              done(err);
+            } else {
+              // Node-RED 0.x compatible
+              node.error(err, msg);
+            }
           });
       }
       //MQTT protocol
