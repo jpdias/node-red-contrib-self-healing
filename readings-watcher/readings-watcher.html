@@ -3,47 +3,67 @@
     category: "SHEN",
     color: "#74b9ff",
     defaults: {
+      strategyMask: {value: 1},
       minchange: { required: false, validate: RED.validators.number(), value: 0.0 },
       maxchange: { required: false, validate: RED.validators.number(), value: 1.0 },
-      stuckat: { required: false, validate: RED.validators.number(), value: 0 },
+      stuckLimit: { required: false, validate: RED.validators.number(), value: 0 }
     },
     inputs: 1,
-    outputs: 4,
+    outputs: 2,
     inputLabels: "number",
-    outputLabels: ["ok", "min change", "max change", "stuck at"],
+    outputLabels: ["ok", "error"],
     icon: "status.png",
     label: function () {
       return this.name || "readings-watcher";
     },
+    oneditsave: strategy_encode,
+    oneditprepare: strategy_decode
   });
+
+  function strategy_encode() {
+    this.strategyMask = 0;
+    if (document.getElementById('minchangeStrat').checked)
+      this.strategyMask |= 1;
+    if (document.getElementById('maxchangeStrat').checked)
+      this.strategyMask |= 2;
+    if (document.getElementById('stuckStrat').checked)
+      this.strategyMask |= 4;
+  }
+
+  function strategy_decode() {
+    document.getElementById('minchangeStrat').checked = ( (this.strategyMask & 1) == 1);
+    document.getElementById('maxchangeStrat').checked = ( (this.strategyMask & 2) == 2);
+    document.getElementById('stuckStrat').checked     = ( (this.strategyMask & 4) == 4);
+  }
+
 </script>
 
 <script type="text/html" data-template-name="readings-watcher">
   <div class="form-row">
       <h3>Enable/Disable Strategies: </h3>
 
-      <label for="node-input-minchange-strat" style="width:55%;">Minimum change % (0-1)</label>
-      <input type="checkbox" id="node-input-minchange-strat" style="width:20%;">
+      <label for="minchangeStrat" style="width:55%;">Minimum change % (0-1)</label>
+      <input type="checkbox" id="minchangeStrat" style="width:20%;">
 
-      <label for="node-input-maxchange-strat" style="width:55%;">Maximum change % (0-1)</label>
-      <input type="checkbox" id="node-input-maxchange-strat" style="width:20%;">
+      <label for="maxchangeStrat" style="width:55%;">Maximum change % (0-1)</label>
+      <input type="checkbox" id="maxchangeStrat" style="width:20%;">
 
-      <label for="node-input-stuck-strat" style="width:55%;">Stuck at same reading</label>
-      <input type="checkbox" id="node-input-stuck-strat" style="width:20%;">
+      <label for="stuckStrat" style="width:55%;">Stuck at same reading</label>
+      <input type="checkbox" id="stuckStrat" style="width:20%;" >
   </div>
   <div>
     <h3>Values: </h3>
     <div class="form-row">
         <label for="node-input-minchange" style="width:80%;"><i class="icon-tag"></i> Minimum change between readings (0-1): </label>
-        <input type="text" id="node-input-minchange" placeholder="0.0">
+        <input type="number" id="node-input-minchange" placeholder="0.0">
     </div>
     <div class="form-row">
         <label for="node-input-maxchange" style="width:80%;"><i class="icon-tag"></i> Maximum change between readings (0-1): </label>
-        <input type="text" id="node-input-maxchange" placeholder="1.0">
+        <input type="number" id="node-input-maxchange" placeholder="1.0">
     </div>
     <div class="form-row">
-      <label for="node-input-stuck" style="width:80%;"><i class="icon-tag"></i> Trigger after X repeated readings: </label>
-      <input type="text" id="node-input-stuck" placeholder="0">
+      <label for="node-input-stuckLimit" style="width:80%;"><i class="icon-tag"></i> Trigger after X repeated readings: </label>
+      <input type="number" id="node-input-stuckLimit" placeholder="0" min="2">
     </div>
   </div>
 </script>
