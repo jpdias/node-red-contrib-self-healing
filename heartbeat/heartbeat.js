@@ -66,22 +66,22 @@ module.exports = function (RED) {
       }
       //MQTT protocol
       else if (this.protocol == "mqtt") {
-        if (!this.interval_id) {
-          this.interval_id = setInterval(
+        if (!this.interval) {
+          this.interval = setInterval(
             failedTrigger,
-            parseInt(this.repeat) * 1000,
+            parseInt(this.frequency) * 1000,
             node
           );
         }
-        clearInterval(this.interval_id);
+        clearInterval(this.interval);
 
         if (!this.onfail) {
           node.send({ payload: { status: 200, statusMessage: "Alive" } });
         }
 
-        this.interval_id = setInterval(
+        this.interval = setInterval(
           failedTrigger,
-          parseInt(this.repeat) * 1000,
+          parseInt(this.frequency) * 1000,
           node
         );
       }
