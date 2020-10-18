@@ -8,8 +8,11 @@
         required: true,
       },
       targetFlow: {
-        value: "029asd.as31092",
+        value: "select",
         required: true,
+        validate: function (option) {
+          return option !== "select";
+        },
       },
       targetPort: {
         value: 1880,
@@ -26,6 +29,69 @@
     outputLabels: ["success", "fault"],
     label: function () {
       return this.name || "Flow Enabled";
+    },
+    oneditprepare: function () {
+      let node = this;
+
+      function setDisplayLoading(display) {
+        const loadingFlow = $("#loading-flow");
+        loadingFlow.css("display", display);
+      }
+
+      function updateFlows(xmlHttp) {
+        const selectField = $("#node-input-targetFlow");
+        selectField.find("option:gt(0)").remove();
+
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+          const allFlows = JSON.parse(xmlHttp.responseText);
+          const tabFlows = allFlows.filter(function (flow) {
+            return flow.type === "tab";
+          });
+
+          tabFlows.forEach(function (flow) {
+            selectField.append(
+              $("<option></option>").val(flow.id).text(flow.label)
+            );
+          });
+
+          if (tabFlows.some((flow) => flow.id === node.targetFlow)) {
+            selectField.val(node.targetFlow).change();
+          } else {
+            selectField.val("select").change();
+          }
+        } else {
+          selectField.val("select").change();
+        }
+
+        setDisplayLoading("none");
+      }
+
+      function flowsRequest(url) {
+        const xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", url, true); // false for synchronous request
+        xmlHttp.onreadystatechange = function () {
+          updateFlows(xmlHttp);
+        };
+        xmlHttp.send();
+      }
+
+      function setFlowsDropdown() {
+        const targetHost = $("#node-input-targetHost").val();
+        const targetPort = $("#node-input-targetPort").val();
+
+        if (targetPort && targetHost) {
+          setDisplayLoading("inline");
+          flowsRequest(`http://${targetHost}:${targetPort}/flows/`);
+        } else {
+          const selectField = $("#node-input-targetFlow");
+          selectField.val("select").change();
+
+          setDisplayLoading("none");
+        }
+      }
+
+      $("#node-input-targetHost").change(setFlowsDropdown);
+      $("#node-input-targetPort").change(setFlowsDropdown);
     },
   });
 </script>
@@ -58,7 +124,12 @@
     <label for="node-input-targetFlow">
       <i class="fa fa-tag"></i> targetFlow
     </label>
-    <input type="text" id="node-input-targetFlow" placeholder="targetFlow" />
+    <select id="node-input-targetFlow" name="flows">
+      <option value="select">Select a flow</option>
+    </select>
+    <div id="loading-flow" style="margin-left: 10px">
+      <i class="fa fa-circle-o-notch fa-spin"></i>
+    </div>
   </div>
 </script>
 
