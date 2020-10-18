@@ -6,7 +6,7 @@
       strategyMask: {value: 1},
       minchange: { required: false, validate: RED.validators.number(), value: 0.0 },
       maxchange: { required: false, validate: RED.validators.number(), value: 1.0 },
-      stuckLimit: { required: false, validate: RED.validators.number(), value: 0 }
+      stucklimit: { required: false, validate: RED.validators.number(), value: 2 }
     },
     inputs: 1,
     outputs: 2,
@@ -26,14 +26,27 @@
       this.strategyMask |= 1;
     if (document.getElementById('maxchangeStrat').checked)
       this.strategyMask |= 2;
-    if (document.getElementById('stuckStrat').checked)
+    if (document.getElementById('stucklimitStrat').checked)
       this.strategyMask |= 4;
   }
 
   function strategy_decode() {
-    document.getElementById('minchangeStrat').checked = ( (this.strategyMask & 1) == 1);
-    document.getElementById('maxchangeStrat').checked = ( (this.strategyMask & 2) == 2);
-    document.getElementById('stuckStrat').checked     = ( (this.strategyMask & 4) == 4);
+    let min   = document.getElementById('minchangeStrat');
+    let max   = document.getElementById('maxchangeStrat');
+    let stuck = document.getElementById('stucklimitStrat');
+
+    document.getElementById('minchangeStrat').checked   = ((this.strategyMask & 1) == 1);
+    document.getElementById('maxchangeStrat').checked   = ((this.strategyMask & 2) == 2);
+    document.getElementById('stucklimitStrat').checked  = ((this.strategyMask & 4) == 4);
+
+    document.getElementById('minchangeCtrl').style.display  = ((this.strategyMask & 1) == 1) ? "block" : "none";
+    document.getElementById('maxchangeCtrl').style.display  = ((this.strategyMask & 2) == 2) ? "block" : "none";
+    document.getElementById('stucklimitCtrl').style.display = ((this.strategyMask & 4) == 4) ? "block" : "none";
+  }
+
+  function toggleVisibility(element) {
+    let node = document.getElementById(element);
+    node.style.display = (node.style.display === "none") ? "block" : "none";
   }
 
 </script>
@@ -42,28 +55,28 @@
   <div class="form-row">
       <h3>Enable/Disable Strategies: </h3>
 
-      <label for="minchangeStrat" style="width:55%;">Minimum change % (0-1)</label>
-      <input type="checkbox" id="minchangeStrat" style="width:20%;">
+      <label for="minchangeStrat" style="width:55%;">Minimum change</label>
+      <input type="checkbox" id="minchangeStrat" style="width:20%;" onclick="toggleVisibility('minchangeCtrl')">
 
-      <label for="maxchangeStrat" style="width:55%;">Maximum change % (0-1)</label>
-      <input type="checkbox" id="maxchangeStrat" style="width:20%;">
+      <label for="maxchangeStrat" style="width:55%;">Maximum change</label>
+      <input type="checkbox" id="maxchangeStrat" style="width:20%;" onclick="toggleVisibility('maxchangeCtrl')">
 
-      <label for="stuckStrat" style="width:55%;">Stuck at same reading</label>
-      <input type="checkbox" id="stuckStrat" style="width:20%;" >
+      <label for="stucklimitStrat" style="width:55%;">Stuck at same reading</label>
+      <input type="checkbox" id="stucklimitStrat" style="width:20%;" onclick="toggleVisibility('stucklimitCtrl')">
   </div>
   <div>
     <h3>Values: </h3>
-    <div class="form-row">
-        <label for="node-input-minchange" style="width:80%;"><i class="icon-tag"></i> Minimum change between readings (0-1): </label>
-        <input type="number" id="node-input-minchange" placeholder="0.0">
+    <div class="form-row" id="minchangeCtrl">
+        <label for="node-input-minchange" style="width:80%;"><i class="icon-tag"></i> Minimum % change between readings (0-1): </label>
+        <input type="number" id="node-input-minchange" placeholder="0.0" min="0" step="0.01">
     </div>
-    <div class="form-row">
-        <label for="node-input-maxchange" style="width:80%;"><i class="icon-tag"></i> Maximum change between readings (0-1): </label>
-        <input type="number" id="node-input-maxchange" placeholder="1.0">
+    <div class="form-row" id="maxchangeCtrl">
+        <label for="node-input-maxchange" style="width:80%;"><i class="icon-tag"></i> Maximum % change between readings (0-1): </label>
+        <input type="number" id="node-input-maxchange" placeholder="1.0" min="0" step="0.01">
     </div>
-    <div class="form-row">
-      <label for="node-input-stuckLimit" style="width:80%;"><i class="icon-tag"></i> Trigger after X repeated readings: </label>
-      <input type="number" id="node-input-stuckLimit" placeholder="0" min="2">
+    <div class="form-row" id="stucklimitCtrl">
+      <label for="node-input-stucklimit" style="width:80%;"><i class="icon-tag"></i> Trigger after X repeated readings: </label>
+      <input type="number" id="node-input-stucklimit" placeholder="2" min="2">
     </div>
   </div>
 </script>
