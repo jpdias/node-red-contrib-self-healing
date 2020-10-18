@@ -1,6 +1,13 @@
 module.exports = function (RED) {
   const https = require("https");
 
+  function failedTrigger(node) {
+    node.send({
+      payload: { status: 0, statusMessage: "Timeout" },
+      timestamp: Date.now().toString(),
+    });
+  }
+
   function Heartbeat(config) {
     RED.nodes.createNode(this, config);
 
@@ -59,7 +66,24 @@ module.exports = function (RED) {
       }
       //MQTT protocol
       else if (this.protocol == "mqtt") {
-        //do something
+        if (!this.interval_id) {
+          this.interval_id = setInterval(
+            failedTrigger,
+            parseInt(this.repeat) * 1000,
+            node
+          );
+        }
+        clearInterval(this.interval_id);
+
+        if (!this.onfail) {
+          node.send({ payload: { status: 200, statusMessage: "Alive" } });
+        }
+
+        this.interval_id = setInterval(
+          failedTrigger,
+          parseInt(this.repeat) * 1000,
+          node
+        );
       }
     });
   }
