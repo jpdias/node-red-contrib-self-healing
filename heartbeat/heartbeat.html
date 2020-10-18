@@ -60,28 +60,34 @@
 
 <!-- help text -->
 <script type="text/html" data-help-name="heartbeat">
-<p>A node that provides a heartbeat probe for the HTTP and MQTT communication protocols.</p>
+  <p>
+    A node that provides a heartbeat probe for the HTTP and MQTT communication
+    protocols.
+  </p>
   <h3>Properties</h3>
   <dl class="message-properties">
-      <dt>frequency
-      </dt>
-      <dd>time interval for the heartbeats, in seconds</dd>
-      <dt>protocol</dt>
-      <dd> communication protocol, either mqtt and http</dd>
-      <dt>onfail</dt>
-      <dd>if checked, only sends a message if an error occurs</dd>
-      <dt>httpendpoint</dt>
-      <dd>endpoint for the http protocol<dd>
+    <dt>frequency</dt>
+    <dd>time interval for the heartbeats, in seconds</dd>
+    <dt>protocol</dt>
+    <dd>communication protocol, either mqtt and http</dd>
+    <dt>onfail</dt>
+    <dd>if checked, only sends a message if an error occurs</dd>
+    <dt>httpendpoint</dt>
+    <dd>endpoint for the http protocol</dd>
+    <dd></dd>
   </dl>
+
   <h3>Inputs</h3>
   <dl class="message-properties">
-  <p>If MQTT is selected, input must be provided.</p>
+    <p>If MQTT is selected, input must be provided.</p>
   </dl>
   <h3>Outputs</h3>
   <dl class="message-properties">
-  <p>Error message when an error occured, or a success message, if the user did not select the "Only send msg on fail" checkbox.</p>
+    <p>
+      Error message when an error occured, or a success message, if the user did
+      not select the "Only send msg on fail" checkbox.
+    </p>
   </dl>
   <h3>Details</h3>
-  <p>Used for making sure that the connection is active.
-  </p>
+  <p>Used for making sure that the connection is active.</p>
 </script>
