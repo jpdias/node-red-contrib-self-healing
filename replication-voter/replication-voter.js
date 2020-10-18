@@ -1,6 +1,6 @@
 module.exports = function (RED) {
   function mode(myArray) {
-    myArray.reduce(
+    return myArray.reduce(
       (a, b, i, arr) =>
         arr.filter((v) => JSON.stringify(v) === JSON.stringify(a)).length >=
         arr.filter((v) => JSON.stringify(v) === JSON.stringify(b)).length
