@@ -3,6 +3,7 @@
     category: "SHEN",
     color: "#74b9ff",
     defaults: {
+      name: { value: "" },
       strategyMask: {value: 1},
       minchange: { required: false, validate: RED.validators.number(), value: 0.0 },
       maxchange: { required: false, validate: RED.validators.number(), value: 1.0 },
@@ -52,6 +53,13 @@
 </script>
 
 <script type="text/html" data-template-name="readings-watcher">
+
+  <div class="form-row">
+    <br>
+    <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+    <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+  </div>
+
   <div class="form-row">
       <h3>Enable/Disable Strategies: </h3>
 
@@ -79,9 +87,49 @@
       <input type="number" id="node-input-stucklimit" placeholder="2" min="2">
     </div>
   </div>
+
 </script>
 
 <script type="text/html" data-help-name="readings-watcher">
-  <p>A node to check sequencial readings with 3 different strategies</p>
-  <p>A node to verify sequencial readings</p>
+  <p>A node to check if sequencial readings are within expected parameters,
+    using different verification methods.
+  </p>
+
+  <h3>Properties</h3>
+  <dl class="message-properties">
+      <dt>name<span class="property-type">string</span></dt>
+      <dd>name of node to be displayed in editor</dd>
+
+      <dt>toggles<span class="property-type">checkbox</span></dt>
+      <dd>checkboxes to enable/disable the verification methods available</dd>
+
+      <dt>minchange<span class="property-type">number</span></dt>
+      <dd>Minimum % change allowed between consecutive readings</dd>
+
+      <dt>maxchange<span class="property-type">number</span></dt>
+      <dd>Maximum % change allowed between consecutive readings</dd>
+
+      <dt>stucklimit<span class="property-type">number</span></dt>
+      <dd>Number of equal value readings allowed before triggering error</dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+  <p>A message containing a <code>payload</code> property with a <code>number</code> is required</p>
+  </dl>
+
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+  <p>If reading is within expected parameters, it is sent through <code>ok</code> output</p>
+  <p>Otherwise, it is sent through <code>error</code> output and a <code>msg.type</code> is added to show which verification failed</p>
+</dl>
+
+<h3>Details</h3>
+<p>Different strategies can be enabled to check consecutive readings. When enabled, a corresponding property will appear in the <code>Values</code> section.</p>
+<p><code>minchange</code> will trigger an error if the percentual difference
+  between two consecutive readings is lower than the specified limit</p>
+<p><code>maxchange</code> will do the same if the difference is higher than the limit</p>
+<p><code>stucklimit</code> will compare the last <code>X</code> readings and trigger an error if they are all the same value</p>
+<p>If the <code>payload</code> is not a <code>number</code>, no message is sent and an error is called with <code>done(error)</code>.</p>
+<p>When the node is finished with a message, <code>done()</code> is called, so any <code>complete/catch</code> nodes will receive a message about it</p>
 </script>
