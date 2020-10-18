@@ -65,23 +65,17 @@
 
 <script type="text/html" data-template-name="balancing">
   <div class="form-row">
-    <label for="node-input-name">
-      <i class="fa fa-tag"></i> Name
-    </label>
+    <label for="node-input-name">Name</label>
     <input type="text" id="node-input-name" placeholder="Name">
   </div>
 
   <div class="form-row">
-    <label for="node-input-outputs">
-      <i class="fa fa-tag"></i> Number of outputs
-    </label>
+    <label for="node-input-outputs">Number of outputs</label>
     <input type="number" id="node-input-outputs" min="0" onChange="addWeight(this)">
   </div>
 
   <div class="form-row">
-    <label for="node-input-algorithm">
-      <i class="fa fa-tag"></i> Distribution Algorithm
-    </label>
+    <label for="node-input-algorithm">Distribution Algorithm</label>
     <select type="text" id="node-input-algorithm" onChange="showWeights()">
       <option value="1">Round Robin (recommended)</option>
       <option value="2">Weighted Round Robin</option>
@@ -90,9 +84,7 @@
   </div>
 
   <div id="weights-list" class="form-row" style="visibility: hidden;">
-    <label for="weight-list">
-      <i class="fa fa-tag"></i> Output Weights
-    </label>
+    <label for="weight-list">Output Weights</label>
     <ol id="weight-list"></ol>
     <input type="hidden" id="node-input-weights" value="1.1.1">
   </div>
@@ -101,4 +93,36 @@
 
 <script type="text/html" data-help-name="balancing">
   <p>This node is used to balance the distribute messages through multiple outputs.</p>
+  
+  <h3>Properties</h3>
+  <dl class="message-properties">
+    <dt>name
+      <span class="property-type">string</span>
+    </dt>
+    <dd> name of node to be displayed in editor</dd>
+    <dt>outputs</dt>
+    <dd> number of outputs of the node</dd>
+    <dt>algorithm</dt>
+    <dd> distribution algorithm to be implemented inside the node</dd>
+    <dt>weights</dt>
+    <dd> if the Weighted Round Robin algorithm is chosen, each row represents the weight
+    associated to each output</dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <p>Any message.</p>
+  </dl>
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <p>Input message is passed unchanged to only one of the outputs.</p>
+  </dl>
+
+  <h3>Details</h3>
+  <p>The balancing node provides a way of balancing message traffic through multiple flows in order
+  to avoid the overloading of some nodes while others are left idle.</p>
+  <p>When a message arrives, the node will run the selected algorithm and decide to which output
+  it will send the recived message.</p>
+
+
 </script>
