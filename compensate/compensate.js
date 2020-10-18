@@ -4,7 +4,7 @@ module.exports = function (RED) {
   var scheduler;
   var strategy;
   var confidenceFormula;
-  function confidenceLevel(compensatedCounter, history) {
+  function confidenceLevel(_compensatedCounter, _history) {
     console.log(confidenceFormula);
     if (confidenceFormula == "") {
       return NaN;

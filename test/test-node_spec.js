@@ -1,4 +1,3 @@
-var should = require("should");
 var helper = require("node-red-node-test-helper");
 var testNode = require("../test-node/test-node.js");
 
