@@ -55,6 +55,50 @@
 </script>
 
 <script type="text/html" data-help-name="replication-voter">
-  <p>Some useful help text to introduce the node.</p>
-  <p>Some more information about the node.</p>
+  <p>A node to check what is the majority value.</p>
+  <h3>Properties</h3>
+  <dl class="message-properties">
+    <dt>
+      name
+      <span class="property-type">string</span>
+    </dt>
+    <dd>name of node to be displayed in editor</dd>
+    <dt>majority value<span class="property-type">number</span></dt>
+    <dd>number of equal values required to have a majority</dd>
+    <dt>number of expected inputs<span class="property-type">number</span></dt>
+    <dd>total number of inputs where the majority will be checked</dd>
+  </dl>
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>
+      payload
+      <span class="property-type">number | array&ltnumber&gt</span>
+    </dt>
+    <dd>number or array</dd>
+  </dl>
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>
+      pauload
+      <span class="property-type">number</span>
+    </dt>
+    <dd>if there is a majority, then the output is the majority value</dd>
+    <dd>if not, the output is equal to the first input</dd>
+  </dl>
+  <h3>Details</h3>
+  <p>
+    If the input is a number, the node will check the majority every time it
+    receives the number of expected inputs. If there is a number that is
+    received equal or more times than the majority value, then this number is
+    the majority. If not, there is no majority.
+  </p>
+  <p>
+    If the input is an array, the node will check if there is a number on the
+    array that is duplicated equal or more times than the majority value. If so,
+    this number is the majority, and if not, there is no majority.
+  </p>
+  <p>
+    If there are two or more numbers that appear equal or more times than the
+    majority value, the majority will be the number that appears more times.
+  </p>
 </script>
