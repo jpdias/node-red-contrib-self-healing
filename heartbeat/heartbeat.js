@@ -1,11 +1,10 @@
 module.exports = function (RED) {
   const https = require("https");
 
-  function failedTrigger(node) {
-    node.send({
-      payload: { status: 0, statusMessage: "Timeout" },
-      timestamp: Date.now().toString(),
-    });
+  function failedTrigger(msg, send) {
+    msg.payload = { status: 0, statusMessage: "Timeout" };
+    msg.timestamp = Date.now().toString();
+    send(msg);
   }
 
   function Heartbeat(config) {
@@ -70,19 +69,22 @@ module.exports = function (RED) {
           this.interval = setInterval(
             failedTrigger,
             parseInt(this.frequency) * 1000,
-            node
+            msg,
+            send
           );
         }
         clearInterval(this.interval);
 
         if (!this.onfail) {
-          node.send({ payload: { status: 200, statusMessage: "Alive" } });
+          msg.payload = { status: 200, statusMessage: "Alive" };
+          send(msg);
         }
 
         this.interval = setInterval(
           failedTrigger,
           parseInt(this.frequency) * 1000,
-          node
+          msg,
+          send
         );
       }
     });
