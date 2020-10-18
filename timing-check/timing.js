@@ -32,7 +32,7 @@ module.exports = function (RED) {
       } else {
         let intervalPeriod = currentTimestamp - this.lastTimestamp;
 
-        if (intervalPeriod > this.maximumPeriod) {
+        if (intervalPeriod < this.minimumPeriod) {
           node.status({
             fill: "red",
             shape: "dot",
@@ -40,7 +40,7 @@ module.exports = function (RED) {
           });
 
           node.send([null, null, msg]);
-        } else if (intervalPeriod < this.minimumPeriod) {
+        } else if (intervalPeriod > this.maximumPeriod) {
           node.status({
             fill: "yellow",
             shape: "dot",
