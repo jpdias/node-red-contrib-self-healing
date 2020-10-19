@@ -3,7 +3,6 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config);
     let node = this;
 
-    // Number of outputs for the node
     let numberOutputs = config.outputs;
 
     /**
@@ -14,16 +13,11 @@ module.exports = function (RED) {
      */
     let algorithm = config.algorithm;
 
-    /**
-     * Array with weights for the outputs.
-     * Only used when Weighted Round Robin algorithm is chosen
-     */
-    let wei = config.weights.split(".").map(Number);
+    let roundRobinWeights = config.weights.split(".").map(Number);
 
     let roundRobinOutput = 0;
 
     this.on("input", function (msg) {
-      // Create the array that is used to output the message
       let outputArray = new Array(numberOutputs);
       outputArray.fill(null);
 
@@ -31,7 +25,6 @@ module.exports = function (RED) {
 
       switch (algorithm) {
         case "1": {
-          //Round Robin
           outputArray[roundRobinOutput] = msg;
 
           roundRobinOutput++;
@@ -43,19 +36,17 @@ module.exports = function (RED) {
           break;
         }
         case "2": {
-          //Weighted Round Robin
-
-          let totalWeight = wei.reduce((x, y) => x + y);
+          let totalWeight = roundRobinWeights.reduce((x, y) => x + y);
 
           let rand = Math.random();
           let a = 0;
           out = 0;
-          for (let i = 0; i < wei.length; i++) {
-            if (a <= rand && rand < wei[i] / totalWeight + a) {
+          for (let i = 0; i < roundRobinWeights.length; i++) {
+            if (a <= rand && rand < roundRobinWeights[i] / totalWeight + a) {
               out = i;
               break;
             } else {
-              a = wei[i] / totalWeight + a;
+              a = roundRobinWeights[i] / totalWeight + a;
             }
           }
 
@@ -65,7 +56,6 @@ module.exports = function (RED) {
         }
 
         case "3": {
-          //Random Distribution
           out = Math.floor(Math.random() * numberOutputs);
           outputArray[out] = msg;
 
