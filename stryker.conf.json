@@ -1,14 +1,8 @@
 {
   "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
   "packageManager": "npm",
-  "mutate": [
-    "test/**/*_spec.js"
-  ],
-  "reporters": [
-    "html",
-    "clear-text",
-    "progress"
-  ],
+  "mutate": ["test/**/*_spec.js"],
+  "reporters": ["html", "clear-text", "progress"],
   "testRunner": "mocha",
   "coverageAnalysis": "perTest"
 }
