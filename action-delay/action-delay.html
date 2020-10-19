@@ -19,33 +19,42 @@
   });
 </script>
 
-
 <script type="text/html" data-template-name="action-delay">
   <div class="form-row">
-      <label for="node-input-name" style="width:80%;"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
-      <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    <label for="node-input-name" style="width:80%;">
+      <i class="fa fa-tag"></i>
+      <span data-i18n="node-red:common.label.name"></span>
+    </label>
+    <input
+      type="text"
+      id="node-input-name"
+      data-i18n="[placeholder]node-red:common.label.name"
+    />
   </div>
   <div class="form-row">
-      <label for="node-input-delay" style="width:80%;"><i class="fa fa-tag"></i> Minimum delay between actions (s)</label>
-      <input type="number" id="node-input-delay" min="0" placeholder="2">
+    <label for="node-input-delay" style="width:80%;">
+      <i class="fa fa-tag"></i> Minimum delay between actions (s)
+    </label>
+    <input type="number" id="node-input-delay" min="0" placeholder="2" />
   </div>
   <div class="form-row">
-      <label for="node-input-strategy" style="width:80%;"><i class="fa fa-tag"></i> Compensate strategy</label>
-      <select type="text" id="node-input-strategy">
-          <option>first</option>
-          <option>last</option>
-          <option>allByOrder</option>
-          <option>discard</option>
-      </select>
+    <label for="node-input-strategy" style="width:80%;"
+      ><i class="fa fa-tag"></i> Compensate strategy
+    </label>
+    <select type="text" id="node-input-strategy">
+      <option>first</option>
+      <option>last</option>
+      <option>allByOrder</option>
+      <option>discard</option>
+    </select>
   </div>
 </script>
-
 
 <script type="text/html" data-help-name="action-delay">
   <p>Delay a message in order to avoid overload</p>
   <h3>The following strategies can be applied:</h3>
   <dl class="message-properties">
-    <dt>discard</dt> 
+    <dt>discard</dt>
     <dd>discards the delayed message</dd>
     <dt>first</dt>
     <dd>sends the first delayed message</dd>
@@ -55,6 +64,8 @@
     <dd>sends all delayed messages</dd>
   </dl>
   <h3>Details</h3>
-  <p>This node can be used to delay a command (message) in order to meet the actuator response capacity.</p>
-
+  <p>
+    This node can be used to delay a command (message) in order to meet the
+    actuator response capacity.
+  </p>
 </script>
