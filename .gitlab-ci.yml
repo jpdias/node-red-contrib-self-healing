@@ -7,17 +7,6 @@ default:
     paths:
       - .npm/
 
-include:
-  - template: Security/SAST.gitlab-ci.yml
-
-nodejs-scan-sast:
-  variables:
-    CI_DEBUG_TRACE: "true"
-
-eslint-sast:
-  variables:
-    CI_DEBUG_TRACE: "true"
-
 stages:
   - start
   - test
@@ -42,6 +31,15 @@ lint_check:
   stage: test
   script:
     - npm run lint
+
+njsscan:
+  stage: test
+  image: python
+  before_script:
+      - pip3 install --upgrade njsscan
+  script:
+      - njsscan .
+  allow_failure: true
 
 github-deploy:
   stage: deploy
