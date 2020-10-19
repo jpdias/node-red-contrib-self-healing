@@ -27,7 +27,8 @@ module.exports = function (RED) {
           shape: "circle",
           text: "NaN"
         });
-        done("Expected a number as payload. Got: " + msg.payload);
+        node.warn("Expected a number as payload. Got: " + msg.payload);
+        done(new Error("Expected a number as payload. Got: " + msg.payload));
         return;
       }
 
@@ -123,38 +124,30 @@ class BoundedStack {
     this.maxsize = maxsize;
   }
 
-  // Inserts the element into the top of the stack
   push(element) {
 
-    // If stack is full, remove oldest element
     if(this.isFull())
       this.stack.shift();
 
     this.stack.push(element)
   }
 
-  // Removes the element from the top of the stack and returns it.
-  // Returns null if stack is empty.
   pop() {
     if (this.isEmpty())
       return null;
     return this.stack.pop();
   }
 
-  // Returns the element from the tope of the stack
-  // Returns null if stack is empty.
   peek() {
     if (this.isEmpty())
       return null;
     return this.stack[this.stack.length - 1];
   }
 
-  // Check if stack is empty
   isEmpty() {
     return !this.stack.length;
   }
 
-  // Check if stack is full
   isFull() {
     return this.stack.length >= this.maxsize;
   }
