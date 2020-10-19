@@ -1,30 +1,32 @@
 module.exports = function (RED) {
   function ActionDelay(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
-    var delayInMilis = parseInt(config.delay) * 1000;
-    var schedule = "undefined";
-    var allActions = []; //all msg payloads
-    var lastMsgTimestamp = 0;
+    let node = this;
+    let delayInMilis = parseInt(config.delay) * 1000;
+    let schedule = "undefined";
+    let allActions = []; //all msg payloads
+    let lastMsgTimestamp = 0;
+
+    function resetSchedule() {
+      clearInterval(schedule);
+      schedule = "undefined";
+    }
 
     const executeMsg = (send, done) => {
       if (allActions.length == 0) {
-        clearInterval(schedule);
-        schedule = "undefined";
+        resetSchedule();
       } else if (config.strategy == "allByOrder") {
         send([allActions.shift(), null]);
         done();
       } else if (config.strategy == "last") {
         send([allActions.pop(), null]);
         allActions = [];
-        clearInterval(schedule);
-        schedule = "undefined";
+        resetSchedule();
         done();
       } else if (config.strategy == "first") {
         send([allActions.shift(), null]);
         allActions = [];
-        clearInterval(schedule);
-        schedule = "undefined";
+        resetSchedule();
         done();
       }
     };
