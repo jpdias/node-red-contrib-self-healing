@@ -1,14 +1,16 @@
+let BoundedStack = require("../utils/bounded-stack.js");
+
 module.exports = function (RED) {
   function readingsWatcher(config) {
     RED.nodes.createNode(this, config);
     let node = this;
 
     /*
-        Configure strategy variables according to bitmask
-        Bit 1 --> minimum change
-        Bit 2 --> maximum change
-        Bit 3 --> stuck at same value
-	*/
+      Configure strategy variables according to bitmask
+      Bit 1 --> minimum change
+      Bit 2 --> maximum change
+      Bit 3 --> stuck at same value
+	  */
     this.minchange = (config.strategyMask & 1) == 1 ? config.minchange : null;
     this.maxchange = (config.strategyMask & 2) == 2 ? config.maxchange : null;
 
@@ -122,40 +124,3 @@ module.exports = function (RED) {
   }
   RED.nodes.registerType("readings-watcher", readingsWatcher);
 };
-
-class BoundedStack {
-  constructor(maxsize) {
-    this.stack = [];
-    this.maxsize = maxsize;
-  }
-
-  push(element) {
-    if (this.isFull()) this.stack.shift();
-
-    this.stack.push(element);
-  }
-
-  pop() {
-    if (this.isEmpty()) return null;
-    return this.stack.pop();
-  }
-
-  peek() {
-    if (this.isEmpty()) return null;
-    return this.stack[this.stack.length - 1];
-  }
-
-  isEmpty() {
-    return !this.stack.length;
-  }
-
-  isFull() {
-    return this.stack.length >= this.maxsize;
-  }
-
-  areAllElementsEqual() {
-    if (this.isEmpty()) return false;
-
-    return this.stack.every((element) => element === this.stack[0]);
-  }
-}
