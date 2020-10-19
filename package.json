@@ -33,7 +33,6 @@
       "heartbeat": "heartbeat/heartbeat.js",
       "timing": "timing-check/timing.js",
       "readings-watcher": "readings-watcher/readings-watcher.js",
-
       "balancing": "balancing/balancing.js",
       "test-node": "test-node/test-node.js"
     }
