@@ -30,7 +30,7 @@ module.exports = function(RED) {
       let out;
 
       switch (algorithm) {
-        case "1":   //Round Robin
+        case "1": {  //Round Robin
           outputArray[roundRobinOutput] = msg;
 
           roundRobinOutput++;
@@ -40,8 +40,8 @@ module.exports = function(RED) {
 
           node.send(outputArray);
           break;
-    
-        case "2":   //Weighted Round Robin 
+        }
+        case "2": { //Weighted Round Robin 
 
           let totalWeight = wei.reduce((x,y) => x+y);
           
@@ -61,16 +61,19 @@ module.exports = function(RED) {
           outputArray[out] = msg;
           node.send(outputArray);
           break;
-     
-        case "3":   //Random Distribution
+        }
+
+        case "3": {  //Random Distribution
           out = Math.floor((Math.random() * numberOutputs));
           outputArray[out] = msg;
           
           node.send(outputArray);
           break;
+        }
 
-        default:
+        default: {
           break;
+        }
       }
     });
 
