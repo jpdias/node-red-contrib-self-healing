@@ -9,7 +9,15 @@ default:
 
 include:
   - template: Security/SAST.gitlab-ci.yml
-  
+
+nodejs-scan-sast:
+  variables:
+    CI_DEBUG_TRACE: "true"
+
+eslint-scan-sast:
+  variables:
+    CI_DEBUG_TRACE: "true"
+
 stages:
   - start
   - test
