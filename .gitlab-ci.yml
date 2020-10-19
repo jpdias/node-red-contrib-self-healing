@@ -14,7 +14,7 @@ nodejs-scan-sast:
   variables:
     CI_DEBUG_TRACE: "true"
 
-eslint-scan-sast:
+eslint-sast:
   variables:
     CI_DEBUG_TRACE: "true"
 
