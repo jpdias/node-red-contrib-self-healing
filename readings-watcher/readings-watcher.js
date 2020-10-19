@@ -3,20 +3,24 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config);
     let node = this;
 
-    this.minchange = ((config.strategyMask & 1) == 1) ? config.minchange : null;
-    this.maxchange = ((config.strategyMask & 2) == 2) ? config.maxchange : null;
+    /*
+        Configure strategy variables according to bitmask
+        Bit 1 --> minimum change
+        Bit 2 --> maximum change
+        Bit 3 --> stuck at same value
+	*/
+    this.minchange = (config.strategyMask & 1) == 1 ? config.minchange : null;
+    this.maxchange = (config.strategyMask & 2) == 2 ? config.maxchange : null;
 
     if ((config.strategyMask & 4) == 4) {
       this.stucklimit = config.stucklimit;
       this.readings = new BoundedStack(config.stucklimit);
-    }
-    else {
+    } else {
       this.stucklimit = null;
       this.readings = new BoundedStack(10);
     }
 
     this.on("input", function (msg, send, done) {
-
       // Add/Update timestamp in message
       msg.timestamp = Date.now().toString();
 
@@ -25,13 +29,12 @@ module.exports = function (RED) {
         node.status({
           fill: "red",
           shape: "circle",
-          text: "NaN"
+          text: "NaN",
         });
         node.warn("Expected a number as payload. Got: " + msg.payload);
         done(new Error("Expected a number as payload. Got: " + msg.payload));
         return;
       }
-
 
       // First registered reading
       if (this.readings.isEmpty()) {
@@ -40,23 +43,19 @@ module.exports = function (RED) {
           shape: "dot",
           text: "first reading",
         });
-        // Add reading to stack
         this.readings.push(msg.payload);
         send([msg, null]);
         done();
         return;
       }
 
-      // Get latest reading from stack
       let lastvalue = this.readings.peek();
-
-      // Add new reading to stack
       this.readings.push(msg.payload);
+      let result = [null, null];
+      let error = null;
 
       // Calculate percentual difference from last reading
       let diff = Math.abs((lastvalue - msg.payload) / lastvalue);
-      let result = [null, null];
-      let error = null;
 
       // Maximum change triggered
       if (this.maxchange && diff >= this.maxchange) {
@@ -67,7 +66,10 @@ module.exports = function (RED) {
         });
         msg.type = "maxchange";
         result[1] = msg;
-        error = "Consecutive readings differ more than expected (Difference: " + diff + ")";
+        error =
+          "Consecutive readings differ more than expected (Difference: " +
+          diff +
+          ")";
       }
 
       // Minimum change triggered
@@ -79,11 +81,18 @@ module.exports = function (RED) {
         });
         msg.type = "minchange";
         result[1] = msg;
-        error = "Consecutive readings more similar than expected (Difference: " + diff + ")";
+        error =
+          "Consecutive readings more similar than expected (Difference: " +
+          diff +
+          ")";
       }
 
       // Stuck at same reading triggered
-      else if (this.stucklimit && this.readings.isFull() && this.readings.areAllElementsEqual()) {
+      else if (
+        this.stucklimit &&
+        this.readings.isFull() &&
+        this.readings.areAllElementsEqual()
+      ) {
         node.status({
           fill: "red",
           shape: "dot",
@@ -91,11 +100,13 @@ module.exports = function (RED) {
         });
         msg.type = "stucklimit";
         result[1] = msg;
-        error = "Last " + this.stucklimit + " consecutive readings were the same (Value: " + msg.payload + ")";
-      }
-
-      // All good
-      else {
+        error =
+          "Last " +
+          this.stucklimit +
+          " consecutive readings were the same (Value: " +
+          msg.payload +
+          ")";
+      } else {
         node.status({
           fill: "green",
           shape: "dot",
@@ -104,43 +115,33 @@ module.exports = function (RED) {
         result[0] = msg;
       }
 
-      // Send result message
       send(result);
-
-      // Finish message handling and trigger errors if they happened
-      if(error)
-        done(error);
-      else
-        done();
+      if (error) done(error);
+      else done();
     });
   }
   RED.nodes.registerType("readings-watcher", readingsWatcher);
 };
 
-
 class BoundedStack {
   constructor(maxsize) {
-    this.stack = []
+    this.stack = [];
     this.maxsize = maxsize;
   }
 
   push(element) {
+    if (this.isFull()) this.stack.shift();
 
-    if(this.isFull())
-      this.stack.shift();
-
-    this.stack.push(element)
+    this.stack.push(element);
   }
 
   pop() {
-    if (this.isEmpty())
-      return null;
+    if (this.isEmpty()) return null;
     return this.stack.pop();
   }
 
   peek() {
-    if (this.isEmpty())
-      return null;
+    if (this.isEmpty()) return null;
     return this.stack[this.stack.length - 1];
   }
 
@@ -153,9 +154,8 @@ class BoundedStack {
   }
 
   areAllElementsEqual() {
-    if(this.isEmpty())
-      return false;
+    if (this.isEmpty()) return false;
 
-    return (this.stack.every(element => element === this.stack[0]));
+    return this.stack.every((element) => element === this.stack[0]);
   }
 }
