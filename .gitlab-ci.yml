@@ -7,6 +7,9 @@ default:
     paths:
       - .npm/
 
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  
 stages:
   - start
   - test
