@@ -52,7 +52,38 @@ describe("kalman-noise-filter node", function () {
     },
   ];
 
-  it("should filter data with number payloads");
+  it("should filter data with number payloads", function (done) {
+    helper.load(kalmanNode, testFlow, function () {
+      const kalman = helper.getNode("kalman");
+      const spy = helper.getNode("spy");
+
+      const [clean, noisy] = getTestData();
+      const filtered = [];
+
+      spy.on("input", function ({ payload }) {
+        filtered.push(payload);
+
+        // perform assertion when last value is processed
+        if (filtered.length == noisy.length) {
+          const inputError = sumOfSquaredErrors(clean, noisy);
+          const filteredError = sumOfSquaredErrors(clean, filtered);
+          try {
+            filteredError.should.be.below(
+              inputError,
+              `Filtered data has total error ${filteredError}, which is not less than noisy data's total error ${inputError}`
+            );
+            done();
+          } catch (error) {
+            done(error);
+          }
+        }
+      });
+
+      noisy.map(function (payload) {
+        kalman.receive({ payload });
+      });
+    });
+  });
 
   it("should filter data with array payload", function (done) {
     helper.load(kalmanNode, testFlow, function () {
