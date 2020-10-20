@@ -139,17 +139,17 @@ describe("timing Node", function () {
 
   function validateOutputs(expectedResult, normalSpy, fastSpy, slowSpy) {
     if (expectedResult == 1) {
-        normalSpy.should.be.calledTwice();
-        fastSpy.should.not.be.called();
-        slowSpy.should.not.be.called();
+      normalSpy.should.be.calledTwice();
+      fastSpy.should.not.be.called();
+      slowSpy.should.not.be.called();
     } else if (expectedResult == 2) {
-        normalSpy.should.be.calledOnce();
-        fastSpy.should.be.calledOnce();
-        slowSpy.should.not.be.called();
+      normalSpy.should.be.calledOnce();
+      fastSpy.should.be.calledOnce();
+      slowSpy.should.not.be.called();
     } else {
-        normalSpy.should.be.calledOnce();
-        fastSpy.should.not.be.called();
-        slowSpy.should.be.calledOnce();
+      normalSpy.should.be.calledOnce();
+      fastSpy.should.not.be.called();
+      slowSpy.should.be.calledOnce();
     }
   }
 });
