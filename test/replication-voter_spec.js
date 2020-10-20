@@ -70,7 +70,7 @@ describe("replication-voter node", function () {
       };
 
       let errorNode = helper.getNode("n3");
-      errorNode.on("input", (msg) => {
+      errorNode.on("input", () => {
         if (shouldFail != true) {
           error.exist = true;
           error.description = "Error node received input when it shouldn't";
@@ -93,6 +93,8 @@ describe("replication-voter node", function () {
       let testNode = helper.getNode("n1");
 
       if (type == "number") {
+        let i;
+
         for (i = 0; i < sendPayload.length; i++) {
           testNode.receive({ payload: sendPayload[i] });
         }
