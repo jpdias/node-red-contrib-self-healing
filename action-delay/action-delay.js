@@ -13,8 +13,8 @@ module.exports = function (RED) {
     }
 
     const executeMsg = (send, done) => {
-      // no messages to be sent
       if (allActions.length == 0) {
+        // no messages to be sent
         resetSchedule();
       } else if (config.strategy == "allByOrder") {
         // send all messages by order
@@ -50,10 +50,14 @@ module.exports = function (RED) {
       }
       // message isn't within interval
       if (newMsgTimestamp - lastMsgTimestamp < delayInMilis) {
-        node.status({ fill: "yellow", shape: "dot", text: "Delayed" });
+        node.status({
+          fill: "yellow",
+          shape: "dot",
+          text: "Delayed: " + allActions.length,
+        });
         const newMsg = msg;
         newMsg.timestamp = newMsgTimestamp;
-        lastMsgTimestamp = newMsgTimestamp;
+        // lastMsgTimestamp = newMsgTimestamp;
         allActions.push(msg); // add message to payload
         send([null, msg]);
         done();
