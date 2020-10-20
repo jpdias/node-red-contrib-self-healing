@@ -25,7 +25,7 @@ module.exports = function (RED) {
 
       switch (algorithm) {
         case "1": {
-          out = roundRobinOutput%numberOutputs;
+          out = roundRobinOutput % numberOutputs;
           roundRobinOutput++;
           outputArray[out] = msg;
           node.send(outputArray);
