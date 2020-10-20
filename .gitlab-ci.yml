@@ -36,10 +36,12 @@ njsscan:
   stage: test
   image: python
   before_script:
-      - pip3 install --upgrade njsscan
+    - pip3 install --upgrade njsscan
   script:
-      - njsscan .
+    - njsscan .
   allow_failure: true
+  only:
+    - master
 
 github-deploy:
   stage: deploy
