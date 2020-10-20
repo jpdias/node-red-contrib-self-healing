@@ -3,6 +3,7 @@ FROM nodered/node-red
 WORKDIR /usr/src/node-red
 
 COPY --chown=node-red package.json selfhealing/package.json
+COPY --chown=node-red package-lock.json selfhealing/package-lock.json
 
 COPY --chown=node-red action-delay selfhealing/action-delay
 COPY --chown=node-red compensate selfhealing/compensate
