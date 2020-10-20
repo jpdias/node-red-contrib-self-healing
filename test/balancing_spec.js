@@ -112,25 +112,21 @@ describe("balancing node", function () {
       let n4 = helper.getNode("n4");
 
       let expectedOutputNode = "";
-      let count = 0;
       let isValid = true;
 
       n2.on("input", function (msg, _send, _done) {
         should(msg).have.property("payload", "Testing");
         expectedOutputNode = "n2";
-        count++;
       });
 
       n3.on("input", function (msg, _send, _done) {
         should(msg).have.property("payload", "Testing");
         expectedOutputNode = "n3";
-        count++;
       });
 
       n4.on("input", function (msg, _send, _done) {
         should(msg).have.property("payload", "Testing");
         expectedOutputNode = "n4";
-        count++;
       });
 
       let temp = 2;
