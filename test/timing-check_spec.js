@@ -46,13 +46,33 @@ describe("timing Node", function () {
     timingTest(expectedResults.normal, period, done);
   });
 
+  it("should be able to detect if the flow is normal in the verge of the minimum period value", function (done) {
+    let period = 0.455;
+    timingTest(expectedResults.normal, period, done);
+  });
+
+  it("should be able to detect if the flow is normal in the verge of the maximum period value", function (done) {
+    let period = 0.545;
+    timingTest(expectedResults.normal, period, done);
+  });
+
   it("should be able to detect if the flow is too fast", function (done) {
     let period = 0.4;
     timingTest(expectedResults.fast, period, done);
   });
 
+  it("should be able to detect if the flow is too fast when slightly less than the minimum period value", function (done) {
+    let period = 0.44;
+    timingTest(expectedResults.fast, period, done);
+  });
+
   it("should be able to detect if the flow is too slow", function (done) {
     let period = 0.6;
+    timingTest(expectedResults.slow, period, done);
+  });
+
+  it("should be able to detect if the flow is too slow when slightly greater than the maximum period value", function (done) {
+    let period = 0.56;
     timingTest(expectedResults.slow, period, done);
   });
 
