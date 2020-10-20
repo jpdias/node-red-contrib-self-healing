@@ -17,11 +17,9 @@ module.exports = function (RED) {
 
     this.on("input", (msg) => {
       let currentTimestamp = Date.now();
+      msg.timestamp = currentTimestamp;
 
       if (this.lastTimestamp == null) {
-        this.lastTimestamp = currentTimestamp;
-        msg.timestamp = currentTimestamp;
-
         node.status({
           fill: "green",
           shape: "dot",
@@ -32,19 +30,19 @@ module.exports = function (RED) {
       } else {
         let intervalPeriod = currentTimestamp - this.lastTimestamp;
 
-        if (intervalPeriod < this.minimumPeriod) {
-          node.status({
-            fill: "red",
-            shape: "dot",
-            text: "Too Fast",
-          });
-
-          node.send([null, null, msg]);
-        } else if (intervalPeriod > this.maximumPeriod) {
+        if (intervalPeriod > this.maximumPeriod) {
           node.status({
             fill: "yellow",
             shape: "dot",
             text: "Too Slow",
+          });
+
+          node.send([null, null, msg]);
+        } else if (intervalPeriod < this.minimumPeriod) {
+          node.status({
+            fill: "yellow",
+            shape: "dot",
+            text: "Too Fast",
           });
 
           node.send([null, msg, null]);
@@ -58,6 +56,7 @@ module.exports = function (RED) {
           node.send([msg, null, null]);
         }
       }
+      this.lastTimestamp = currentTimestamp;
     });
   }
 
