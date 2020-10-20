@@ -15,14 +15,14 @@ describe("flow-control Node", function () {
 
   it("should be loaded", function (done) {
     // Create flow with one "test-node" node with property name = test-node
-    var flowControl = [
+    const flowControl = [
       { id: "node1", type: "flow-control", name: "flow-control" },
     ];
 
     // Load flow and start it
     helper.load(flowControlNode, flowControl, function () {
       // Get "flowControlNode" node instance from "testFlow" specified above
-      var myFlowControlNode = helper.getNode("node1");
+      const myFlowControlNode = helper.getNode("node1");
 
       /*
         Assert if "flowControlNode" has property "name" with value "test-node"
