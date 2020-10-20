@@ -7,7 +7,7 @@ module.exports = function (RED) {
     var allActions = []; //all msg payloads
     var lastMsgTimestamp = 0;
 
-    executeMsg = (send, done) => {
+    const executeMsg = (send, done) => {
       if (allActions.length == 0) {
         clearInterval(schedule);
         schedule = "undefined";
@@ -29,7 +29,7 @@ module.exports = function (RED) {
       }
     };
     node.on("input", function (msg, send, done) {
-      newMsgTimestamp = new Date().getTime();
+      const newMsgTimestamp = new Date().getTime();
       if (
         newMsgTimestamp - lastMsgTimestamp >= delayInMilis &&
         allActions.length == 0
@@ -42,7 +42,7 @@ module.exports = function (RED) {
         return;
       } else if (newMsgTimestamp - lastMsgTimestamp < delayInMilis) {
         node.status({ fill: "yellow", shape: "dot", text: "Delayed" });
-        newMsg = msg;
+        const newMsg = msg;
         newMsg.timestamp = newMsgTimestamp;
         lastMsgTimestamp = newMsgTimestamp;
         allActions.push(msg);

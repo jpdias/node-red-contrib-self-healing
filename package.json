@@ -15,10 +15,13 @@
   "scripts": {
     "start": "node-red",
     "test": "mocha \"test/**/*_spec.js\"",
+    "test-coverage": "nyc mocha \"test/**/*_spec.js\"",
     "mocha": "mocha",
     "lint": "eslint --ignore-path .gitignore .",
     "format": "prettier --write --ignore-path .gitignore .",
-    "format-check": "prettier --check --ignore-path .gitignore ."
+    "format-check": "prettier --check --ignore-path .gitignore .",
+    "mutate-init": "stryker init",
+    "mutate": "stryker run"
   },
   "node-red": {
     "nodes": {
@@ -33,6 +36,7 @@
       "heartbeat": "heartbeat/heartbeat.js",
       "timing": "timing-check/timing.js",
       "readings-watcher": "readings-watcher/readings-watcher.js",
+      "balancing": "balancing/balancing.js",
       "test-node": "test-node/test-node.js"
     }
   },
@@ -52,10 +56,13 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
+    "@stryker-mutator/core": "^4.0.0",
+    "@stryker-mutator/mocha-runner": "^4.0.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.12.0",
     "mocha": "*",
     "node-red-node-test-helper": "^0.2.5",
-    "prettier": "2.1.2"
+    "nyc": "^15.1.0",
+    "prettier": "^2.1.2"
   }
 }

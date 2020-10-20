@@ -105,3 +105,5 @@ public/
 *.backup
 
 flows_cred.json
+# stryker temp files
+.stryker-tmp

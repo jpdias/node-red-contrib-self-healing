@@ -27,6 +27,22 @@ format_check:
   script:
     - npm run format-check
 
+lint_check:
+  stage: test
+  script:
+    - npm run lint
+
+njsscan:
+  stage: test
+  image: python
+  before_script:
+    - pip3 install --upgrade njsscan
+  script:
+    - njsscan .
+  allow_failure: true
+  only:
+    - master
+
 github-deploy:
   stage: deploy
   inherit:
