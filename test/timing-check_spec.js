@@ -1,4 +1,3 @@
-var should = require("should");
 var sinon = require("sinon");
 var helper = require("node-red-node-test-helper");
 var timingCheckNode = require("../timing-check/timing.js");
@@ -16,7 +15,7 @@ describe("timing Node", function () {
   });
 
   it("should be loaded", function (done) {
-    let testFlow = [
+    const testFlow = [
       {
         id: "testNode",
         type: "timing",
@@ -25,7 +24,7 @@ describe("timing Node", function () {
     ];
 
     helper.load(timingCheckNode, testFlow, function () {
-      let testNode = helper.getNode("testNode");
+      const testNode = helper.getNode("testNode");
       try {
         testNode.should.have.property("name", "timing");
         done();
@@ -35,49 +34,49 @@ describe("timing Node", function () {
     });
   });
 
-  let expectedResults = {
+  const expectedResults = {
     normal: 1,
     fast: 2,
     slow: 3,
   };
 
   it("should be able to detect if the flow is normal", function (done) {
-    let period = 0.5;
+     const period = 0.5;
     timingTest(expectedResults.normal, period, done);
   });
 
   it("should be able to detect if the flow is normal in the verge of the minimum period value", function (done) {
-    let period = 0.455;
+     const period = 0.455;
     timingTest(expectedResults.normal, period, done);
   });
 
   it("should be able to detect if the flow is normal in the verge of the maximum period value", function (done) {
-    let period = 0.545;
+     const period = 0.545;
     timingTest(expectedResults.normal, period, done);
   });
 
   it("should be able to detect if the flow is too fast", function (done) {
-    let period = 0.4;
+     const period = 0.4;
     timingTest(expectedResults.fast, period, done);
   });
 
   it("should be able to detect if the flow is too fast when slightly less than the minimum period value", function (done) {
-    let period = 0.44;
+     const period = 0.44;
     timingTest(expectedResults.fast, period, done);
   });
 
   it("should be able to detect if the flow is too slow", function (done) {
-    let period = 0.6;
+     const period = 0.6;
     timingTest(expectedResults.slow, period, done);
   });
 
   it("should be able to detect if the flow is too slow when slightly greater than the maximum period value", function (done) {
-    let period = 0.56;
+     const period = 0.56;
     timingTest(expectedResults.slow, period, done);
   });
 
   function timingTest(expectedResult, messagePeriod, done) {
-    let testFlow = [
+    const testFlow = [
       {
         id: "timingNode",
         type: "timing",
@@ -104,14 +103,14 @@ describe("timing Node", function () {
     ];
 
     helper.load(timingCheckNode, testFlow, () => {
-      let timingNode = helper.getNode("timingNode");
-      let normalOutput = helper.getNode("normalOutput");
-      let fastOutput = helper.getNode("fastOutput");
-      let slowOutput = helper.getNode("slowOutput");
+      const timingNode = helper.getNode("timingNode");
+      const normalOutput = helper.getNode("normalOutput");
+      const fastOutput = helper.getNode("fastOutput");
+      const slowOutput = helper.getNode("slowOutput");
 
-      let normalSpy = sinon.spy();
-      let fastSpy = sinon.spy();
-      let slowSpy = sinon.spy();
+      const normalSpy = sinon.spy();
+      const fastSpy = sinon.spy();
+      const slowSpy = sinon.spy();
 
       normalOutput.on("input", normalSpy);
       fastOutput.on("input", fastSpy);

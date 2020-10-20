@@ -16,7 +16,7 @@ module.exports = function (RED) {
     let node = this;
 
     this.on("input", (msg) => {
-      let currentTimestamp = Date.now();
+      const currentTimestamp = Date.now();
       msg.timestamp = currentTimestamp;
 
       if (this.lastTimestamp == null) {
@@ -28,7 +28,7 @@ module.exports = function (RED) {
 
         node.send([msg, null, null]);
       } else {
-        let intervalPeriod = currentTimestamp - this.lastTimestamp;
+        const intervalPeriod = currentTimestamp - this.lastTimestamp;
 
         if (intervalPeriod > this.maximumPeriod) {
           node.status({
