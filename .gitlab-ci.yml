@@ -57,7 +57,7 @@ github-deploy:
     GIT_STRATEGY: none
   script:
     - gh repo clone node-red-contrib-self-healing
-    - cd clone node-red-contrib-self-healing
+    - cd node-red-contrib-self-healing
     - git remote add gitlab "https://${GITLAB_TOKEN_USER}:${GITLAB_TOKEN_PW}@gitlab.com/feup-tbs/ldso2021/t4g2.git"
     - git fetch gitlab
     - git checkout -b gitlab-master gitlab/master
