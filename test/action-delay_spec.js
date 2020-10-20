@@ -19,8 +19,8 @@ describe("action-delay-test Node", function () {
 
   let expectedDiscard = [1, 10];
   let expectedAllByOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  let expectedFirst = [1, 2, 10];
-  let expectedLast = [1, 9, 10];
+  // let expectedFirst = [1, 2, 10];
+  // let expectedLast = [1, 9, 10];
 
   it("should be loaded", function (done) {
     let testFlow = [
@@ -62,22 +62,10 @@ describe("action-delay-test Node", function () {
       // Simulate passage of time since deployment
       clock.tick(1000);
 
-      let receivedMsgs = 0;
-
       let passSpy = sinon.spy();
       let delaySpy = sinon.spy();
       pass.on("input", passSpy);
       delay.on("input", delaySpy);
-
-      // pass.on("input", function (msg) {
-      //   try {
-      //     console.log(msg.payload);
-      //     msg.payload.should.equal(expectedDiscard[receivedMsgs++]);
-      //     if (receivedMsgs == expectedDiscard.length) done();
-      //   } catch (err) {
-      //     done(err);
-      //   }
-      // });
 
       expectedDiscard.forEach((element) => {
         actionDelay.receive({ payload: element });
