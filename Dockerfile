@@ -12,6 +12,7 @@ COPY --chown=node-red network-aware selfhealing/network-aware
 COPY --chown=node-red redundancy selfhealing/redundancy
 COPY --chown=node-red replication-voter selfhealing/replication-voter
 COPY --chown=node-red threshold-check selfhealing/threshold-check
+COPY --chown=node-red kalman-noise-filter selfhealing/kalman-noise-filter
 
 USER node-red
 
