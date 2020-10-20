@@ -1,6 +1,5 @@
 let helper = require("node-red-node-test-helper");
 let heartbeatNode = require("../heartbeat/heartbeat.js");
-let sinon = require("sinon");
 
 helper.init(require.resolve("node-red"));
 

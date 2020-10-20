@@ -90,6 +90,10 @@ module.exports = function (RED) {
         );
       }
     });
+
+    this.on("close", function() {
+      clearInterval(this.interval);
+    });
   }
 
   RED.nodes.registerType("heartbeat", Heartbeat);
