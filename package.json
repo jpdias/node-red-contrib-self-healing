@@ -12,12 +12,22 @@
     "type": "git",
     "url": "https://github.com/jpdias/node-red-contrib-self-healing.git"
   },
+  "scripts": {
+    "start": "node-red",
+    "test": "mocha \"test/**/*_spec.js\"",
+    "test-coverage": "nyc mocha \"test/**/*_spec.js\"",
+    "mocha": "mocha",
+    "lint": "eslint --ignore-path .gitignore .",
+    "format": "prettier --write --ignore-path .gitignore .",
+    "format-check": "prettier --check --ignore-path .gitignore .",
+    "mutate-init": "stryker init",
+    "mutate": "stryker run"
+  },
   "node-red": {
     "nodes": {
       "flow-control": "flow-control/flow-control.js",
       "replication-voter": "replication-voter/replication-voter.js",
       "compensate": "compensate/compensate.js",
-      "compensate-confiability": "compensate-confiability/compensate.js",
       "kalman-noise-filter": "kalman-noise-filter/kalman.js",
       "threshold-check": "threshold-check/threshold-check.js",
       "redundancy-manager": "redundancy/redundancy.js",
@@ -25,7 +35,9 @@
       "network-aware": "network-aware/network-aware.js",
       "heartbeat": "heartbeat/heartbeat.js",
       "timing": "timing-check/timing.js",
-      "readings-watcher": "readings-watcher/readings-watcher.js"
+      "readings-watcher": "readings-watcher/readings-watcher.js",
+      "balancing": "balancing/balancing.js",
+      "test-node": "test-node/test-node.js"
     }
   },
   "main": "node_modules/node-red/red/red.js",
@@ -44,6 +56,13 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
-    "eslint": "^6.8.0"
+    "@stryker-mutator/core": "^4.0.0",
+    "@stryker-mutator/mocha-runner": "^4.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.12.0",
+    "mocha": "*",
+    "node-red-node-test-helper": "^0.2.5",
+    "nyc": "^15.1.0",
+    "prettier": "^2.1.2"
   }
 }

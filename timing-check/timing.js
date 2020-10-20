@@ -1,57 +1,64 @@
 module.exports = function (RED) {
+  function Timing(config) {
+    RED.nodes.createNode(this, config);
 
-    function Timing(config) {
-        RED.nodes.createNode(this, config);
-        this.lastTimestamp = null;
-        this.repeat = config.frequency * 1000; // from seconds to milis
-        this.margin = config.margin;
-        this.max = this.repeat * (1 + this.margin);
-        this.min = this.repeat * (1 - this.margin);
-        var node = this;
+    this.lastTimestamp = null;
+    this.periodBetweenReadings = config.period * 1000; //seconds to milliseconds
+    this.intervalMargin = config.margin;
 
-        this.on("input", function (msg) {
-            let nowtime = Date.now();
-            if (!this.lastTimestamp) {
-                this.lastTimestamp = Date.now();
-                msg.timestamp = this.lastTimestamp;
-                node.status({
-                    fill: "green",
-                    shape: "dot",
-                    text: "First msg"
-                });
-                node.send([msg, null, null]);
-            } else {
-                let difference = nowtime - this.lastTimestamp;
-                if (difference < this.max && difference > this.min) {
-                    node.status({
-                        fill: "green",
-                        shape: "dot",
-                        text: "Ok"
-                    });
-                    msg.timestamp = nowtime;
-                    node.send([msg, null, null]);
-                } else if (difference < this.max) {
-                    node.status({
-                        fill: "yellow",
-                        shape: "dot",
-                        text: "Too fast"
-                    });
-                    msg.timestamp = nowtime;
-                    node.send([null, msg, null]);
-                } else if (difference > this.min) {
-                    node.status({
-                        fill: "yellow",
-                        shape: "dot",
-                        text: "Too slow"
-                    });
-                    msg.timestamp = nowtime;
-                    node.send([null, null, msg]);
-                }
+    this.maximumPeriod =
+      this.periodBetweenReadings +
+      this.intervalMargin * this.periodBetweenReadings;
+    this.minimumPeriod =
+      this.periodBetweenReadings -
+      this.intervalMargin * this.periodBetweenReadings;
 
-            }
-            this.lastTimestamp = nowtime;
+    let node = this;
+
+    this.on("input", (msg) => {
+      const currentTimestamp = Date.now();
+      msg.timestamp = currentTimestamp;
+
+      if (this.lastTimestamp == null) {
+        node.status({
+          fill: "green",
+          shape: "dot",
+          text: "First message",
         });
-    }
 
-    RED.nodes.registerType("timing", Timing);
-}
+        node.send([msg, null, null]);
+      } else {
+        const intervalPeriod = currentTimestamp - this.lastTimestamp;
+
+        if (intervalPeriod > this.maximumPeriod) {
+          node.status({
+            fill: "yellow",
+            shape: "dot",
+            text: "Too Slow",
+          });
+
+          node.send([null, null, msg]);
+        } else if (intervalPeriod < this.minimumPeriod) {
+          node.status({
+            fill: "yellow",
+            shape: "dot",
+            text: "Too Fast",
+          });
+
+          node.send([null, msg, null]);
+        } else {
+          node.status({
+            fill: "green",
+            shape: "dot",
+            text: "Normal",
+          });
+
+          node.send([msg, null, null]);
+        }
+      }
+      this.lastTimestamp = currentTimestamp;
+    });
+  }
+
+  RED.nodes.registerType("timing", Timing);
+};

@@ -1,313 +1,583 @@
-<script type="text/x-red" data-template-name="threshold-check">
-    <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
-    </div>
-    <div class="form-row node-input-rule-container-row">
-        <ol id="node-input-rule-container"></ol>
-    </div>
-</script>
-
-<script type="text/x-red" data-help-name="threshold-check">
-    <p>A node to check messages based on property values.</p>
-    <h3>Properties</h3>
-    <dl class="message-properties">
-        <dt>name
-            <span class="property-type">string</span>
-        </dt>
-        <dd> name of node to be displayed in editor</dd>
-        <dt>property</dt>
-        <dd> msg, flow or global property to be tested</dd>
-        <dt>test</dt>
-        <dd>test to be performed on property</dd>
-        <dt>fail message<span class="property-type">string</span></dt>
-        <dd>message that describes the test that failed<dd>
-    </dl>
-    <h3>Inputs</h3>
-    <dl class="message-properties">
-    <p>Any</p>
-    </dl>
-    <h3>Outputs</h3>
-    <dl class="message-properties">
-    <p>Input message is passed unchanged if it passed all tests.</p>
-    </dl>
-    <h3>Details</h3>
-    <p>Node is configured with a set of rules that define the conditions for properties to be valid data.
-     Tests are able to probe inside of objects and arrays using Javascript descriptors, including
-     the length of strings and arrays.</p>
-    <p>When a message arrives, the selected properties are evaluated against each
-    of the defined rules. The message is then sent to the output only if <i>all</i>
-    of the rules pass.</p>
-    <p><code>previous value</code> refers to the previous value received for the tested property.
-    <code>Mean</code> is a sliding window mean of the specified number of previous values received
-    for the tested property.</p>
-    <p>An <i>assertion</i> error is thrown if any rule fails. The error is attached to the original
-    message which can be caught by a Catch node.</p>
-    <p>The <code>Fail Message</code> for the first test that failed is displayed on the node and appended
-    to the error message.</p>
-</script>
-
 <script type="text/javascript">
-    RED.nodes.registerType('threshold-check', {
-        color: "#74b9ff",
-        category: 'SHEN',
-        defaults: {
-            name: { value: "" },
-            rules: {
-                value: [{
-                    property: "payload",
-                    propertyType: "msg",
-                    type: "eq",
-                    value: "",
-                    valueType: "str",
-                    value2: "",
-                    valueType2: "str",
-                    case: false,
-                    failMsg: ""
-                }]
-            }
-        },
-        inputs: 1,
-        outputs: 2,
-        icon: "status.png",
-        inputLabels: "msg",
-        outputLabels: ["msg", "fault"],
-        label: function () {
-            return this.name || "Threshold Check";
-        },
-        oneditprepare: function () {
-            var node = this;
-            var previousValueType = { value: "prev", label: this._("node-red:inject.previous"), hasValue: false };
-            var meanValueType = { value: "mean", label: "Mean", hasValue: true };
-            var operators = [
-                { value: "eq", type: "==" },
-                { value: "neq", type: "!=" },
-                { value: "lt", type: "<" },
-                { value: "lte", type: "<=" },
-                { value: "gt", type: ">" },
-                { value: "gte", type: ">=" },
-                { value: "btwn", type: this._("node-red:switch.rules.btwn") },
-                { value: "within", type: "is within" },
-                { value: "cont", type: this._("node-red:switch.rules.cont") },
-                { value: "regex", type: this._("node-red:switch.rules.regex") },
-                { value: "true", type: this._("node-red:switch.rules.true") },
-                { value: "false", type: this._("node-red:switch.rules.false") },
-                { value: "null", type: this._("node-red:switch.rules.null") },
-                { value: "nnull", type: this._("node-red:switch.rules.nnull") },
-                { value: "type", type: "is type" }
-            ];
-            var types = ["number", "string", "boolean", "array", "buffer", "object", "function"];
-            var andLabel = this._("node-red:switch.and");
-            var caseLabel = this._("node-red:switch.ignorecase");
-            function resizeRule(rule) {
-                var newWidth = rule.width();
-                var propertyField = rule.find(".node-input-rule-property");
-                propertyField.typedInput("width", newWidth - 30);
-                var selectWidth = rule.find("select").width();
-                var valueField = rule.find(".node-input-rule-value");
-                var regexField = rule.find(".node-input-rule-regex-value");
-                var btwnField1 = rule.find(".node-input-rule-btwn-value");
-                var btwnField2 = rule.find(".node-input-rule-btwn-value2");
-                var withinField1 = rule.find(".node-input-rule-within-value");
-                var withinField2 = rule.find(".node-input-rule-within-value2");
-                btwnField1.typedInput("width", (newWidth - selectWidth - 49));
-                btwnField2.typedInput("width", (newWidth - selectWidth - 49));
-                withinField1.typedInput("width", (newWidth - selectWidth - 49));
-                withinField2.typedInput("width", (newWidth - selectWidth - 49));
-                valueField.typedInput("width", (newWidth - selectWidth - 49));
-                regexField.typedInput("width", (newWidth - selectWidth - 49));
-                var failMsgField = rule.find(".node-input-rule-msg");
-                failMsgField.width(newWidth - 130);
-            }
-            $("#node-input-rule-container").css('min-height', '250px').editableList({
-                addItem: function (container, i, opt) {
-                    var rule = opt;
-                    if (!rule.hasOwnProperty('type')) {
-                        rule.type = 'eq';
-                    }
-                    if (!rule.hasOwnProperty('property')) {
-                        rule.property = 'payload';
-                    }
-                    var row = $('<div/>', { style: "padding-left: 5px;" }).appendTo(container);
-                    var row1 = $('<div/>', { style: "padding-top: 5px; padding-left: 5px;" }).appendTo(container);
-                    var row2 = $('<div/>', { style: "padding-top: 5px; padding-left: 175px;" }).appendTo(container);
-                    var row3 = $('<div/>', { style: "padding-top: 5px; padding-left: 107px;" }).appendTo(container);
-                    var row4 = $('<div/>', { style: "padding-top: 5px; padding-left: 118px;" }).appendTo(container);
-                    var row5 = $('<div/>', { style: "padding-top: 5px; padding-left: 5px;" }).appendTo(container);
-                    var propertyField = $('<input/>', { class: "node-input-rule-property", type: "text" }).appendTo(row).typedInput({ default: 'msg', types: ['msg', 'flow', 'global', 'num'] });
-                    var finalspan = $('<span/>', { style: "float: right;margin-top: 6px;" }).appendTo(row);
-                    finalspan.append('<span class="node-input-rule-index">' + (i + 1) + '</span> ');
-                    var selectField = $('<select style="width: auto;"/>').appendTo(row1);
-                    for (var d in operators) {
-                        selectField.append($("<option></option>").val(operators[d].value).text(operators[d].type));
-                    }
-                    var valueField = $('<input/>', { class: "node-input-rule-value", type: "text", style: "margin-left: 5px; width: 145px;" }).appendTo(row1).typedInput({ default: 'str', types: ['msg', 'flow', 'global', 'str', 'num', previousValueType] });
-                    var regexField = $('<input/>', { class: "node-input-rule-regex-value", type: "text", style: "margin-left: 5px; width: 145px;" }).appendTo(row1).typedInput({ default: 're', types: ['msg', 'flow', 'global', 're'] });
-                    var typeField = $("<select/>", { class: "node-input-rule-type", style: "margin-left:5px; width: auto;" }).appendTo(row1);
-                    for (var ty = 0; ty < types.length; ty++) {
-                        typeField.append($("<option></option>").val(types[ty]).text(types[ty]));
-                    }
-                    var btwnValueField = $('<input/>', { class: "node-input-rule-btwn-value", type: "text", style: "margin-left: 5px;" }).appendTo(row1).typedInput({ default: 'num', types: ['msg', 'flow', 'global', 'str', 'num', previousValueType] });
-                    var btwnAndLabel = $('<span/>', { class: "node-input-rule-btwn-label" }).text(" " + andLabel + " ").appendTo(row3);
-                    var btwnValue2Field = $('<input/>', { class: "node-input-rule-btwn-value2", type: "text", style: "margin-left:2px;" }).appendTo(row3).typedInput({ default: 'num', types: ['msg', 'flow', 'global', 'str', 'num', previousValueType] });
+  RED.nodes.registerType("threshold-check", {
+    color: "#74b9ff",
+    category: "SHEN",
+    defaults: {
+      name: { value: "" },
+      rules: {
+        value: [
+          {
+            property: "payload",
+            propertyType: "msg",
+            type: "eq",
+            value: "",
+            valueType: "str",
+            value2: "",
+            valueType2: "str",
+            case: false,
+            failMsg: "",
+          },
+        ],
+      },
+    },
+    inputs: 1,
+    outputs: 2,
+    icon: "status.png",
+    inputLabels: "msg",
+    outputLabels: ["msg", "fault"],
+    label: function () {
+      return this.name || "Threshold Check";
+    },
+    oneditprepare: function () {
+      let node = this;
+      let previousValueType = {
+        value: "prev",
+        label: this._("node-red:inject.previous"),
+        hasValue: false,
+      };
+      let meanValueType = {
+        value: "mean",
+        label: "Mean",
+        hasValue: true,
+      };
+      let operators = [
+        { value: "eq", type: "==" },
+        { value: "neq", type: "!=" },
+        { value: "lt", type: "<" },
+        { value: "lte", type: "<=" },
+        { value: "gt", type: ">" },
+        { value: "gte", type: ">=" },
+        { value: "btwn", type: this._("node-red:switch.rules.btwn") },
+        { value: "within", type: "is within" },
+        { value: "cont", type: this._("node-red:switch.rules.cont") },
+        { value: "regex", type: this._("node-red:switch.rules.regex") },
+        { value: "true", type: this._("node-red:switch.rules.true") },
+        { value: "false", type: this._("node-red:switch.rules.false") },
+        { value: "null", type: this._("node-red:switch.rules.null") },
+        { value: "nnull", type: this._("node-red:switch.rules.nnull") },
+        { value: "type", type: "is type" },
+      ];
+      let types = [
+        "number",
+        "string",
+        "boolean",
+        "array",
+        "buffer",
+        "object",
+        "function",
+      ];
+      let andLabel = this._("node-red:switch.and");
+      let caseLabel = this._("node-red:switch.ignorecase");
 
-                    var withinValueField = $('<input/>', { class: "node-input-rule-within-value", type: "text", style: "margin-left: 5px;" }).appendTo(row1).typedInput({ default: 'num', types: ['msg', 'flow', 'global', 'num'] });
-                    var withinOfLabel = $('<span/>', { class: "node-input-rule-btwn-label" }).text("of").appendTo(row4);
-                    var withinValue2Field = $('<input/>', { class: "node-input-rule-within-value2", type: "text", style: "margin-left: 5px;" }).appendTo(row4).typedInput({ default: 'msg', types: ['msg', 'flow', 'global', 'num', previousValueType, meanValueType] });
-                    var caseSensitive = $('<input/>', { id: "node-input-rule-case-" + i, class: "node-input-rule-case", type: "checkbox", style: "width:auto;vertical-align:top" }).appendTo(row2);
-                    $('<label/>', { for: "node-input-rule-case-" + i, style: "margin-left: 3px;" }).text(caseLabel).appendTo(row2);
+      function resizeRule(rule) {
+        const newWidth = rule.width();
+        const selectWidth = rule.find("select").width();
 
-                    $('<span>', { class: "node-input-rule-msg-label" }).text("Fail Message").appendTo(row5);
-                    var failMsgField = $('<input/>', { class: "node-input-rule-msg", type: "text", style: "margin-left: 5px" }).appendTo(row5);
-                    selectField.change(function () {
-                        resizeRule(container);
-                        var type = selectField.val();
-                        if (type === "btwn") {
-                            valueField.typedInput('hide');
-                            typeField.hide();
-                            regexField.typedInput("hide");
-                            withinValueField.typedInput('hide');
-                            btwnValueField.typedInput('show');
-                        } else if (type == "within") {
-                            valueField.typedInput('hide');
-                            typeField.hide();
-                            regexField.typedInput("hide");
-                            btwnValueField.typedInput('hide');
-                            withinValueField.typedInput('show');
-                        } else {
-                            btwnValueField.typedInput('hide');
-                            withinValueField.typedInput('hide');
-                            if (type === "true" || type === "false" || type === "null" || type === "nnull") {
-                                valueField.typedInput('hide');
-                                typeField.hide();
-                                regexField.typedInput("hide");
-                            } else if (type === "type") {
-                                valueField.typedInput('hide');
-                                regexField.typedInput("hide");
-                                typeField.show();
-                            } else if (type === "regex") {
-                                valueField.typedInput('hide');
-                                regexField.typedInput("show");
-                                typeField.hide();
-                            } else {
-                                valueField.typedInput('show');
-                                typeField.hide();
-                                regexField.typedInput("hide");
-                            }
-                        }
-                        if (type === "regex") {
-                            row2.show();
-                            row3.hide();
-                            row4.hide();
-                        } else if (type === "btwn") {
-                            row2.hide();
-                            row3.show();
-                            row4.hide();
-                        } else if (type === "within") {
-                            row2.hide();
-                            row3.hide();
-                            row4.show();
-                        } else {
-                            row2.hide();
-                            row3.hide();
-                            row4.hide();
-                        }
-                    });
-                    propertyField.typedInput('value', rule.property);
-                    propertyField.typedInput('type', rule.propertyType || "msg");
-                    selectField.val(rule.type);
-                    failMsgField.val(rule.failMsg);
-                    if (rule.type == "type") {
-                        typeField.val(rule.value);
-                    } else if (rule.type == "btwn") {
-                        btwnValueField.typedInput('value', rule.value);
-                        btwnValueField.typedInput('type', rule.valueType || 'num');
-                        btwnValue2Field.typedInput('value', rule.value2);
-                        btwnValue2Field.typedInput('type', rule.value2Type || 'num');
-                    } else if (rule.type == "within") {
-                        withinValueField.typedInput('value', rule.value);
-                        withinValueField.typedInput('type', rule.valueType || 'num');
-                        withinValue2Field.typedInput('value', rule.value2);
-                        withinValue2Field.typedInput('type', rule.value2Type || 'num');
-                    } else if (typeof rule.value == "regex") {
-                        regexField.typedInput('value', rule.value);
-                        regexField.typedInput('type', rule.valueType || 're');
-                    } else if (typeof rule.value != "undefined") {
-                        valueField.typedInput('value', rule.value);
-                        valueField.typedInput('type', rule.valueType || 'str');
-                    }
-                    if (rule.case) {
-                        caseSensitive.prop('checked', true);
-                    } else {
-                        caseSensitive.prop('checked', false);
-                    }
-                    selectField.change();
-                },
-                removeItem: function (opt) {
-                    var rules = $("#node-input-rule-container").editableList('items');
-                    rules.each(function (i) { $(this).find(".node-input-rule-index").html(i + 1); });
-                },
-                resizeItem: resizeRule,
-                sortItems: function (rules) {
-                    var rules = $("#node-input-rule-container").editableList('items');
-                    rules.each(function (i) { $(this).find(".node-input-rule-index").html(i + 1); });
-                },
-                sortable: true,
-                removable: true,
-                header: $("<p>").css("font-size", "14px").text("Tests")
-            });
-            for (var i = 0; i < this.rules.length; i++) {
-                var rule = this.rules[i];
-                $("#node-input-rule-container").editableList('addItem', rule);
+        let propertyField = rule.find(".node-input-rule-property");
+        propertyField.typedInput("width", newWidth - 30);
+
+        let valueField = rule.find(".node-input-rule-value");
+        valueField.typedInput("width", newWidth - selectWidth - 49);
+
+        let regexField = rule.find(".node-input-rule-regex-value");
+        regexField.typedInput("width", newWidth - selectWidth - 49);
+
+        let btwnField1 = rule.find(".node-input-rule-btwn-value");
+        btwnField1.typedInput("width", newWidth - selectWidth - 49);
+
+        let btwnField2 = rule.find(".node-input-rule-btwn-value2");
+        btwnField2.typedInput("width", newWidth - selectWidth - 49);
+
+        let withinField1 = rule.find(".node-input-rule-within-value");
+        withinField1.typedInput("width", newWidth - selectWidth - 49);
+
+        let withinField2 = rule.find(".node-input-rule-within-value2");
+        withinField2.typedInput("width", newWidth - selectWidth - 49);
+
+        let failMsgField = rule.find(".node-input-rule-msg");
+        failMsgField.width(newWidth - 130);
+      }
+
+      $("#node-input-rule-container")
+        .css("min-height", "250px")
+        .editableList({
+          addItem: function (container, i, opt) {
+            let rule = opt;
+            if (!rule.hasOwnProperty("type")) {
+              rule.type = "eq";
             }
-        },
-        oneditsave: function () {
-            var rules = $("#node-input-rule-container").editableList('items');
-            var ruleset;
-            var node = this;
-            node.rules = [];
-            rules.each(function (i) {
-                var rule = $(this);
-                var r = {};
-                r.property = rule.find(".node-input-rule-property").typedInput('value');
-                r.propertyType = rule.find(".node-input-rule-property").typedInput('type');
-                r.type = rule.find("select").val();
-                if (!(r.type === "true" || r.type === "false" || r.type === "null" || r.type === "nnull")) {
-                    if (r.type === "btwn") {
-                        r.value = rule.find(".node-input-rule-btwn-value").typedInput('value');
-                        r.valueType = rule.find(".node-input-rule-btwn-value").typedInput('type');
-                        r.value2 = rule.find(".node-input-rule-btwn-value2").typedInput('value');
-                        r.value2Type = rule.find(".node-input-rule-btwn-value2").typedInput('type');
-                    } else if (r.type === "within") {
-                        r.value = rule.find(".node-input-rule-within-value").typedInput('value');
-                        r.valueType = rule.find(".node-input-rule-within-value").typedInput('type');
-                        r.value2 = rule.find(".node-input-rule-within-value2").typedInput('value');
-                        r.value2Type = rule.find(".node-input-rule-within-value2").typedInput('type');
-                    } else if (r.type === "type") {
-                        r.value = rule.find(".node-input-rule-type").val();
-                    } else {
-                        r.value = rule.find(".node-input-rule-value").typedInput('value');
-                        r.valueType = rule.find(".node-input-rule-value").typedInput('type');
-                    }
-                    if (r.type === "regex") {
-                        r.value = rule.find(".node-input-rule-regex-value").typedInput('value');
-                        r.valueType = rule.find(".node-input-rule-regex-value").typedInput('type');
-                        r.case = rule.find(".node-input-rule-case").prop("checked");
-                    }
+            if (!rule.hasOwnProperty("property")) {
+              rule.property = "payload";
+            }
+
+            let row = $("<div/>", { style: "padding-left: 5px;" }).appendTo(
+              container
+            );
+            let row1 = $("<div/>", {
+              style: "padding-top: 5px; padding-left: 5px;",
+            }).appendTo(container);
+            let row2 = $("<div/>", {
+              style: "padding-top: 5px; padding-left: 175px;",
+            }).appendTo(container);
+            let row3 = $("<div/>", {
+              style: "padding-top: 5px; padding-left: 107px;",
+            }).appendTo(container);
+            let row4 = $("<div/>", {
+              style: "padding-top: 5px; padding-left: 118px;",
+            }).appendTo(container);
+            let row5 = $("<div/>", {
+              style: "padding-top: 5px; padding-left: 5px;",
+            }).appendTo(container);
+
+            let propertyField = $("<input/>", {
+              class: "node-input-rule-property",
+              type: "text",
+            })
+              .appendTo(row)
+              .typedInput({
+                default: "msg",
+                types: ["msg", "flow", "global", "num"],
+              });
+
+            let finalspan = $("<span/>", {
+              style: "float: right;margin-top: 6px;",
+            }).appendTo(row);
+            finalspan.append(
+              '<span class="node-input-rule-index">' + (i + 1) + "</span> "
+            );
+
+            let selectField = $('<select style="width: auto;"/>').appendTo(
+              row1
+            );
+
+            for (let d in operators) {
+              selectField.append(
+                $("<option></option>")
+                  .val(operators[d].value)
+                  .text(operators[d].type)
+              );
+            }
+
+            let valueField = $("<input/>", {
+              class: "node-input-rule-value",
+              type: "text",
+              style: "margin-left: 5px; width: 145px;",
+            })
+              .appendTo(row1)
+              .typedInput({
+                default: "str",
+                types: [
+                  "msg",
+                  "flow",
+                  "global",
+                  "str",
+                  "num",
+                  previousValueType,
+                ],
+              });
+
+            let regexField = $("<input/>", {
+              class: "node-input-rule-regex-value",
+              type: "text",
+              style: "margin-left: 5px; width: 145px;",
+            })
+              .appendTo(row1)
+              .typedInput({
+                default: "re",
+                types: ["msg", "flow", "global", "re"],
+              });
+
+            let typeField = $("<select/>", {
+              class: "node-input-rule-type",
+              style: "margin-left:5px; width: auto;",
+            }).appendTo(row1);
+            for (let ty = 0; ty < types.length; ty++) {
+              typeField.append(
+                $("<option></option>").val(types[ty]).text(types[ty])
+              );
+            }
+
+            let btwnValueField = $("<input/>", {
+              class: "node-input-rule-btwn-value",
+              type: "text",
+              style: "margin-left: 5px;",
+            })
+              .appendTo(row1)
+              .typedInput({
+                default: "num",
+                types: [
+                  "msg",
+                  "flow",
+                  "global",
+                  "str",
+                  "num",
+                  previousValueType,
+                ],
+              });
+
+            let btwnAndLabel = $("<span/>", {
+              class: "node-input-rule-btwn-label",
+            })
+              .text(" " + andLabel + " ")
+              .appendTo(row3);
+
+            let btwnValue2Field = $("<input/>", {
+              class: "node-input-rule-btwn-value2",
+              type: "text",
+              style: "margin-left:2px;",
+            })
+              .appendTo(row3)
+              .typedInput({
+                default: "num",
+                types: [
+                  "msg",
+                  "flow",
+                  "global",
+                  "str",
+                  "num",
+                  previousValueType,
+                ],
+              });
+
+            let withinValueField = $("<input/>", {
+              class: "node-input-rule-within-value",
+              type: "text",
+              style: "margin-left: 5px;",
+            })
+              .appendTo(row1)
+              .typedInput({
+                default: "num",
+                types: ["msg", "flow", "global", "num"],
+              });
+
+            let withinOfLabel = $("<span/>", {
+              class: "node-input-rule-btwn-label",
+            })
+              .text("of")
+              .appendTo(row4);
+
+            let withinValue2Field = $("<input/>", {
+              class: "node-input-rule-within-value2",
+              type: "text",
+              style: "margin-left: 5px;",
+            })
+              .appendTo(row4)
+              .typedInput({
+                default: "msg",
+                types: [
+                  "msg",
+                  "flow",
+                  "global",
+                  "num",
+                  previousValueType,
+                  meanValueType,
+                ],
+              });
+
+            let caseSensitive = $("<input/>", {
+              id: "node-input-rule-case-" + i,
+              class: "node-input-rule-case",
+              type: "checkbox",
+              style: "width:auto;vertical-align:top",
+            }).appendTo(row2);
+
+            $("<label/>", {
+              for: "node-input-rule-case-" + i,
+              style: "margin-left: 3px;",
+            })
+              .text(caseLabel)
+              .appendTo(row2);
+
+            $("<span>", { class: "node-input-rule-msg-label" })
+              .text("Fail Message")
+              .appendTo(row5);
+
+            let failMsgField = $("<input/>", {
+              class: "node-input-rule-msg",
+              type: "text",
+              style: "margin-left: 5px",
+            }).appendTo(row5);
+
+            selectField.change(function () {
+              resizeRule(container);
+
+              let type = selectField.val();
+              if (type === "btwn") {
+                valueField.typedInput("hide");
+                typeField.hide();
+                regexField.typedInput("hide");
+                withinValueField.typedInput("hide");
+                btwnValueField.typedInput("show");
+              } else if (type == "within") {
+                valueField.typedInput("hide");
+                typeField.hide();
+                regexField.typedInput("hide");
+                btwnValueField.typedInput("hide");
+                withinValueField.typedInput("show");
+              } else {
+                btwnValueField.typedInput("hide");
+                withinValueField.typedInput("hide");
+
+                if (
+                  type === "true" ||
+                  type === "false" ||
+                  type === "null" ||
+                  type === "nnull"
+                ) {
+                  valueField.typedInput("hide");
+                  typeField.hide();
+                  regexField.typedInput("hide");
+                } else if (type === "type") {
+                  valueField.typedInput("hide");
+                  regexField.typedInput("hide");
+                  typeField.show();
+                } else if (type === "regex") {
+                  valueField.typedInput("hide");
+                  regexField.typedInput("show");
+                  typeField.hide();
+                } else {
+                  valueField.typedInput("show");
+                  typeField.hide();
+                  regexField.typedInput("hide");
                 }
-                r.failMsg = rule.find(".node-input-rule-msg").val();
-                node.rules.push(r);
+              }
+
+              if (type === "regex") {
+                row2.show();
+                row3.hide();
+                row4.hide();
+              } else if (type === "btwn") {
+                row2.hide();
+                row3.show();
+                row4.hide();
+              } else if (type === "within") {
+                row2.hide();
+                row3.hide();
+                row4.show();
+              } else {
+                row2.hide();
+                row3.hide();
+                row4.hide();
+              }
             });
-        },
-        oneditresize: function (size) {
-            var rows = $("#dialog-form>div:not(.node-input-rule-container-row)");
-            var height = size.height;
-            for (var i = 0; i < rows.size(); i++) {
-                height -= $(rows[i]).outerHeight(true);
+
+            propertyField.typedInput("value", rule.property);
+            propertyField.typedInput("type", rule.propertyType || "msg");
+            selectField.val(rule.type);
+            failMsgField.val(rule.failMsg);
+
+            if (rule.type == "type") {
+              typeField.val(rule.value);
+            } else if (rule.type == "btwn") {
+              btwnValueField.typedInput("value", rule.value);
+              btwnValueField.typedInput("type", rule.valueType || "num");
+              btwnValue2Field.typedInput("value", rule.value2);
+              btwnValue2Field.typedInput("type", rule.value2Type || "num");
+            } else if (rule.type == "within") {
+              withinValueField.typedInput("value", rule.value);
+              withinValueField.typedInput("type", rule.valueType || "num");
+              withinValue2Field.typedInput("value", rule.value2);
+              withinValue2Field.typedInput("type", rule.value2Type || "num");
+            } else if (rule.type == "regex") {
+              regexField.typedInput("value", rule.value);
+              regexField.typedInput("type", rule.valueType || "re");
+            } else if (typeof rule.value != "undefined") {
+              valueField.typedInput("value", rule.value);
+              valueField.typedInput("type", rule.valueType || "str");
             }
-            var editorRow = $("#dialog-form>div.node-input-rule-container-row");
-            height -= (parseInt(editorRow.css("marginTop")) + parseInt(editorRow.css("marginBottom")));
-            $("#node-input-rule-container").editableList('height', height);
+
+            if (rule.case) {
+              caseSensitive.prop("checked", true);
+            } else {
+              caseSensitive.prop("checked", false);
+            }
+
+            selectField.change();
+          },
+          removeItem: function (opt) {
+            let rules = $("#node-input-rule-container").editableList("items");
+            rules.each(function (i) {
+              $(this)
+                .find(".node-input-rule-index")
+                .html(i + 1);
+            });
+          },
+          resizeItem: resizeRule,
+          sortItems: function (opt) {
+            let rules = $("#node-input-rule-container").editableList("items");
+            rules.each(function (i) {
+              $(this)
+                .find(".node-input-rule-index")
+                .html(i + 1);
+            });
+          },
+          sortable: true,
+          removable: true,
+          header: $("<p>").css("font-size", "14px").text("Tests"),
+        });
+
+      for (let i = 0; i < this.rules.length; i++) {
+        let rule = this.rules[i];
+        $("#node-input-rule-container").editableList("addItem", rule);
+      }
+    },
+    oneditsave: function () {
+      let node = this;
+      let rules = $("#node-input-rule-container").editableList("items");
+      let ruleset;
+
+      node.rules = [];
+
+      rules.each(function (i) {
+        let ruleDOM = $(this);
+
+        let rule = {};
+        rule.property = ruleDOM
+          .find(".node-input-rule-property")
+          .typedInput("value");
+        rule.propertyType = ruleDOM
+          .find(".node-input-rule-property")
+          .typedInput("type");
+        rule.type = ruleDOM.find("select").val();
+
+        if (
+          !(
+            rule.type === "true" ||
+            rule.type === "false" ||
+            rule.type === "null" ||
+            rule.type === "nnull"
+          )
+        ) {
+          if (rule.type === "btwn") {
+            rule.value = ruleDOM
+              .find(".node-input-rule-btwn-value")
+              .typedInput("value");
+            rule.valueType = ruleDOM
+              .find(".node-input-rule-btwn-value")
+              .typedInput("type");
+            rule.value2 = ruleDOM
+              .find(".node-input-rule-btwn-value2")
+              .typedInput("value");
+            rule.value2Type = ruleDOM
+              .find(".node-input-rule-btwn-value2")
+              .typedInput("type");
+          } else if (rule.type === "within") {
+            rule.value = ruleDOM
+              .find(".node-input-rule-within-value")
+              .typedInput("value");
+            rule.valueType = ruleDOM
+              .find(".node-input-rule-within-value")
+              .typedInput("type");
+            rule.value2 = ruleDOM
+              .find(".node-input-rule-within-value2")
+              .typedInput("value");
+            rule.value2Type = ruleDOM
+              .find(".node-input-rule-within-value2")
+              .typedInput("type");
+          } else if (rule.type === "type") {
+            rule.value = ruleDOM.find(".node-input-rule-type").val();
+          } else if (rule.type === "regex") {
+            rule.value = ruleDOM
+              .find(".node-input-rule-regex-value")
+              .typedInput("value");
+            rule.valueType = ruleDOM
+              .find(".node-input-rule-regex-value")
+              .typedInput("type");
+            rule.case = ruleDOM.find(".node-input-rule-case").prop("checked");
+          } else {
+            rule.value = ruleDOM
+              .find(".node-input-rule-value")
+              .typedInput("value");
+            rule.valueType = ruleDOM
+              .find(".node-input-rule-value")
+              .typedInput("type");
+          }
         }
-    });
+        rule.failMsg = ruleDOM.find(".node-input-rule-msg").val();
+        node.rules.push(rule);
+      });
+    },
+    oneditresize: function (size) {
+      let height = size.height;
+
+      const rows = $("#dialog-form>div:not(.node-input-rule-container-row)");
+      for (let i = 0; i < rows.size(); i++) {
+        height -= $(rows[i]).outerHeight(true);
+      }
+
+      const editorRow = $("#dialog-form>div.node-input-rule-container-row");
+      height -=
+        parseInt(editorRow.css("marginTop")) +
+        parseInt(editorRow.css("marginBottom"));
+
+      $("#node-input-rule-container").editableList("height", height);
+    },
+  });
+</script>
+
+<script type="text/html" data-template-name="threshold-check">
+  <div class="form-row">
+    <label for="node-input-name"
+      ><i class="fa fa-tag"></i>
+      <span data-i18n="node-red:common.label.name"></span
+    ></label>
+    <input
+      type="text"
+      id="node-input-name"
+      data-i18n="[placeholder]node-red:common.label.name"
+    />
+  </div>
+  <div class="form-row node-input-rule-container-row">
+    <ol id="node-input-rule-container"></ol>
+  </div>
+</script>
+
+<script type="text/html" data-help-name="threshold-check">
+  <p>A node to check messages based on property values.</p>
+  <h3>Properties</h3>
+  <dl class="message-properties">
+    <dt>name<span class="property-type">string</span></dt>
+    <dd>name of node to be displayed in editor</dd>
+    <dt>property</dt>
+    <dd>msg, flow or global property to be tested</dd>
+    <dt>test</dt>
+    <dd>test to be performed on property</dd>
+    <dt>fail message<span class="property-type">string</span></dt>
+    <dd>message that describes the test that failed</dd>
+    <dd></dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <p>Any</p>
+  </dl>
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <p>Input message is passed unchanged if it passed all tests.</p>
+  </dl>
+  <h3>Details</h3>
+  <p>
+    Node is configured with a set of rules that define the conditions for
+    properties to be valid data. Tests are able to probe inside of objects and
+    arrays using Javascript descriptors, including the length of strings and
+    arrays.
+  </p>
+  <p>
+    When a message arrives, the selected properties are evaluated against each
+    of the defined rules. The message is then sent to the output only if
+    <i>all</i> of the rules pass.
+  </p>
+  <p>
+    <code>previous value</code> refers to the previous value received for the
+    tested property. <code>Mean</code> is a sliding window mean of the specified
+    number of previous values received for the tested property.
+  </p>
+  <p>
+    An <i>assertion</i> error is thrown if any rule fails. The error is attached
+    to the original message which can be caught by a Catch node.
+  </p>
+  <p>
+    The <code>Fail Message</code> for the first test that failed is displayed on
+    the node and appended to the error message.
+  </p>
 </script>

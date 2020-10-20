@@ -1,32 +1,73 @@
 <script type="text/javascript">
-    RED.nodes.registerType('timing',{
-        category: 'SHEN',
-        color: '#74b9ff',
-        defaults: {
-            frequency: { value: 30, required: true, validate:RED.validators.number() },
-            margin: { value: 0.1, required: true, validate:RED.validators.number() },
-        },
-        inputs:1,
-        outputs:3,
-        outputLabels: ["normal","slow","fast"],
-        icon: "status.png",
-        label: function() {
-            return this.name || 'timing';
-        }
-    });
+  RED.nodes.registerType("timing", {
+    category: "SHEN",
+    color: "#74b9ff",
+    defaults: {
+      period: { value: 30, required: true, validate: RED.validators.number() },
+      margin: { value: 0.1, required: true, validate: RED.validators.number() },
+    },
+    inputs: 1,
+    outputs: 3,
+    outputLabels: ["normal", "slow", "fast"],
+    icon: "status.png",
+    label: function () {
+      return this.name || "timing";
+    },
+  });
 </script>
 
-<script type="text/x-red" data-template-name="timing">
-    <div class="form-row">
-        <label for="node-input-frequency"><i class="icon-tag"></i>Expected Frequency (time between readings)</label>
-        <input type="text" id="node-input-frequency" placeholder="30">
-    </div>
-    <div class="form-row">
-        <label for="node-input-margin"><i class="icon-tag"></i>Expected Frequency Margin (% time margin)</label>
-        <input type="text" id="node-input-margin" placeholder="0.1">
-    </div>
+<script type="text/html" data-template-name="timing">
+  <div class="form-row">
+    <label for="node-input-period"
+      ><i class="icon-tag"></i>Expected Period (time between readings)</label
+    >
+    <input type="text" id="node-input-period" placeholder="30" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-margin"
+      ><i class="icon-tag"></i>Expected Period Margin (% time margin)</label
+    >
+    <input type="text" id="node-input-margin" placeholder="0.1" />
+  </div>
 </script>
 
-<script type="text/x-red" data-help-name="timing">
-    <p>If MQTT is selected, input must be provided</p>
+<script type="text/html" data-help-name="timing">
+  <p>Timing check was created in order to gain awareness of your input flow.</p>
+  <p>
+    It measures the difference between two consecutive messages and determinates
+    if the flow is normal, too fast or too slow based on the values Period and
+    Margin defined for that node.
+  </p>
+  <h3>Properties</h3>
+  <p>
+    <b>Period</b> is the time interval (in seconds) between two consecutive
+    messages.
+  </p>
+  <p>
+    <b>Margin</b> defines a neighbourhood, such that message arrival must obey a
+    period of: [<i>Period - Margin*Period</i>, <i>Period + Margin*Period</i>]
+    seconds. It is, therefore, a fraction of the period and must be represented
+    in a float between [0, 1].
+  </p>
+  <h3>Input</h3>
+  <p>If MQTT is selected, input must be provided.</p>
+  <p>Input is a mere message.</p>
+  <h3>Outputs</h3>
+  <p>
+    <b>Normal: </b>
+    If the period between the last message arrival and the current one falls
+    between
+    <i>Period-Margin*Period</i> and <i>Period+Margin*Period</i> seconds then the
+    flow is normal and the message is sent through the first output.
+  </p>
+  <p>
+    <b>Too slow: </b>
+    If it is greater than the stipulated period then the flow is too fast and
+    the message is sent through the second output.
+  </p>
+  <p>
+    <b>Too fast: </b>
+    If it is less than the stipulated period then the flow is too fast and the
+    message is sent through the third output.
+  </p>
 </script>

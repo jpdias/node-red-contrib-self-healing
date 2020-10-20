@@ -1,46 +1,185 @@
-<script type="text/x-red" data-template-name="flow-control">
-    <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-targetHost"><i class="fa fa-tag"></i> targetHost</label>
-        <input type="text" id="node-input-targetHost" placeholder="targetHost">
-    </div>
-    <div class="form-row">
-        <label for="node-input-targetPort"><i class="fa fa-tag"></i> targetPort</label>
-        <input type="number" id="node-input-targetPort" placeholder="targetPort">
-    </div>
-    <div class="form-row">
-        <label for="node-input-targetFlow"><i class="fa fa-tag"></i> targetFlow</label>
-        <input type="text" id="node-input-targetFlow" placeholder="targetFlow">
-    </div>
-</script>
-
-<script type="text/x-red" data-help-name="flow-control">
-   <p>Some useful help text to introduce the node.</p>
-   <p>Some more information about the node.</p>
-</script>
-
-
 <script type="text/javascript">
-    RED.nodes.registerType('flow-control', {
-        category: "SHEN",
-        defaults: {
-            name: {value: ""},
-            targetHost: {value:"localhost",required:true},
-            targetFlow: {value:"029asd.as31092",required:true},
-            targetPort: {value:1880,required:true,validate:RED.validators.number()},
+  RED.nodes.registerType("flow-control", {
+    category: "SHEN",
+    defaults: {
+      name: { value: "" },
+      targetHost: {
+        value: "localhost",
+        required: true,
+      },
+      targetFlow: {
+        value: "select",
+        required: true,
+        validate: function (option) {
+          return option !== "select";
         },
-        icon: "status.png",
-        color: "#74b9ff",
-        inputs: 1,
-        outputs: 2,
-        align: 'left',
-        inputLabels: "boolean",
-        outputLabels: ["success", "fault"],
-        label: function () {
-            return this.name || "Flow Enabled";
+      },
+      targetPort: {
+        value: 1880,
+        required: true,
+        validate: RED.validators.number(),
+      },
+    },
+    icon: "status.png",
+    color: "#74b9ff",
+    inputs: 1,
+    outputs: 2,
+    align: "left",
+    inputLabels: "boolean",
+    outputLabels: ["success", "fault"],
+    label: function () {
+      return this.name || "Flow Enabled";
+    },
+    oneditprepare: function () {
+      const node = this;
+
+      function setDisplayLoading(display) {
+        const loadingFlow = $("#loading-flow");
+        loadingFlow.css("display", display);
+      }
+
+      function updateFlows(xmlHttp) {
+        const selectField = $("#node-input-targetFlow");
+        selectField.find("option:gt(0)").remove();
+
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+          const allFlows = JSON.parse(xmlHttp.responseText);
+          const tabFlows = allFlows.filter(function (flow) {
+            return flow.type === "tab";
+          });
+
+          tabFlows.forEach(function (flow) {
+            selectField.append(
+              $("<option></option>").val(flow.id).text(flow.label)
+            );
+          });
+
+          if (tabFlows.some((flow) => flow.id === node.targetFlow)) {
+            selectField.val(node.targetFlow).change();
+          } else {
+            selectField.val("select").change();
+          }
+        } else {
+          selectField.val("select").change();
         }
-    });
+
+        setDisplayLoading("none");
+      }
+
+      function flowsRequest(url) {
+        const xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", url, true);
+        xmlHttp.onreadystatechange = function () {
+          updateFlows(xmlHttp);
+        };
+        xmlHttp.send();
+      }
+
+      function setFlowsDropdown() {
+        const targetHost = $("#node-input-targetHost").val();
+        const targetPort = $("#node-input-targetPort").val();
+
+        if (targetPort && targetHost) {
+          setDisplayLoading("inline");
+          flowsRequest(`http://${targetHost}:${targetPort}/flows/`);
+        } else {
+          const selectField = $("#node-input-targetFlow");
+          selectField.val("select").change();
+
+          setDisplayLoading("none");
+        }
+      }
+
+      $("#node-input-targetHost").change(setFlowsDropdown);
+      $("#node-input-targetPort").change(setFlowsDropdown);
+    },
+  });
+</script>
+
+<script type="text/html" data-template-name="flow-control">
+  <div class="form-row">
+    <label for="node-input-name">
+      <i class="fa fa-tag"></i>
+      <span data-i18n="node-red:common.label.name"></span>
+    </label>
+    <input
+      type="text"
+      id="node-input-name"
+      data-i18n="[placeholder]node-red:common.label.name"
+    />
+  </div>
+  <div class="form-row">
+    <label for="node-input-targetHost">
+      <i class="fa fa-tag"></i> targetHost
+    </label>
+    <input type="text" id="node-input-targetHost" placeholder="targetHost" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-targetPort">
+      <i class="fa fa-tag"></i> targetPort
+    </label>
+    <input type="number" id="node-input-targetPort" placeholder="targetPort" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-targetFlow">
+      <i class="fa fa-tag"></i> targetFlow
+    </label>
+    <select id="node-input-targetFlow" name="flows">
+      <option value="select">Select a flow</option>
+    </select>
+    <div id="loading-flow" style="margin-left: 10px">
+      <i class="fa fa-circle-o-notch fa-spin"></i>
+    </div>
+  </div>
+</script>
+
+<script type="text/html" data-help-name="flow-control">
+  <p>
+    A node to enable or disable a Node-RED flow during runtime (local or remote
+    instances, using the available REST API).
+  </p>
+  <h3>Properties</h3>
+  <dl class="message-properties">
+    <dt>
+      name
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Name of node to be displayed in editor.</dd>
+    <dt>
+      targetHost
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Host on which the flow can be found.</dd>
+    <dt>
+      targetPort
+      <span class="property-type">number</span>
+    </dt>
+    <dd>Port number on which the flow can be found.</dd>
+    <dt>
+      targetFlow
+      <span class="property-type"></span>
+    </dt>
+    <dd>Id of the flow to enable/disable.</dd>
+  </dl>
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>
+      payload
+      <span class="property-type">boolean</span>
+    </dt>
+    <dd>True to enable flow, false otherwise.</dd>
+  </dl>
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>
+      flow
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Id of the flow changed.</dd>
+    <dt>
+      disabled
+      <span class="property-type">boolean</span>
+    </dt>
+    <dd>Set to true if flow is disabled, set to false otherwise.</dd>
+  </dl>
 </script>
