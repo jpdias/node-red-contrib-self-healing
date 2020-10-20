@@ -2,7 +2,7 @@ module.exports = function (RED) {
   function ActionDelay(config) {
     RED.nodes.createNode(this, config);
     let node = this;
-    let delayInMilis = parseInt(config.delay) * 1000; // delay in miliseconds
+    let delayInMilis = parseInt(config.delay) * 1000;
     let schedule = "undefined";
     let allActions = []; //all msg payloads
     let lastMsgTimestamp = 0;

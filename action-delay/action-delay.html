@@ -51,7 +51,12 @@
 </script>
 
 <script type="text/html" data-help-name="action-delay">
-  <p>Delay a message in order to avoid overload</p>
+  <p>A node to delay messages in order to avoid overload</p>
+  <h3>Details</h3>
+  <p>
+    This node can be used to delay a command (message) in order to meet the
+    actuator response capacity.
+  </p>
   <h3>The following strategies can be applied:</h3>
   <dl class="message-properties">
     <dt>discard</dt>
@@ -63,9 +68,15 @@
     <dt>allByOrder</dt>
     <dd>sends all delayed messages</dd>
   </dl>
-  <h3>Details</h3>
-  <p>
-    This node can be used to delay a command (message) in order to meet the
-    actuator response capacity.
-  </p>
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <p>Any type of message</p>
+  </dl>
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>Execute</dt>
+    <dd>Messages that are being sent within the allowed response capacity</dd>
+    <dt>Delayed</dt>
+    <dd>Messages that are overloading the response capacity</dd>
+  </dl>
 </script>
