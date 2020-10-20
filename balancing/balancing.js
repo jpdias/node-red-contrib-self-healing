@@ -25,13 +25,9 @@ module.exports = function (RED) {
 
       switch (algorithm) {
         case "1": {
-          outputArray[roundRobinOutput] = msg;
-
+          out = roundRobinOutput%numberOutputs;
           roundRobinOutput++;
-          if (roundRobinOutput == numberOutputs) {
-            roundRobinOutput = 0;
-          }
-
+          outputArray[out] = msg;
           node.send(outputArray);
           break;
         }
