@@ -3,31 +3,218 @@
     category: "SHEN",
     color: "#74b9ff",
     defaults: {
-      minchange: { required: false, validate: RED.validators.number() },
-      maxchange: { required: false, validate: RED.validators.number() },
+      name: { value: "" },
+      strategyMask: { value: 1 },
+      minchange: {
+        required: false,
+        validate: RED.validators.number(),
+        value: 0.0,
+      },
+      maxchange: {
+        required: false,
+        validate: RED.validators.number(),
+        value: 1.0,
+      },
+      stucklimit: {
+        required: false,
+        validate: RED.validators.number(),
+        value: 2,
+      },
     },
     inputs: 1,
-    outputs: 3,
+    outputs: 2,
     inputLabels: "number",
-    outputLabels: ["ok", "min change", "max change"],
+    outputLabels: ["ok", "error"],
     icon: "status.png",
     label: function () {
       return this.name || "readings-watcher";
     },
+    oneditsave: strategy_encode,
+    oneditprepare: strategy_decode,
   });
+
+  function strategy_encode() {
+    this.strategyMask = 0;
+    if (document.getElementById("minchangeStrat").checked)
+      this.strategyMask |= 1;
+    if (document.getElementById("maxchangeStrat").checked)
+      this.strategyMask |= 2;
+    if (document.getElementById("stucklimitStrat").checked)
+      this.strategyMask |= 4;
+  }
+
+  function strategy_decode() {
+    let min = document.getElementById("minchangeStrat");
+    let max = document.getElementById("maxchangeStrat");
+    let stuck = document.getElementById("stucklimitStrat");
+
+    document.getElementById("minchangeStrat").checked =
+      (this.strategyMask & 1) == 1;
+    document.getElementById("maxchangeStrat").checked =
+      (this.strategyMask & 2) == 2;
+    document.getElementById("stucklimitStrat").checked =
+      (this.strategyMask & 4) == 4;
+
+    document.getElementById("minchangeCtrl").style.display =
+      (this.strategyMask & 1) == 1 ? "block" : "none";
+    document.getElementById("maxchangeCtrl").style.display =
+      (this.strategyMask & 2) == 2 ? "block" : "none";
+    document.getElementById("stucklimitCtrl").style.display =
+      (this.strategyMask & 4) == 4 ? "block" : "none";
+  }
+
+  function toggleVisibility(element) {
+    let node = document.getElementById(element);
+    node.style.display = node.style.display === "none" ? "block" : "none";
+  }
 </script>
 
-<script type="text/x-red" data-template-name="readings-watcher">
+<script type="text/html" data-template-name="readings-watcher">
   <div class="form-row">
-      <label for="node-input-minchange"><i class="icon-tag"></i> Minimum change between readings (0-1)</label>
-      <input type="text" id="node-input-minchange" placeholder="0.01">
+    <br />
+    <label for="node-input-name">
+      <i class="fa fa-tag"></i>
+      <span data-i18n="node-red:common.label.name"></span>
+    </label>
+    <input
+      type="text"
+      id="node-input-name"
+      data-i18n="[placeholder]node-red:common.label.name"
+    />
   </div>
+
   <div class="form-row">
-      <label for="node-input-maxchange"><i class="icon-tag"></i> Maximum change between readings (0-1)</label>
-      <input type="text" id="node-input-maxchange" placeholder="0.01">
+    <h3>Enable/Disable Strategies:</h3>
+
+    <label for="minchangeStrat" style="width:55%;">Minimum change</label>
+    <input
+      type="checkbox"
+      id="minchangeStrat"
+      style="width:20%;"
+      onclick="toggleVisibility('minchangeCtrl')"
+    />
+
+    <label for="maxchangeStrat" style="width:55%;">Maximum change</label>
+    <input
+      type="checkbox"
+      id="maxchangeStrat"
+      style="width:20%;"
+      onclick="toggleVisibility('maxchangeCtrl')"
+    />
+
+    <label for="stucklimitStrat" style="width:55%;">
+      Stuck at same reading
+    </label>
+    <input
+      type="checkbox"
+      id="stucklimitStrat"
+      style="width:20%;"
+      onclick="toggleVisibility('stucklimitCtrl')"
+    />
+  </div>
+  <div>
+    <h3>Values:</h3>
+    <div class="form-row" id="minchangeCtrl">
+      <label for="node-input-minchange" style="width:80%;">
+        <i class="icon-tag"></i> Minimum % change between readings (0-1):
+      </label>
+      <input
+        type="number"
+        id="node-input-minchange"
+        placeholder="0.0"
+        min="0"
+        step="0.01"
+      />
+    </div>
+    <div class="form-row" id="maxchangeCtrl">
+      <label for="node-input-maxchange" style="width:80%;">
+        <i class="icon-tag"></i> Maximum % change between readings (0-1):
+      </label>
+      <input
+        type="number"
+        id="node-input-maxchange"
+        placeholder="1.0"
+        min="0"
+        step="0.01"
+      />
+    </div>
+    <div class="form-row" id="stucklimitCtrl">
+      <label for="node-input-stucklimit" style="width:80%;">
+        <i class="icon-tag"></i> Trigger after X repeated readings:
+      </label>
+      <input type="number" id="node-input-stucklimit" placeholder="2" min="2" />
+    </div>
   </div>
 </script>
 
-<script type="text/x-red" data-help-name="readings-watcher">
-  <p></p>
+<script type="text/html" data-help-name="readings-watcher">
+  <p>
+    A node to check if sequencial readings are within expected parameters, using
+    different verification methods.
+  </p>
+
+  <h3>Properties</h3>
+  <dl class="message-properties">
+    <dt>name<span class="property-type">string</span></dt>
+    <dd>name of node to be displayed in editor</dd>
+
+    <dt>toggles<span class="property-type">checkbox</span></dt>
+    <dd>checkboxes to enable/disable the verification methods available</dd>
+
+    <dt>minchange<span class="property-type">number</span></dt>
+    <dd>Minimum % change allowed between consecutive readings</dd>
+
+    <dt>maxchange<span class="property-type">number</span></dt>
+    <dd>Maximum % change allowed between consecutive readings</dd>
+
+    <dt>stucklimit<span class="property-type">number</span></dt>
+    <dd>Number of equal value readings allowed before triggering error</dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <p>
+      A message containing a <code>payload</code> property with a
+      <code>number</code> is required
+    </p>
+  </dl>
+
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <p>
+      If reading is within expected parameters, it is sent through
+      <code>ok</code> output
+    </p>
+    <p>
+      Otherwise, it is sent through <code>error</code> output and a
+      <code>msg.type</code> is added to show which verification failed
+    </p>
+  </dl>
+
+  <h3>Details</h3>
+  <p>
+    Different strategies can be enabled to check consecutive readings. When
+    enabled, a corresponding property will appear in the
+    <code>Values</code> section.
+  </p>
+  <p>
+    <code>minchange</code> will trigger an error if the percentual difference
+    between two consecutive readings is lower than the specified limit
+  </p>
+  <p>
+    <code>maxchange</code> will do the same if the difference is higher than the
+    limit
+  </p>
+  <p>
+    <code>stucklimit</code> will compare the last <code>X</code> readings and
+    trigger an error if they are all the same value
+  </p>
+  <p>
+    If the <code>payload</code> is not a <code>number</code>, no message is sent
+    and an error is called with <code>done(error)</code>.
+  </p>
+  <p>
+    When the node is finished with a message, <code>done()</code> is called, so
+    any <code>complete/catch</code> nodes will receive a message about it
+  </p>
 </script>
