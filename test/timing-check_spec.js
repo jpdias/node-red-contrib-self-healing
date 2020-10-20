@@ -41,37 +41,37 @@ describe("timing Node", function () {
   };
 
   it("should be able to detect if the flow is normal", function (done) {
-     const period = 0.5;
+    const period = 0.5;
     timingTest(expectedResults.normal, period, done);
   });
 
   it("should be able to detect if the flow is normal in the verge of the minimum period value", function (done) {
-     const period = 0.455;
+    const period = 0.455;
     timingTest(expectedResults.normal, period, done);
   });
 
   it("should be able to detect if the flow is normal in the verge of the maximum period value", function (done) {
-     const period = 0.545;
+    const period = 0.545;
     timingTest(expectedResults.normal, period, done);
   });
 
   it("should be able to detect if the flow is too fast", function (done) {
-     const period = 0.4;
+    const period = 0.4;
     timingTest(expectedResults.fast, period, done);
   });
 
   it("should be able to detect if the flow is too fast when slightly less than the minimum period value", function (done) {
-     const period = 0.44;
+    const period = 0.44;
     timingTest(expectedResults.fast, period, done);
   });
 
   it("should be able to detect if the flow is too slow", function (done) {
-     const period = 0.6;
+    const period = 0.6;
     timingTest(expectedResults.slow, period, done);
   });
 
   it("should be able to detect if the flow is too slow when slightly greater than the maximum period value", function (done) {
-     const period = 0.56;
+    const period = 0.56;
     timingTest(expectedResults.slow, period, done);
   });
 
@@ -138,22 +138,18 @@ describe("timing Node", function () {
   }
 
   function validateOutputs(expectedResult, normalSpy, fastSpy, slowSpy) {
-    try {
-      if (expectedResult == 1) {
+    if (expectedResult == 1) {
         normalSpy.should.be.calledTwice();
         fastSpy.should.not.be.called();
         slowSpy.should.not.be.called();
-      } else if (expectedResult == 2) {
+    } else if (expectedResult == 2) {
         normalSpy.should.be.calledOnce();
         fastSpy.should.be.calledOnce();
         slowSpy.should.not.be.called();
-      } else {
+    } else {
         normalSpy.should.be.calledOnce();
         fastSpy.should.not.be.called();
         slowSpy.should.be.calledOnce();
-      }
-    } catch (error) {
-      throw error;
     }
   }
 });
