@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - Set up integration with upstream GitHub repository #44
 - Code coverage analysis #46
 - Mutation testing #47
+- Unit tests for every node
 
 #### Changed
 
