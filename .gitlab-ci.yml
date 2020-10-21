@@ -63,5 +63,6 @@ github-deploy:
     - git checkout -b gitlab-master gitlab/master
     - git checkout master
     - git merge --ff-only gitlab-master
+    - git remote set-url origin "https://ldso2020-t4g2:${GITHUB_TOKEN}@github.com/ldso2020-t4g2/node-red-contrib-self-healing.git"
     - git push
-    - gh pr create -R jpdias/node-red-contrib-self-healing -B master -t $PR_TITLE --fill
+    - gh pr create -R jpdias/node-red-contrib-self-healing -B master -t "Integrate changes from LDSO T4G2 group" --fill
