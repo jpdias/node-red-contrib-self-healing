@@ -1,60 +1,126 @@
+let BoundedStack = require("../utils/bounded-stack.js");
+
 module.exports = function (RED) {
+  function readingsWatcher(config) {
+    RED.nodes.createNode(this, config);
+    let node = this;
 
-    function readingsWatcher(config) {
-        RED.nodes.createNode(this, config);
-        var node = this;
-        this.minchange = config.minchange;
-        this.maxchange = config.maxchange;
-        this.lastvalue = null;
+    /*
+      Configure strategy variables according to bitmask
+      Bit 1 --> minimum change
+      Bit 2 --> maximum change
+      Bit 3 --> stuck at same value
+	  */
+    this.minchange = (config.strategyMask & 1) == 1 ? config.minchange : null;
+    this.maxchange = (config.strategyMask & 2) == 2 ? config.maxchange : null;
 
-        this.on('input', function (msg) {
-            if(isNaN(msg.payload)){
-                node.status({
-                    fill: "red",
-                    shape: "circle",
-                    text: "NaN"
-                });
-                return;
-            }
-            if(!this.lastvalue){
-                node.status({
-                    fill: "green",
-                    shape: "dot",
-                    text: "First value"
-                });
-                this.lastvalue = msg.payload;
-                msg.timestamp = Date.now().toString();
-                node.send([msg,null,null])
-            } else {
-                let diff =  Math.abs((this.lastvalue - msg.payload)/this.lastvalue);
-                if(this.maxchange && diff >= this.maxchange){
-                    node.status({
-                        fill: "red",
-                        shape: "dot",
-                        text: "max change"
-                    });
-                    msg.timestamp = Date.now().toString();
-                    node.send([null,null,msg]);
-                } else if (this.minchange && diff <= this.minchange){
-                    node.status({
-                        fill: "red",
-                        shape: "dot",
-                        text: "minimal change"
-                    });
-                    msg.timestamp = Date.now().toString();
-                    node.send([null,msg,null]);
-                } else {
-                    node.status({
-                        fill: "green",
-                        shape: "dot",
-                        text: "ok"
-                    });
-                    this.lastvalue = msg.payload;
-                    msg.timestamp = Date.now().toString();
-                    node.send([msg,null,null]);
-                }
-            }
-        });
+    if ((config.strategyMask & 4) == 4) {
+      this.stucklimit = config.stucklimit;
+      this.readings = new BoundedStack(config.stucklimit);
+    } else {
+      this.stucklimit = null;
+      this.readings = new BoundedStack(10);
     }
-    RED.nodes.registerType("readings-watcher", readingsWatcher);
-}
+
+    this.on("input", function (msg, send, done) {
+      // Add/Update timestamp in message
+      msg.timestamp = Date.now().toString();
+
+      // Validate message payload
+      if (isNaN(msg.payload)) {
+        node.status({
+          fill: "red",
+          shape: "circle",
+          text: "NaN",
+        });
+        node.warn("Expected a number as payload. Got: " + msg.payload);
+        done(new Error("Expected a number as payload. Got: " + msg.payload));
+        return;
+      }
+
+      // First registered reading
+      if (this.readings.isEmpty()) {
+        node.status({
+          fill: "green",
+          shape: "dot",
+          text: "first reading",
+        });
+        this.readings.push(msg.payload);
+        send([msg, null]);
+        done();
+        return;
+      }
+
+      let lastvalue = this.readings.peek();
+      this.readings.push(msg.payload);
+      let result = [null, null];
+      let error = null;
+
+      // Calculate percentual difference from last reading
+      let diff = Math.abs((lastvalue - msg.payload) / lastvalue);
+
+      // Maximum change triggered
+      if (this.maxchange && diff >= this.maxchange) {
+        node.status({
+          fill: "red",
+          shape: "dot",
+          text: "max change",
+        });
+        msg.type = "maxchange";
+        result[1] = msg;
+        error =
+          "Consecutive readings differ more than expected (Difference: " +
+          diff +
+          ")";
+      }
+
+      // Minimum change triggered
+      else if (this.minchange && diff <= this.minchange) {
+        node.status({
+          fill: "red",
+          shape: "dot",
+          text: "min change",
+        });
+        msg.type = "minchange";
+        result[1] = msg;
+        error =
+          "Consecutive readings more similar than expected (Difference: " +
+          diff +
+          ")";
+      }
+
+      // Stuck at same reading triggered
+      else if (
+        this.stucklimit &&
+        this.readings.isFull() &&
+        this.readings.areAllElementsEqual()
+      ) {
+        node.status({
+          fill: "red",
+          shape: "dot",
+          text: "stuck limit",
+        });
+        msg.type = "stucklimit";
+        result[1] = msg;
+        error =
+          "Last " +
+          this.stucklimit +
+          " consecutive readings were the same (Value: " +
+          msg.payload +
+          ")";
+      } else {
+        node.status({
+          fill: "green",
+          shape: "dot",
+          text: "ok",
+        });
+        result[0] = msg;
+      }
+
+      send(result);
+      if (error) done(error);
+      else done();
+    });
+  }
+  RED.nodes.registerType("readings-watcher", readingsWatcher);
+};

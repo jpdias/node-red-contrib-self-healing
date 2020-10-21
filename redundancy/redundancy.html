@@ -1,46 +1,57 @@
 <script type="text/x-red" data-template-name="redundancy-manager">
-    <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
-        <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
-    </div>
-    <div class="form-row">
-        <label for="node-input-frequency"><i class="fa fa-tag"></i> Voting frequency (min 30s)</label>
-        <input type="number" id="node-input-frequency" placeholder="30">
-    </div>
-    <div class="form-row">
-        <label for="node-input-pingInterval"><i class="fa fa-tag"></i> Ping interval (s)</label>
-        <input type="number" id="node-input-pingInterval" placeholder="10">
-    </div>
-    <div class="form-row">
-        <label for="node-input-timeout"><i class="fa fa-tag"></i>Timeout (s)</label>
-        <input type="number" id="node-input-timeout" placeholder="10">
-    </div>
+  <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
+      <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+  </div>
+  <div class="form-row">
+      <label for="node-input-frequency"><i class="fa fa-tag"></i> Voting frequency (min 30s)</label>
+      <input type="number" id="node-input-frequency" placeholder="30">
+  </div>
+  <div class="form-row">
+      <label for="node-input-pingInterval"><i class="fa fa-tag"></i> Ping interval (s)</label>
+      <input type="number" id="node-input-pingInterval" placeholder="10">
+  </div>
+  <div class="form-row">
+      <label for="node-input-timeout"><i class="fa fa-tag"></i>Timeout (s)</label>
+      <input type="number" id="node-input-timeout" placeholder="10">
+  </div>
 </script>
 
 <script type="text/x-red" data-help-name="redundancy-manager">
-   <p>Some useful help text to introduce the node.</p>
-   <p>Some more information about the node.</p>
+  <p>Some useful help text to introduce the node.</p>
+  <p>Some more information about the node.</p>
 </script>
 
-
 <script type="text/javascript">
-    RED.nodes.registerType('redundancy-manager', {
-        category: "SHEN",
-        defaults: {
-            name: {value: ""},
-            frequency: {value:"30", required:true, validate:RED.validators.number()},
-            timeout: {value:"15", required:true, validate:RED.validators.number()},
-            pingInterval: {value:"5", required:true, validate:RED.validators.number()}
-        },
-        icon: "status.png",
-        color: "#74b9ff",
-        inputs: 1,
-        outputs: 3,
-        align: 'left',
-        inputLabels: "n2n",
-        outputLabels: ["master(bool)", "ips(array)", "ping"],
-        label: function () {
-            return this.name || "Redundancy Manager";
-        }
-    });
+  RED.nodes.registerType("redundancy-manager", {
+    category: "SHEN",
+    defaults: {
+      name: { value: "" },
+      frequency: {
+        value: "30",
+        required: true,
+        validate: RED.validators.number(),
+      },
+      timeout: {
+        value: "15",
+        required: true,
+        validate: RED.validators.number(),
+      },
+      pingInterval: {
+        value: "5",
+        required: true,
+        validate: RED.validators.number(),
+      },
+    },
+    icon: "status.png",
+    color: "#74b9ff",
+    inputs: 1,
+    outputs: 3,
+    align: "left",
+    inputLabels: "n2n",
+    outputLabels: ["master(bool)", "ips(array)", "ping"],
+    label: function () {
+      return this.name || "Redundancy Manager";
+    },
+  });
 </script>
