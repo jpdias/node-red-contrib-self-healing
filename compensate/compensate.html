@@ -1,38 +1,3 @@
-<script type="text/x-red" data-template-name="sensor-compensate">
-  <div class="form-row">
-      <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
-      <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
-  </div>
-  <div class="form-row">
-      <label for="node-input-msghistory"><i class="fa fa-tag"></i> Message History</label>
-      <input type="number" id="node-input-msghistory" placeholder="10">
-  </div>
-  <div class="form-row">
-      <label for="node-input-timeout"><i class="fa fa-tag"></i> Timeout (s)</label>
-      <input type="number" id="node-input-timeout" placeholder="10">
-  </div>
-  <div class="form-row">
-      <label for="node-input-strategy"><i class="fa fa-tag"></i> Compensate Strategy</label>
-      <select type="text" id="node-input-strategy">
-          <option>min</option>
-          <option>max</option>
-          <option>last</option>
-          <option>mode</option>
-          <option>mean</option>
-      </select>
-  </div>
-  <p> Confidence does an eval of a valid JS expression. Both compensated values counter (compensatedCounter) and history values (history) can be used. Example: (1 / compensatedCounter) >= 1 ? 1 : (1 / compensatedCounter) </p>
-  <div class="form-row">
-      <label for="node-input-confidenceFormula"><i class="fa fa-tag"></i> Confidence Formula</label>
-      <input type="text" id="node-input-confidenceFormula" placeholder="compensatedCounter">
-  </div>
-</script>
-
-<script type="text/x-red" data-help-name="sensor-compensate">
-  <p>Some useful help text to introduce the node.</p>
-  <p>Some more information about the node.</p>
-</script>
-
 <script type="text/javascript">
   RED.nodes.registerType("sensor-compensate", {
     category: "SHEN",
@@ -47,15 +12,73 @@
       strategy: { value: "last", required: true },
       confidenceFormula: { value: "", required: false },
     },
-    icon: "status.png",
-    color: "#74b9ff",
     inputs: 1,
     outputs: 1,
-    align: "left",
-    inputLabels: "number",
-    outputLabels: ["msg"],
+    color: "#74b9ff",
     label: function () {
       return this.name || "Sensor Compensate";
     },
+    inputLabels: "number",
+    outputLabels: ["msg"],
+    icon: "status.png",
+    align: "left",
   });
+</script>
+
+<script type="text/html" data-template-name="sensor-compensate">
+  <div class="form-row">
+    <label for="node-input-name"
+      ><i class="fa fa-tag"></i>
+      <span data-i18n="node-red:common.label.name"></span
+    ></label>
+    <input
+      type="text"
+      id="node-input-name"
+      data-i18n="[placeholder]node-red:common.label.name"
+    />
+  </div>
+  <div class="form-row">
+    <label for="node-input-msghistory"
+      ><i class="fa fa-tag"></i> Message History</label
+    >
+    <input type="number" id="node-input-msghistory" placeholder="10" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-timeout"
+      ><i class="fa fa-tag"></i> Timeout (s)</label
+    >
+    <input type="number" id="node-input-timeout" placeholder="10" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-strategy"
+      ><i class="fa fa-tag"></i> Compensate Strategy</label
+    >
+    <select type="text" id="node-input-strategy">
+      <option>min</option>
+      <option>max</option>
+      <option>last</option>
+      <option>mode</option>
+      <option>mean</option>
+    </select>
+  </div>
+  <p>
+    Confidence does an eval of a valid JS expression. Both compensated values
+    counter (compensatedCounter) and history values (history) can be used.
+    Example: (1 / compensatedCounter) >= 1 ? 1 : (1 / compensatedCounter)
+  </p>
+  <div class="form-row">
+    <label for="node-input-confidenceFormula"
+      ><i class="fa fa-tag"></i> Confidence Formula</label
+    >
+    <input
+      type="text"
+      id="node-input-confidenceFormula"
+      placeholder="compensatedCounter"
+    />
+  </div>
+</script>
+
+<script type="text/html" data-help-name="sensor-compensate">
+  <p>Some useful help text to introduce the node.</p>
+  <p>Some more information about the node.</p>
 </script>
