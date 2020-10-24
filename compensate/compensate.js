@@ -180,10 +180,11 @@ module.exports = function (RED) {
       clearInterval(scheduler);
 
       if (typeof msg.payload === "number") {
-        if (history.length > msghistory) {
+        if (history.length >= msghistory) {
           history.shift();
         }
         history.push(msg.payload);
+
         node.status({ fill: "green", shape: "dot", text: "Ok" });
         compensatedCounter == 0
           ? (compensatedCounter = 0)

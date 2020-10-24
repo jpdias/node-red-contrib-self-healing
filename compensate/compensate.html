@@ -79,6 +79,47 @@
 </script>
 
 <script type="text/html" data-help-name="sensor-compensate">
-  <p>Some useful help text to introduce the node.</p>
-  <p>Some more information about the node.</p>
+  <p>A node to compensate missing values with a pre-defined strategy.</p>
+
+  <h3>Properties</h3>
+  <dl class="message-properties">
+    <dt>
+      name
+      <span class="property-type">string</span>
+    </dt>
+    <dd>name of node to be displayed in editor.</dd>
+    <dt>message history</dt>
+    <dd>
+      number of previous messages that the node uses in order to calculate the
+      missing value.
+    </dd>
+    <dt>timeout</dt>
+    <dd></dd>
+    <dt>strategy</dt>
+    <dd>strategy the node will use to calculate the missing value.</dd>
+    <dt>confidence formula</dt>
+    <dd>formula that provides a confidence level on the compensated values.</dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <p>Any input provided that the message payload is a number</p>
+  </dl>
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <p>
+      If a new message arrives at the node before the designed timeout, the node
+      will output that message.
+    </p>
+    <p>
+      If not, it will output the value calculated through the defined strategy.
+    </p>
+  </dl>
+
+  <h3>Details</h3>
+  <p>
+    This node is used to prevent the disruption of the message flow by
+    compensating missing values with the ones that are calculated based on
+    previous messages.
+  </p>
 </script>
