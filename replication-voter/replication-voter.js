@@ -69,7 +69,7 @@ module.exports = function (RED) {
 
         sendOut(node, msg, done, majorCount >= parseInt(config.majority));
       } else if (
-        msg.payload.constructor === Number &&
+        (msg.payload.constructor === Number || msg.payload.constructor === String) &&
         typeof config.countInputs != "undefined"
       ) {
         allValues.push(msg.payload);
