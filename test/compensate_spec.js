@@ -1,4 +1,3 @@
-let should = require("should");
 let helper = require("node-red-node-test-helper");
 let compensateNode = require("../compensate/compensate.js");
 
@@ -59,7 +58,6 @@ describe("compensate node", function () {
       let n1 = helper.getNode("n1");
       let n2 = helper.getNode("n2");
       let messageCounter = 0;
-      let messageSent = 0;
 
       n2.on("input", function (msg, _send, _done) {
         messageCounter++;
