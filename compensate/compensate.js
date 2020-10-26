@@ -107,6 +107,7 @@ module.exports = function (RED) {
       return a + b;
     });
     let avg = sum / history.length;
+
     node.status({
       fill: "yellow",
       shape: "dot",
@@ -169,7 +170,7 @@ module.exports = function (RED) {
       if (!scheduler && typeof msg.payload === "number") {
         scheduler = setInterval(
           sendMessage,
-          parseInt(messageTimeout) * 1000,
+          parseFloat(messageTimeout) * 1000,
           node,
           send,
           done,
@@ -199,7 +200,7 @@ module.exports = function (RED) {
         ]);
         scheduler = setInterval(
           sendMessage,
-          parseInt(messageTimeout) * 1000,
+          parseFloat(messageTimeout) * 1000,
           node,
           send,
           done,
@@ -213,6 +214,10 @@ module.exports = function (RED) {
           text: "Payload Not a Number",
         });
       }
+    });
+
+    this.on("close", function () {
+      clearInterval(scheduler);
     });
   }
 
