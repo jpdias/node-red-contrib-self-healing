@@ -1,7 +1,8 @@
 {
   "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
   "packageManager": "npm",
-  "mutate": ["action-delay/*.js",
+  "mutate": [
+    "action-delay/*.js",
     "balancing/*.js",
     "compensate/*.js",
     "flow-control/*.js",
@@ -12,7 +13,8 @@
     "redundancy/*.js",
     "replication-voter/*.js",
     "threshold-check/*.js",
-    "timing-check/*.js"],
+    "timing-check/*.js"
+  ],
   "reporters": ["html", "clear-text", "progress"],
   "testRunner": "mocha",
   "coverageAnalysis": "perTest"
