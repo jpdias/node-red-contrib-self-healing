@@ -65,16 +65,17 @@ module.exports = function (RED) {
       this.lastTimestamp = currentTimestamp;
     });
 
-    setTimeout(()=>{
+    setTimeout(() => {
       const currentTimestamp = Date.now();
-      msg.timestamp = currentTimestamp;
 
-      if(currentTimestamp - this.lastTimestamp > this.timeout){
+      if (currentTimestamp - this.lastTimestamp > this.timeout) {
         node.status({
           fill: "red",
           shape: "dot",
           text: "Timeout",
         });
+
+        const msg = "Timeout reached. Stopped message flow";
 
         node.send([null, null, null, msg]);
       }

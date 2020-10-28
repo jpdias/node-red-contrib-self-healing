@@ -5,8 +5,16 @@
     defaults: {
       period: { value: 30, required: true, validate: RED.validators.number() },
       margin: { value: 0.1, required: true, validate: RED.validators.number() },
-      slidingWindowLength: {value: 5, required: true, validate: RED.validators.number() },
-      timeout: {value: 150, required: true, validate: RED.validators.number() }
+      slidingWindowLength: {
+        value: 5,
+        required: true,
+        validate: RED.validators.number(),
+      },
+      timeout: {
+        value: 150,
+        required: true,
+        validate: RED.validators.number(),
+      },
     },
     inputs: 1,
     outputs: 3,
@@ -21,22 +29,26 @@
 <script type="text/html" data-template-name="timing">
   <div class="form-row">
     <label for="node-input-period"
-      ><i class="icon-tag"></i>Expected Period (time between readings)</label>
+      ><i class="icon-tag"></i>Expected Period (time between readings)</label
+    >
     <input type="text" id="node-input-period" placeholder="30" />
   </div>
   <div class="form-row">
     <label for="node-input-margin"
-      ><i class="icon-tag"></i>Expected Period Margin (% time margin)</label>
+      ><i class="icon-tag"></i>Expected Period Margin (% time margin)</label
+    >
     <input type="text" id="node-input-margin" placeholder="0.1" />
   </div>
   <div class="form-row">
     <label for="node-input-slidingWindowLength"
-      ><i class="icon-tag"></i>Size of the sliding windows (> 1)</label>
+      ><i class="icon-tag"></i>Size of the sliding windows (> 1)</label
+    >
     <input type="text" id="node-input-slidingWindowLength" placeholder="5" />
   </div>
   <div class="form-row">
     <label for="node-input-timeout"
-      ><i class="icon-tag"></i>Maximum time for timeout call</label>
+      ><i class="icon-tag"></i>Maximum time for timeout call</label
+    >
     <input type="text" id="node-input-timeout" placeholder="150" />
   </div>
 </script>
@@ -66,7 +78,7 @@
     the full capacity).
   </p>
   <p>
-    <b>Timeout</b> is the maximum time (in seconds) in which the flow is enabled 
+    <b>Timeout</b> is the maximum time (in seconds) in which the flow is enabled
     without receiving a message.
   </p>
   <h3>Input</h3>
@@ -76,8 +88,8 @@
   <p>
     <b>Normal: </b>
     If the period between the last message arrival and the current one falls
-    between <i>Period-Margin*Period</i> and <i>Period+Margin*Period</i> 
-    seconds then the flow is normal and the message is sent through the first 
+    between <i>Period-Margin*Period</i> and <i>Period+Margin*Period</i>
+    seconds then the flow is normal and the message is sent through the first
     output.
   </p>
   <p>
@@ -92,7 +104,7 @@
   </p>
   <p>
     <b>Timeout: </b>
-    If it is more than the maximum time allowed between messages, it means, 
-    an error occurred.
+    If it is more than the maximum time allowed between messages, it means, an
+    error occurred.
   </p>
 </script>
