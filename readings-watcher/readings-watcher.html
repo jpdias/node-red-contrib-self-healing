@@ -5,6 +5,11 @@
     defaults: {
       name: { value: "" },
       strategyMask: { value: 1 },
+      valueType: {
+        required: true,
+        validate: RED.validators.regex(/(percentile|fixed)/),
+        value: "percentile",
+      },
       minchange: {
         required: false,
         validate: RED.validators.number(),
@@ -41,6 +46,12 @@
       this.strategyMask |= 2;
     if (document.getElementById("stucklimitStrat").checked)
       this.strategyMask |= 4;
+
+    this.valueType = document
+      .getElementById("value-type-btn1")
+      .classList.contains("selected")
+      ? "percentile"
+      : "fixed";
   }
 
   function strategy_decode() {
@@ -61,11 +72,26 @@
       (this.strategyMask & 2) == 2 ? "block" : "none";
     document.getElementById("stucklimitCtrl").style.display =
       (this.strategyMask & 4) == 4 ? "block" : "none";
+
+    if (this.valueType.localeCompare("fixed") == 0) {
+      document.getElementById("value-type-btn1").classList.remove("selected");
+      document.getElementById("value-type-btn2").classList.add("selected");
+    } else {
+      document.getElementById("value-type-btn2").classList.remove("selected");
+      document.getElementById("value-type-btn1").classList.add("selected");
+    }
   }
 
   function toggleVisibility(element) {
     let node = document.getElementById(element);
     node.style.display = node.style.display === "none" ? "block" : "none";
+  }
+
+  function setValueType(element) {
+    [].forEach.call(document.querySelectorAll(".value-type-btns"), (e) => {
+      e.classList.remove("selected");
+    });
+    element.classList.add("selected");
   }
 </script>
 
@@ -113,10 +139,33 @@
     />
   </div>
   <div>
-    <h3>Values:</h3>
+    <div class="form-row">
+      <h3>Values:</h3>
+      <span class="button-group" name="valueType">
+        <button
+          id="value-type-btn1"
+          type="button"
+          class="red-ui-button toggle selected value-type-btns"
+          value="percentile"
+          onclick="setValueType(this)"
+        >
+          Percentile
+        </button>
+        <button
+          id="value-type-btn2"
+          type="button"
+          class="red-ui-button toggle value-type-btns"
+          value="fixed"
+          onclick="setValueType(this)"
+        >
+          Fixed
+        </button>
+      </span>
+    </div>
+
     <div class="form-row" id="minchangeCtrl">
       <label for="node-input-minchange" style="width:80%;">
-        <i class="icon-tag"></i> Minimum % change between readings (0-1):
+        <i class="icon-tag"></i> Minimum change between readings:
       </label>
       <input
         type="number"
@@ -128,7 +177,7 @@
     </div>
     <div class="form-row" id="maxchangeCtrl">
       <label for="node-input-maxchange" style="width:80%;">
-        <i class="icon-tag"></i> Maximum % change between readings (0-1):
+        <i class="icon-tag"></i> Maximum change between readings:
       </label>
       <input
         type="number"
