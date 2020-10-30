@@ -53,51 +53,6 @@ describe("readings-watcher node", function () {
     });
   }
 
-  // function error_flow(messageSequence, done) {
-  //   helper.load(readingswatcher, testflow, function () {
-  //     let watcher = helper.getNode("watcher");
-  //     let ok = helper.getNode("ok");
-  //     let error = helper.getNode("error");
-
-  //     let okSpy = sinon.spy();
-  //     let errorSpy = sinon.spy();
-
-  //     let receivedMsgs = 0;
-
-  //     ok.on("input", function (msg) {
-  //       try {
-  //         okSpy();
-  //         msg.payload.should.equal(messageSequence[receivedMsgs++]);
-  //       } catch (err) {
-  //         done(err);
-  //       }
-  //     });
-
-  //     error.on("input", function (msg) {
-  //       try {
-  //         errorSpy();
-  //         msg.payload.should.equal(messageSequence[receivedMsgs++]);
-  //       } catch (err) {
-  //         done(err);
-  //       }
-  //     });
-
-  //     messageSequence.forEach((element) => {
-  //       watcher.receive({ payload: element });
-  //     });
-
-  //     clock.tick(100);
-
-  //     try {
-  //       okSpy.callCount.should.be.equal(messageSequence.length - 1);
-  //       errorSpy.should.be.calledOnce();
-  //       done();
-  //     } catch (error) {
-  //       done(error);
-  //     }
-  //   });
-  // }
-
   beforeEach(function (done) {
     testflow = [
       {
@@ -172,6 +127,32 @@ describe("readings-watcher node", function () {
     run_flow(messageSequence, messageSequence.length - 1, 1, done);
   });
 
+  it("should allow consecutive readings when using 'fixed minchange' and their values are sufficiently different", function (done) {
+    let messageSequence = [10, 15];
+    let minchange = 4;
+    minchange.should.be.lessThan(
+      Math.abs(messageSequence[1] - messageSequence[0])
+    );
+    testflow[0].strategyMask = 1;
+    testflow[0].minchange = minchange;
+    testflow[0].valueType = "fixed";
+
+    run_flow(messageSequence, messageSequence.length, 0, done);
+  });
+
+  it("should trigger an error when using 'fixed minchange' and consecutive readings are too similar", function (done) {
+    let messageSequence = [10, 11];
+    let minchange = 2;
+    minchange.should.be.greaterThanOrEqual(
+      Math.abs(messageSequence[0] - messageSequence[1])
+    );
+    testflow[0].strategyMask = 1;
+    testflow[0].minchange = minchange;
+    testflow[0].valueType = "fixed";
+
+    run_flow(messageSequence, messageSequence.length - 1, 1, done);
+  });
+
   it("should allow consecutive readings when using 'percentile maxchange' and their values are sufficiently similar", function (done) {
     let messageSequence = [0.9, 1.1];
     let maxchange = 0.5;
@@ -194,6 +175,32 @@ describe("readings-watcher node", function () {
     testflow[0].strategyMask = 2;
     testflow[0].maxchange = maxchange;
     testflow[0].valueType = "percentile";
+
+    run_flow(messageSequence, messageSequence.length - 1, 1, done);
+  });
+
+  it("should allow consecutive readings when using 'fixed maxchange' and their values are sufficiently similar", function (done) {
+    let messageSequence = [9, 11];
+    let maxchange = 5;
+    maxchange.should.be.greaterThan(
+      Math.abs(messageSequence[0] - messageSequence[1])
+    );
+    testflow[0].strategyMask = 2;
+    testflow[0].maxchange = maxchange;
+    testflow[0].valueType = "fixed";
+
+    run_flow(messageSequence, messageSequence.length, 0, done);
+  });
+
+  it("should trigger an error when using 'fixed maxchange' and consecutive readings are too different", function (done) {
+    let messageSequence = [3, 5];
+    let maxchange = 1;
+    maxchange.should.be.lessThanOrEqual(
+      Math.abs(messageSequence[0] - messageSequence[1])
+    );
+    testflow[0].strategyMask = 2;
+    testflow[0].maxchange = maxchange;
+    testflow[0].valueType = "fixed";
 
     run_flow(messageSequence, messageSequence.length - 1, 1, done);
   });
