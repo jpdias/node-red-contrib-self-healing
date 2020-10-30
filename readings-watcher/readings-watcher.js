@@ -22,6 +22,16 @@ module.exports = function (RED) {
       this.readings = new BoundedStack(10);
     }
 
+    if ("percentile" === config.valueType) {
+      this.changeCalc = function (prev, curr) {
+        return Math.abs((curr - prev) / prev);
+      };
+    } else {
+      this.changeCalc = function (prev, curr) {
+        return Math.abs(curr - prev);
+      };
+    }
+
     this.on("input", function (msg, send, done) {
       // Add/Update timestamp in message
       msg.timestamp = Date.now().toString();
@@ -56,11 +66,10 @@ module.exports = function (RED) {
       let result = [null, null];
       let error = null;
 
-      // Calculate percentual difference from last reading
-      let diff = Math.abs((lastvalue - msg.payload) / lastvalue);
+      let change = this.changeCalc(lastvalue, msg.payload);
 
       // Maximum change triggered
-      if (this.maxchange && diff >= this.maxchange) {
+      if (this.maxchange && change >= this.maxchange) {
         node.status({
           fill: "red",
           shape: "dot",
@@ -70,12 +79,12 @@ module.exports = function (RED) {
         result[1] = msg;
         error =
           "Consecutive readings differ more than expected (Difference: " +
-          diff +
+          change +
           ")";
       }
 
       // Minimum change triggered
-      else if (this.minchange && diff <= this.minchange) {
+      else if (this.minchange && change <= this.minchange) {
         node.status({
           fill: "red",
           shape: "dot",
@@ -85,7 +94,7 @@ module.exports = function (RED) {
         result[1] = msg;
         error =
           "Consecutive readings more similar than expected (Difference: " +
-          diff +
+          change +
           ")";
       }
 
