@@ -11,26 +11,20 @@ module.exports = function (RED) {
       Bit 2 --> maximum change
       Bit 3 --> stuck at same value
 	  */
-    this.minchange = (config.strategyMask & 1) == 1 ? config.minchange : null;
-    this.maxchange = (config.strategyMask & 2) == 2 ? config.maxchange : null;
 
-    if ((config.strategyMask & 4) == 4) {
-      this.stucklimit = config.stucklimit;
-      this.readings = new BoundedStack(config.stucklimit);
-    } else {
-      this.stucklimit = null;
-      this.readings = new BoundedStack(10);
-    }
+    const minchange = (config.strategyMask & 1) == 1 ? config.minchange : null;
+    const maxchange = (config.strategyMask & 2) == 2 ? config.maxchange : null;
+    const stucklimit =
+      (config.strategyMask & 4) == 4 ? config.stucklimit : null;
+    const readings =
+      (config.strategyMask & 4) == 4
+        ? new BoundedStack(config.stucklimit)
+        : new BoundedStack(10);
 
-    if ("percentile" === config.valueType) {
-      this.changeCalc = function (prev, curr) {
-        return Math.abs((curr - prev) / prev);
-      };
-    } else {
-      this.changeCalc = function (prev, curr) {
-        return Math.abs(curr - prev);
-      };
-    }
+    const changeCalc =
+      "percentile" === config.valueType
+        ? (prev, curr) => Math.abs((curr - prev) / prev)
+        : (prev, curr) => Math.abs(curr - prev);
 
     this.on("input", function (msg, send, done) {
       // Add/Update timestamp in message
@@ -49,27 +43,26 @@ module.exports = function (RED) {
       }
 
       // First registered reading
-      if (this.readings.isEmpty()) {
+      if (readings.isEmpty()) {
         node.status({
           fill: "green",
           shape: "dot",
           text: "first reading",
         });
-        this.readings.push(msg.payload);
+        readings.push(msg.payload);
         send([msg, null]);
         done();
         return;
       }
 
-      let lastvalue = this.readings.peek();
-      this.readings.push(msg.payload);
+      const lastvalue = readings.peek();
+      const change = changeCalc(lastvalue, msg.payload);
+      readings.push(msg.payload);
       let result = [null, null];
       let error = null;
 
-      let change = this.changeCalc(lastvalue, msg.payload);
-
       // Maximum change triggered
-      if (this.maxchange && change >= this.maxchange) {
+      if (maxchange && change >= maxchange) {
         node.status({
           fill: "red",
           shape: "dot",
@@ -84,7 +77,7 @@ module.exports = function (RED) {
       }
 
       // Minimum change triggered
-      else if (this.minchange && change <= this.minchange) {
+      else if (minchange && change <= minchange) {
         node.status({
           fill: "red",
           shape: "dot",
@@ -100,9 +93,9 @@ module.exports = function (RED) {
 
       // Stuck at same reading triggered
       else if (
-        this.stucklimit &&
-        this.readings.isFull() &&
-        this.readings.areAllElementsEqual()
+        stucklimit &&
+        readings.isFull() &&
+        readings.areAllElementsEqual()
       ) {
         node.status({
           fill: "red",
@@ -113,7 +106,7 @@ module.exports = function (RED) {
         result[1] = msg;
         error =
           "Last " +
-          this.stucklimit +
+          stucklimit +
           " consecutive readings were the same (Value: " +
           msg.payload +
           ")";
