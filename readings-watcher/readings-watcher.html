@@ -210,6 +210,12 @@
     <dt>toggles<span class="property-type">checkbox</span></dt>
     <dd>checkboxes to enable/disable the verification methods available</dd>
 
+    <dt>valueType<span class="property-type">button</span></dt>
+    <dd>
+      Toggleable buttons to choose between percentile or fixed change
+      calculation
+    </dd>
+
     <dt>minchange<span class="property-type">number</span></dt>
     <dd>Minimum % change allowed between consecutive readings</dd>
 
@@ -226,18 +232,25 @@
       A message containing a <code>payload</code> property with a
       <code>number</code> is required
     </p>
+    <p>{ "payload":10 }</p>
   </dl>
 
   <h3>Outputs</h3>
   <dl class="message-properties">
     <p>
-      If reading is within expected parameters, it is sent through
-      <code>ok</code> output
+      A <code>timestamp</code> is added to the message (or updated if it exists
+      already)
     </p>
     <p>
-      Otherwise, it is sent through <code>error</code> output and a
-      <code>msg.type</code> is added to show which verification failed
+      If reading is within expected parameters, message is forwarded to the
+      <code>ok</code> output
     </p>
+    <p>{ "payload": 10, "timestamp": 1604141914614 }</p>
+    <p>
+      Otherwise, it is sent through <code>error</code> output and a
+      <code>type</code> is added to show which verification failed
+    </p>
+    <p>{ "payload": 10, "timestamp": 1604141914614, "type": "minchange" }</p>
   </dl>
 
   <h3>Details</h3>
@@ -245,6 +258,11 @@
     Different strategies can be enabled to check consecutive readings. When
     enabled, a corresponding property will appear in the
     <code>Values</code> section.
+  </p>
+  <p>
+    Values can be interpreted as percentile or fixed. Two consecutive readings
+    of <code>10</code> and <code>15</code> have a
+    <code>0.5 "percentile change</code> or a <code>5 "fixed" change</code>
   </p>
   <p>
     <code>minchange</code> will trigger an error if the percentual difference
@@ -264,6 +282,8 @@
   </p>
   <p>
     When the node is finished with a message, <code>done()</code> is called, so
-    any <code>complete/catch</code> nodes will receive a message about it
+    any <code>complete</code> nodes can receive a message about it. Likewise for
+    <code>done(err)</code> and any <code>catch</code> nodes if any error
+    happens.
   </p>
 </script>
