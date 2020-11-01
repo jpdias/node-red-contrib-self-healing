@@ -43,6 +43,8 @@
   "author": "JP Dias",
   "license": "MIT",
   "dependencies": {
+    "@sentry/node": "^5.27.2",
+    "@sentry/tracing": "^5.27.2",
     "ajv": "^6.12.4",
     "asn1": "^0.2.4",
     "child_process": "^1.0.2",
