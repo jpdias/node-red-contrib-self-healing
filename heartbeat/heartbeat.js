@@ -1,5 +1,7 @@
 module.exports = function (RED) {
   const https = require("https");
+  const mqtt = require('mqtt');
+  //let client = mqtt.connect('mqtt://test.mosquitto.org') //mudar isto
 
   function failedTrigger(msg, send) {
     msg.payload = { status: 0, statusMessage: "Timeout" };
@@ -69,19 +71,28 @@ module.exports = function (RED) {
       else if (this.protocol == "mqtt") {
         if (!this.interval) {
           this.interval = setInterval(
-            failedTrigger,
-            parseInt(this.frequency) * 1000,
-            msg,
-            send
+          failedTrigger,
+          parseInt(this.frequency) * 1000,
+          msg,
+          send
           );
         }
         clearInterval(this.interval);
 
-        if (!this.onfail) {
-          msg.payload = { status: 200, statusMessage: "Alive" };
-          send(msg);
-        }
-
+        /*
+        client.on('connect', function () {
+          
+            if (!this.onfail) { 
+              msg.payload = { status: 200, statusMessage: "Alive" };
+              msg.timestamp = Date.now().toString();
+              send(msg);
+            }
+            console.log("I'm alive!");
+            //this.status({ fill: "green", shape: "dot", text: "OK" });
+          
+        })
+        */
+       
         this.interval = setInterval(
           failedTrigger,
           parseInt(this.frequency) * 1000,

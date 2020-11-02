@@ -21,6 +21,17 @@
       return this.name || "heartbeat";
     },
   });
+
+  function showHttp() {
+    let chosenProtocol = document.getElementById("node-input-protocol").value;
+    let div = document.getElementById("httpinput");
+
+    if (chosenProtocol == "http") {
+      div.style.visibility = "visible";
+    } else {
+      div.style.visibility = "hidden";
+    }
+  }
 </script>
 
 <!-- edit template -->
@@ -35,7 +46,7 @@
     <label for="node-input-protocol">
       <i class="fa fa-tag"></i> Heartbeat Protocol
     </label>
-    <select type="text" id="node-input-protocol">
+    <select type="text" id="node-input-protocol" onChange="showHttp()">
       <option>http</option>
       <option>mqtt</option>
     </select>
@@ -46,7 +57,7 @@
     </label>
     <input type="checkbox" id="node-input-onfail" />
   </div>
-  <div class="form-row">
+  <div class="form-row" id="httpinput">
     <label for="node-input-httpendpoint">
       <i class="icon-tag"></i>HTTP Endpoint
     </label>
