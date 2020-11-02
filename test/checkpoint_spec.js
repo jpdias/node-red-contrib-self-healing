@@ -33,5 +33,4 @@ describe("checkpoint node", function () {
       }
     });
   });
-
 });
