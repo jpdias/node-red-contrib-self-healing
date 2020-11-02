@@ -1,39 +1,36 @@
 <script type="text/javascript">
-    RED.nodes.registerType("checkpoint", {
-        category: "SHEN",
-        color: "#74b9ff",
-        defaults: {
-            name: { value: "" },
-        },
-        inputs: 1,
-        outputs: 1,
-        inputLabels: "InCommand",
-        outputLabels: ["OutCommand"],
-        icon: "status.png",
-        label: function () {
-            return this.name || "checkpoint";
-        },
-    });
-
+  RED.nodes.registerType("checkpoint", {
+    category: "SHEN",
+    color: "#74b9ff",
+    defaults: {
+      name: { value: "" },
+    },
+    inputs: 1,
+    outputs: 1,
+    inputLabels: "InCommand",
+    outputLabels: ["OutCommand"],
+    icon: "status.png",
+    label: function () {
+      return this.name || "checkpoint";
+    },
+  });
 </script>
 
 <script type="text/html" data-template-name="checkpoint">
-    <div class="form-row">
-        <br />
-        <label for="node-input-name">
-            <i class="fa fa-tag"></i>
-            <span data-i18n="node-red:common.label.name"></span>
-        </label>
-        <input
-            type="text"
-            id="node-input-name"
-            data-i18n="[placeholder]node-red:common.label.name"
-        />
-    </div>
+  <div class="form-row">
+    <br />
+    <label for="node-input-name">
+      <i class="fa fa-tag"></i>
+      <span data-i18n="node-red:common.label.name"></span>
+    </label>
+    <input
+      type="text"
+      id="node-input-name"
+      data-i18n="[placeholder]node-red:common.label.name"
+    />
+  </div>
 </script>
 
 <script type="text/html" data-help-name="readings-watcher">
-  <p>
-    A node that saves messages sent to an actuator and resends on restart.
-  </p>
+  <p>A node that saves messages sent to an actuator and resends on restart.</p>
 </script>
