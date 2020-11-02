@@ -42,6 +42,8 @@ lint_check:
 njsscan:
   stage: test
   image: python
+  cache:
+
   before_script:
     - pip3 install --upgrade njsscan
   script:
