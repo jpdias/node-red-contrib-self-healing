@@ -63,3 +63,16 @@ github-deploy:
   image: registry.gitlab.com/feup-tbs/ldso2021/t4g2/github-deploy
   script:
     - gh pr create -R jpdias/node-red-contrib-self-healing -B master -t "Integrate changes from LDSO T4G2 group" -b "Check the CHANGELOG.md file for more details"
+
+docker-deploy-dev:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+  image: docker:19.03.13
+  services:
+    - docker:19.03.13-dind
+  before_script:
+    - docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PW
+  script:
+    - docker build -t ldso2020t4g2/node-red-contrib-self-healing:next .
+    - docker push ldso2020t4g2/node-red-contrib-self-healing:next
