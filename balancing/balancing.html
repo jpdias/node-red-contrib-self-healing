@@ -29,6 +29,9 @@
 
   function addWeight(output) {
     let list = document.getElementById("weight-list");
+    let weights = document.getElementById("node-input-weights").value;
+
+    let weightsArray = weights.split(".").map(Number);
 
     list.innerHTML = "";
     for (let i = 1; i <= output.value; i++) {
@@ -38,7 +41,7 @@
       let input = document.createElement("input");
       input.setAttribute("type", "number");
       input.setAttribute("min", "1");
-      input.setAttribute("value", "1");
+      input.setAttribute("value", weightsArray[i - 1]);
       input.setAttribute("onChange", "weightChange()");
       element.append(input);
       list.append(element);
@@ -50,7 +53,7 @@
     let weights = document.getElementById("node-input-weights");
 
     let children = list.children;
-    weights.value = " ";
+    weights.value = "";
 
     for (let i = 0; i < children.length; i++) {
       weights.value += children[i].children[0].value + ".";
@@ -87,6 +90,9 @@
   <div id="weights-list" class="form-row" style="visibility: hidden;">
     <label for="weight-list">Output Weights</label>
     <ol id="weight-list"></ol>
+  </div>
+
+  <div class="form-row">
     <input type="hidden" id="node-input-weights" value="1.1.1" />
   </div>
 </script>
@@ -132,6 +138,6 @@
   </p>
   <p>
     When a message arrives, the node will run the selected algorithm and decide
-    to which output it will send the recived message.
+    to which output it will send the received message.
   </p>
 </script>
