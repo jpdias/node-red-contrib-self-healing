@@ -36,7 +36,8 @@
       "heartbeat": "heartbeat/heartbeat.js",
       "timing": "timing-check/timing.js",
       "readings-watcher": "readings-watcher/readings-watcher.js",
-      "balancing": "balancing/balancing.js"
+      "balancing": "balancing/balancing.js",
+      "checkpoint": "checkpoint/checkpoint.js"
     }
   },
   "main": "node_modules/node-red/red/red.js",
