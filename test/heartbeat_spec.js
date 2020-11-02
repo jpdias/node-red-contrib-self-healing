@@ -87,37 +87,4 @@ describe("heartbeat node", function () {
       });
     });
   });
-
-  it("should send status message (mqtt)", function (done) {
-    let testFlow = [
-      {
-        id: "node1",
-        type: "heartbeat",
-        name: "heartbeat",
-        frequency: "1",
-        protocol: "mqtt",
-        onfail: false,
-        httpendpoint: "https://www.fe.up.pt",
-        wires: [["node2"]],
-      },
-      { id: "node2", type: "helper" },
-    ];
-
-    helper.load(heartbeatNode, testFlow, function () {
-      let node1 = helper.getNode("node1");
-      let node2 = helper.getNode("node2");
-
-      node2.on("input", function (msg, _send, _done) {
-        try {
-          msg.payload.should.have.property("status", 200);
-          msg.payload.should.have.property("statusMessage", "Alive");
-          done();
-        } catch (error) {
-          done(error);
-        }
-      });
-
-      node1.receive();
-    });
-  });
 });

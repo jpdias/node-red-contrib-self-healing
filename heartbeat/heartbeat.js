@@ -1,6 +1,6 @@
 module.exports = function (RED) {
   const https = require("https");
-  const mqtt = require('mqtt');
+  //const mqtt = require('mqtt');
   //let client = mqtt.connect('mqtt://test.mosquitto.org') //mudar isto
 
   function failedTrigger(msg, send) {
@@ -71,10 +71,10 @@ module.exports = function (RED) {
       else if (this.protocol == "mqtt") {
         if (!this.interval) {
           this.interval = setInterval(
-          failedTrigger,
-          parseInt(this.frequency) * 1000,
-          msg,
-          send
+            failedTrigger,
+            parseInt(this.frequency) * 1000,
+            msg,
+            send
           );
         }
         clearInterval(this.interval);
@@ -92,7 +92,7 @@ module.exports = function (RED) {
           
         })
         */
-       
+
         this.interval = setInterval(
           failedTrigger,
           parseInt(this.frequency) * 1000,
