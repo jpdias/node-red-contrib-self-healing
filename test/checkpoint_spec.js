@@ -1,4 +1,3 @@
-let should = require("should");
 let helper = require("node-red-node-test-helper");
 let checkpointNode = require("../checkpoint/checkpoint.js");
 
