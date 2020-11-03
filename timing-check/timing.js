@@ -2,18 +2,16 @@ module.exports = function (RED) {
   function Timing(config) {
     RED.nodes.createNode(this, config);
 
-    this.lastTimestamp = null;
-    this.periodBetweenReadings = config.period * 1000; //seconds to milliseconds
-    this.intervalMargin = config.margin;
-    this.slidingWindow = [];
-    this.slidingWindowLength = config.slidingWindow;
+    let lastTimestamp = null;
+    const periodBetweenReadings = config.period * 1000; //seconds to milliseconds
+    let intervalMargin = config.margin;
+    let slidingWindow = [];
+    const slidingWindowLength = config.slidingWindowLength;
 
-    this.maximumPeriod =
-      this.periodBetweenReadings +
-      this.intervalMargin * this.periodBetweenReadings;
-    this.minimumPeriod =
-      this.periodBetweenReadings -
-      this.intervalMargin * this.periodBetweenReadings;
+    const maximumPeriod =
+      periodBetweenReadings + intervalMargin * periodBetweenReadings;
+    const minimumPeriod =
+      periodBetweenReadings - intervalMargin * periodBetweenReadings;
 
     let node = this;
 
@@ -21,9 +19,9 @@ module.exports = function (RED) {
       const currentTimestamp = Date.now();
       msg.timestamp = currentTimestamp;
 
-      addToWindow(msg);
+      addToWindow(msg, slidingWindow, slidingWindowLength);
 
-      if (this.lastTimestamp == null) {
+      if (lastTimestamp == null) {
         node.status({
           fill: "green",
           shape: "dot",
@@ -32,9 +30,9 @@ module.exports = function (RED) {
 
         node.send([msg, null, null]);
       } else {
-        const intervalPeriod = determineWindowAverage();
+        const intervalPeriod = determineWindowAverage(slidingWindow);
 
-        if (intervalPeriod > this.maximumPeriod) {
+        if (intervalPeriod > maximumPeriod) {
           node.status({
             fill: "yellow",
             shape: "dot",
@@ -42,7 +40,7 @@ module.exports = function (RED) {
           });
 
           node.send([null, null, msg]);
-        } else if (intervalPeriod < this.minimumPeriod) {
+        } else if (intervalPeriod < minimumPeriod) {
           node.status({
             fill: "yellow",
             shape: "dot",
@@ -60,30 +58,30 @@ module.exports = function (RED) {
           node.send([msg, null, null]);
         }
       }
-      this.lastTimestamp = currentTimestamp;
+      lastTimestamp = currentTimestamp;
     });
-  }
-
-  function addToWindow(msg) {
-    if (this.slidingWindow.length == this.slidingWindowLength) {
-      this.slidingWindow.shift();
-    }
-
-    this.slidingWindow.push(msg);
-  }
-
-  function determineWindowAverage() {
-    let sum = 0;
-
-    for (let i = 1; i < this.slidingWindow.length; i++) {
-      const intervalPeriod =
-        this.slidingWindow[i].timestamp - this.slidingWindow[i - 1].timestamp;
-
-      sum += intervalPeriod;
-    }
-
-    return sum / this.slidingWindow.length;
   }
 
   RED.nodes.registerType("timing", Timing);
 };
+
+function addToWindow(msg, slidingWindow, slidingWindowLength) {
+  if (slidingWindow.length == slidingWindowLength) {
+    slidingWindow.shift();
+  }
+
+  slidingWindow.push(msg);
+}
+
+function determineWindowAverage(slidingWindow) {
+  let sum = 0;
+
+  for (let i = 1; i < slidingWindow.length; i++) {
+    const intervalPeriod =
+      slidingWindow[i].timestamp - slidingWindow[i - 1].timestamp;
+
+    sum += intervalPeriod;
+  }
+
+  return sum / (slidingWindow.length - 1);
+}
