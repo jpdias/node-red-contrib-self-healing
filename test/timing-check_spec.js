@@ -83,6 +83,7 @@ describe("timing Node", function () {
         name: "timing",
         period: "0.5",
         margin: "0.1",
+        slidingWindowLength: "2",
         wires: [["normalOutput"], ["fastOutput"], ["slowOutput"]],
       },
       {
