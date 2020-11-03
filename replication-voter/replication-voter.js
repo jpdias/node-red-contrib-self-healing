@@ -69,10 +69,12 @@ module.exports = function (RED) {
 
         sendOut(node, msg, done, majorCount >= parseInt(config.majority));
       } else if (
-        (msg.payload.constructor === Number || msg.payload.constructor === String) &&
+        (msg.payload.constructor === Number ||
+          msg.payload.constructor === String) &&
         typeof config.countInputs != "undefined"
       ) {
-        allValues.push(msg.payload);
+        if (typeof msg.payload === config.valueType)
+          allValues.push(msg.payload);
 
         if (allValues.length == config.countInputs) {
           let arrayMode = mode(allValues);
