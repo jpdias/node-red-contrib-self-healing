@@ -9,12 +9,7 @@
         value: 5,
         required: true,
         validate: RED.validators.number(),
-      },
-      timeout: {
-        value: 150,
-        required: true,
-        validate: RED.validators.number(),
-      },
+      }
     },
     inputs: 1,
     outputs: 3,
@@ -45,12 +40,6 @@
     >
     <input type="text" id="node-input-slidingWindowLength" placeholder="5" />
   </div>
-  <div class="form-row">
-    <label for="node-input-timeout"
-      ><i class="icon-tag"></i>Maximum time for timeout call</label
-    >
-    <input type="text" id="node-input-timeout" placeholder="150" />
-  </div>
 </script>
 
 <script type="text/html" data-help-name="timing">
@@ -77,10 +66,6 @@
     the messages in the window (even if, initially, there are less messages than
     the full capacity).
   </p>
-  <p>
-    <b>Timeout</b> is the maximum time (in seconds) in which the flow is enabled
-    without receiving a message.
-  </p>
   <h3>Input</h3>
   <p>If MQTT is selected, input must be provided.</p>
   <p>Input is a mere message.</p>
@@ -101,10 +86,5 @@
     <b>Too fast: </b>
     If it is less than the stipulated period then the flow is too fast and the
     message is sent through the third output.
-  </p>
-  <p>
-    <b>Timeout: </b>
-    If it is more than the maximum time allowed between messages, it means, an
-    error occurred.
   </p>
 </script>

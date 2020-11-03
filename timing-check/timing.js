@@ -1,6 +1,3 @@
-// Instead of measuring flow every two consecutive messages, measure the average flow of X consecutive messages (moving average)
-// Implement output for timeout
-
 module.exports = function (RED) {
   function Timing(config) {
     RED.nodes.createNode(this, config);
@@ -10,7 +7,6 @@ module.exports = function (RED) {
     this.intervalMargin = config.margin;
     this.slidingWindow = [];
     this.slidingWindowLength = config.slidingWindow;
-    this.timeout = config.timeout * 1000;
 
     this.maximumPeriod =
       this.periodBetweenReadings +
@@ -34,7 +30,7 @@ module.exports = function (RED) {
           text: "First message",
         });
 
-        node.send([msg, null, null, null]);
+        node.send([msg, null, null]);
       } else {
         const intervalPeriod = determineWindowAverage();
 
@@ -45,7 +41,7 @@ module.exports = function (RED) {
             text: "Too Slow",
           });
 
-          node.send([null, null, msg, null]);
+          node.send([null, null, msg]);
         } else if (intervalPeriod < this.minimumPeriod) {
           node.status({
             fill: "yellow",
@@ -53,7 +49,7 @@ module.exports = function (RED) {
             text: "Too Fast",
           });
 
-          node.send([null, msg, null, null]);
+          node.send([null, msg, null]);
         } else {
           node.status({
             fill: "green",
@@ -61,27 +57,11 @@ module.exports = function (RED) {
             text: "Normal",
           });
 
-          node.send([msg, null, null, null]);
+          node.send([msg, null, null]);
         }
       }
       this.lastTimestamp = currentTimestamp;
     });
-
-    // setTimeout(() => {
-    //   const currentTimestamp = Date.now();
-
-    //   if (currentTimestamp - this.lastTimestamp > this.timeout) {
-    //     node.status({
-    //       fill: "red",
-    //       shape: "dot",
-    //       text: "Timeout",
-    //     });
-
-    //     const msg = "Timeout reached. Stopped message flow";
-
-    //     node.send([null, null, null, msg]);
-    //   }
-    // }, this.timeout);
   }
 
   function addToWindow(msg) {
