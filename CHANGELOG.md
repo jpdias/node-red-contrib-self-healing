@@ -9,10 +9,11 @@ All notable changes to this project will be documented in this file.
 ### Week of 28/10/2020 - 03/11/2020
 
 #### Added
+
 - Adds a pair of buttons ("percentile" and "fixed") to the node's UI that function as a switch.
   Based on which mode is selected, a "percentile" or "fixed" change is calculated and compare to the threshold values defined for minimum/maximum change.
   Also refactors the old tests and adds new ones for the "fixed" mode. #58
-- Enhancement of Timing Check node by adding a sliding window and determining the average of periods between consecutive messages, which allows achieving a more concise conclusion about the general flow. Sliding window size can be defined in the node's settings. #57 
+- Enhancement of Timing Check node by adding a sliding window and determining the average of periods between consecutive messages, which allows achieving a more concise conclusion about the general flow. Sliding window size can be defined in the node's settings. #57
 
 #### Changed
 
