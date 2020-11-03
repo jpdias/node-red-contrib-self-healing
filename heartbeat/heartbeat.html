@@ -13,6 +13,12 @@
       protocol: { required: true },
       onfail: { required: true, value: false },
       httpendpoint: { required: false },
+      mqttopic: { required: false },
+      mqttdelay: {
+        value: 5,
+        required: false,
+        //validate: RED.validators.number(),
+      },
     },
     inputs: 1,
     outputs: 1,
@@ -24,12 +30,15 @@
 
   function showHttp() {
     let chosenProtocol = document.getElementById("node-input-protocol").value;
-    let div = document.getElementById("httpinput");
+    let divHttp = document.getElementById("httpinput");
+    let divMqtt = document.getElementById("mqttinput");
 
     if (chosenProtocol == "http") {
-      div.style.visibility = "visible";
-    } else {
-      div.style.visibility = "hidden";
+      divHttp.style.visibility = "visible";
+      divMqtt.style.visibility = "hidden";
+    } else if (chosenProtocol == "mqtt") {
+      divHttp.style.visibility = "hidden";
+      divMqtt.style.visibility = "visible";
     }
   }
 </script>
@@ -57,7 +66,7 @@
     </label>
     <input type="checkbox" id="node-input-onfail" />
   </div>
-  <div class="form-row" id="httpinput">
+  <div class="form-row" id="httpinput" style="visibility: hidden">
     <label for="node-input-httpendpoint">
       <i class="icon-tag"></i>HTTP Endpoint
     </label>
@@ -66,6 +75,22 @@
       id="node-input-httpendpoint"
       placeholder="https://google.com"
     />
+  </div>
+
+  <div id="mqttinput" style="visibility: hidden">
+    <div class="form-row">
+      <label for="node-input-mqttopic">
+        <i class="icon-tag"></i>MQTT Topic
+      </label>
+      <input type="text" id="node-input-mqttopic" placeholder="Topic" />
+    </div>
+
+    <div class="form-row">
+      <label for="node-input-mqttdelay">
+        <i class="icon-tag"></i>Delay (s)
+      </label>
+      <input type="text" id="node-input-mqttdelay" placeholder="5" />
+    </div>
   </div>
 </script>
 
