@@ -54,6 +54,11 @@ module.exports = function (RED) {
     node.on("restart", function (msg) {
       node.send([msg]);
     });
+
+    node.on("reset", function () {
+      node.context().set("active", undefined, "file");
+      node.context().set("lastMsg", undefined, "file");
+    });
   }
 
   RED.nodes.registerType("checkpoint", checkpoint);
