@@ -4,6 +4,7 @@
     color: "#74b9ff",
     defaults: {
       name: { value: "" },
+      resourcesMask: { value: 111 },
       maxCPU: { value: 50, required: false, validate: RED.validators.number() },
       maxRAM: { value: 50, required: false, validate: RED.validators.number() },
       maxStorage: {
@@ -13,16 +14,11 @@
       },
     },
     inputs: 1,
-    outputs: 4,
+    outputs: 2,
     icon: "status.png",
     align: "left",
-    inputLabels: "information",
-    outputLabels: [
-      "within limits",
-      "CPU out of bounds",
-      "RAM out of bounds",
-      "Storage out of bounds",
-    ],
+    inputLabels: "JSON info",
+    outputLabels: ["within limits", "resource out of bounds"],
     label: function () {
       return this.name || "Resource Monitor";
     },
@@ -35,18 +31,36 @@
     <input type="text" id="node-input-name" placeholder="Name" />
   </div>
   <div class="form-row">
+    <label for="res-CPU">Analyse CPU</label>
+    <input type="checkbox" id="res-CPU" />
+  </div>
+  <div class="form-row">
     <label for="node-input-maxCPU"><i class="fa fa-tag"></i> Max CPU %</label>
-    <input type="number" id="node-input-maxCPU" min="0" max="100" />
+    <input type="number" id="node-input-maxCPU" min="0" max="100" step="0.01" />
+  </div>
+  <div class="form-row">
+    <label for="res-RAM">Analyse RAM</label>
+    <input type="checkbox" id="res-RAM" />
   </div>
   <div class="form-row">
     <label for="node-input-maxRAM"><i class="fa fa-tag"></i> Max RAM %</label>
-    <input type="number" id="node-input-maxRAM" min="0" max="100" />
+    <input type="number" id="node-input-maxRAM" min="0" max="100" step="0.01" />
+  </div>
+  <div class="form-row">
+    <label for="res-storage">Analyse Storage</label>
+    <input type="checkbox" id="res-storage" />
   </div>
   <div class="form-row">
     <label for="node-input-maxStorage">
       <i class="fa fa-tag"></i> Max Storage %
     </label>
-    <input type="number" id="node-input-maxStorage" min="0" max="100" />
+    <input
+      type="number"
+      id="node-input-maxStorage"
+      min="0"
+      max="100"
+      step="0.01"
+    />
   </div>
 </script>
 
