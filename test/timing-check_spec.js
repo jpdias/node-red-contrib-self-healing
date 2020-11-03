@@ -2,14 +2,18 @@ var sinon = require("sinon");
 var helper = require("node-red-node-test-helper");
 var timingCheckNode = require("../timing-check/timing.js");
 
+let clock;
+
 helper.init(require.resolve("node-red"));
 
 describe("timing Node", function () {
   beforeEach(function (done) {
     helper.startServer(done);
+    clock = sinon.useFakeTimers();
   });
 
   afterEach(function (done) {
+    clock.restore();
     helper.unload();
     helper.stopServer(done);
   });
@@ -117,24 +121,21 @@ describe("timing Node", function () {
       fastOutput.on("input", fastSpy);
       slowOutput.on("input", slowSpy);
 
-      timingNode.receive({ payload: "Testing" });
-
-      setTimeout(() => {
-        normalSpy.should.be.calledOnce();
-      }, 10);
-
-      setTimeout(() => {
+      try {
         timingNode.receive({ payload: "Testing" });
-
-        setTimeout(() => {
-          try {
-            validateOutputs(expectedResult, normalSpy, fastSpy, slowSpy);
-            done();
-          } catch (error) {
-            done(error);
-          }
-        }, 10);
-      }, messagePeriod * 1000);
+        clock.tick(10);
+        normalSpy.should.be.calledOnce();
+        
+        clock.tick(messagePeriod * 1000);
+        timingNode.receive({ payload: "Testing" });
+        clock.tick(10);
+        
+        validateOutputs(expectedResult, normalSpy, fastSpy, slowSpy);
+        
+        done();
+      } catch (error) {
+        done(error);
+      }
     });
   }
 
