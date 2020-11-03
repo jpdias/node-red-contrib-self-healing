@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Week of 28/10/2020 - 03/11/2020
 
 - Rebuilt pipelines to focus on merge requests and protected branches #53
+- Adds a pair of buttons ("percentile" and "fixed") to the node's UI that function as a switch.
+  Based on which mode is selected, a "percentile" or "fixed" change is calculated and compare to the threshold values defined for minimum/maximum change.
+  Also refactors the old tests and adds new ones for the "fixed" mode. #58
 
 ### Week of 21/10/2020 - 27/10/2020
 
