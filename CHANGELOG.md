@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## Sprint 1 (06/10/2020 - 20/10/2020)
+## Sprint 2 (21/10/2020 - 10/11/2020)
+
+### Week of 28/10/2020 - 03/11/2020
+
+- Rebuilt pipelines to focus on merge requests and protected branches #53
+
+### Week of 21/10/2020 - 27/10/2020
+
+## Sprint 1 (07/10/2020 - 20/10/2020)
 
 ### Week of 13/10/2020 - 20/10/2020
 
