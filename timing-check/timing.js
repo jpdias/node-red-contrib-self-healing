@@ -25,6 +25,8 @@ module.exports = function (RED) {
       const currentTimestamp = Date.now();
       msg.timestamp = currentTimestamp;
 
+      addToWindow(msg);
+
       if (this.lastTimestamp == null) {
         node.status({
           fill: "green",
@@ -34,7 +36,7 @@ module.exports = function (RED) {
 
         node.send([msg, null, null, null]);
       } else {
-        const intervalPeriod = currentTimestamp - this.lastTimestamp;
+        const intervalPeriod = determineWindowAverage();
 
         if (intervalPeriod > this.maximumPeriod) {
           node.status({
@@ -65,21 +67,41 @@ module.exports = function (RED) {
       this.lastTimestamp = currentTimestamp;
     });
 
-    setTimeout(() => {
-      const currentTimestamp = Date.now();
+    // setTimeout(() => {
+    //   const currentTimestamp = Date.now();
 
-      if (currentTimestamp - this.lastTimestamp > this.timeout) {
-        node.status({
-          fill: "red",
-          shape: "dot",
-          text: "Timeout",
-        });
+    //   if (currentTimestamp - this.lastTimestamp > this.timeout) {
+    //     node.status({
+    //       fill: "red",
+    //       shape: "dot",
+    //       text: "Timeout",
+    //     });
 
-        const msg = "Timeout reached. Stopped message flow";
+    //     const msg = "Timeout reached. Stopped message flow";
 
-        node.send([null, null, null, msg]);
-      }
-    }, this.timeout);
+    //     node.send([null, null, null, msg]);
+    //   }
+    // }, this.timeout);
+  }
+
+  function addToWindow(msg){
+    if(this.slidingWindow.length == this.slidingWindowLength){
+      this.slidingWindow.shift();
+    }
+
+    this.slidingWindow.push(msg);
+  }
+
+  function determineWindowAverage(){
+    let sum = 0;
+
+    for(let i=1; i < this.slidingWindow.length; i++){
+      const intervalPeriod = this.slidingWindow[i].timestamp - this.slidingWindow[i-1].timestamp;
+
+      sum += intervalPeriod;
+    }
+
+    return sum/this.slidingWindow.length;
   }
 
   RED.nodes.registerType("timing", Timing);
