@@ -1,6 +1,6 @@
-var sinon = require("sinon");
-var helper = require("node-red-node-test-helper");
-var timingCheckNode = require("../timing-check/timing.js");
+let sinon = require("sinon");
+let helper = require("node-red-node-test-helper");
+let timingCheckNode = require("../timing-check/timing.js");
 
 let clock;
 
