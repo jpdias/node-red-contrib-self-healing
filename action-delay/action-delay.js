@@ -1,56 +1,69 @@
 module.exports = function (RED) {
   function ActionDelay(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
-    var delayInMilis = parseInt(config.delay) * 1000;
-    var schedule = "undefined";
-    var allActions = []; //all msg payloads
-    var lastMsgTimestamp = 0;
+    let node = this;
+    let delayInMilis = parseInt(config.delay) * 1000;
+    let schedule = "undefined";
+    let allActions = []; //all msg payloads
+    let lastMsgTimestamp = 0;
+
+    function resetSchedule() {
+      clearInterval(schedule);
+      schedule = "undefined";
+    }
 
     const executeMsg = (send, done) => {
       if (allActions.length == 0) {
-        clearInterval(schedule);
-        schedule = "undefined";
+        // no messages to be sent
+        resetSchedule();
       } else if (config.strategy == "allByOrder") {
+        // send all messages by order
         send([allActions.shift(), null]);
         done();
       } else if (config.strategy == "last") {
+        // send the last message received
         send([allActions.pop(), null]);
-        allActions = [];
-        clearInterval(schedule);
-        schedule = "undefined";
+        allActions = []; // clear message payload
+        resetSchedule();
         done();
       } else if (config.strategy == "first") {
+        //send the first message received
         send([allActions.shift(), null]);
         allActions = [];
-        clearInterval(schedule);
-        schedule = "undefined";
+        resetSchedule();
         done();
       }
     };
     node.on("input", function (msg, send, done) {
       const newMsgTimestamp = new Date().getTime();
+      // message is within interval
+      // pass message, all clear and good
       if (
         newMsgTimestamp - lastMsgTimestamp >= delayInMilis &&
         allActions.length == 0
       ) {
-        //pass message, all clear and good
         node.status({ fill: "green", shape: "dot", text: "Dispatched" });
-        lastMsgTimestamp = newMsgTimestamp;
+        lastMsgTimestamp = newMsgTimestamp; // update latest sent message timestamp
         send([msg, null]);
         done();
         return;
-      } else if (newMsgTimestamp - lastMsgTimestamp < delayInMilis) {
-        node.status({ fill: "yellow", shape: "dot", text: "Delayed" });
+      }
+      // message isn't within interval
+      if (newMsgTimestamp - lastMsgTimestamp < delayInMilis) {
+        node.status({
+          fill: "yellow",
+          shape: "dot",
+          text: "Delayed: " + allActions.length,
+        });
         const newMsg = msg;
         newMsg.timestamp = newMsgTimestamp;
-        lastMsgTimestamp = newMsgTimestamp;
-        allActions.push(msg);
+        // lastMsgTimestamp = newMsgTimestamp;
+        allActions.push(msg); // add message to payload
         send([null, msg]);
         done();
       }
       if (config.strategy == "discard") {
-        allActions = [];
+        allActions = []; // clear payload
       } else if (schedule == "undefined") {
         schedule = setInterval(executeMsg, delayInMilis, send, done);
       }

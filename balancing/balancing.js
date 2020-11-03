@@ -33,7 +33,6 @@ module.exports = function (RED) {
         }
         case "2": {
           let totalWeight = roundRobinWeights.reduce((x, y) => x + y);
-
           let rand = Math.random();
           let a = 0;
           out = 0;
