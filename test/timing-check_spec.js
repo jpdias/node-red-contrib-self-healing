@@ -125,13 +125,13 @@ describe("timing Node", function () {
         timingNode.receive({ payload: "Testing" });
         clock.tick(10);
         normalSpy.should.be.calledOnce();
-        
+
         clock.tick(messagePeriod * 1000);
         timingNode.receive({ payload: "Testing" });
         clock.tick(10);
-        
+
         validateOutputs(expectedResult, normalSpy, fastSpy, slowSpy);
-        
+
         done();
       } catch (error) {
         done(error);
