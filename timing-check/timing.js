@@ -84,24 +84,25 @@ module.exports = function (RED) {
     // }, this.timeout);
   }
 
-  function addToWindow(msg){
-    if(this.slidingWindow.length == this.slidingWindowLength){
+  function addToWindow(msg) {
+    if (this.slidingWindow.length == this.slidingWindowLength) {
       this.slidingWindow.shift();
     }
 
     this.slidingWindow.push(msg);
   }
 
-  function determineWindowAverage(){
+  function determineWindowAverage() {
     let sum = 0;
 
-    for(let i=1; i < this.slidingWindow.length; i++){
-      const intervalPeriod = this.slidingWindow[i].timestamp - this.slidingWindow[i-1].timestamp;
+    for (let i = 1; i < this.slidingWindow.length; i++) {
+      const intervalPeriod =
+        this.slidingWindow[i].timestamp - this.slidingWindow[i - 1].timestamp;
 
       sum += intervalPeriod;
     }
 
-    return sum/this.slidingWindow.length;
+    return sum / this.slidingWindow.length;
   }
 
   RED.nodes.registerType("timing", Timing);
