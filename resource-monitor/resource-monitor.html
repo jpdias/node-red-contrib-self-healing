@@ -1,0 +1,55 @@
+<script type="text/javascript">
+  RED.nodes.registerType("resource-monitor", {
+    category: "SHEN",
+    color: "#74b9ff",
+    defaults: {
+      name: { value: "" },
+      maxCPU: { value: 50, required: false, validate: RED.validators.number() },
+      maxRAM: { value: 50, required: false, validate: RED.validators.number() },
+      maxStorage: {
+        value: 50,
+        required: false,
+        validate: RED.validators.number(),
+      },
+    },
+    inputs: 1,
+    outputs: 4,
+    icon: "status.png",
+    align: "left",
+    inputLabels: "information",
+    outputLabels: [
+      "within limits",
+      "CPU out of bounds",
+      "RAM out of bounds",
+      "Storage out of bounds",
+    ],
+    label: function () {
+      return this.name || "Resource Monitor";
+    },
+  });
+</script>
+
+<script type="text/html" data-template-name="resource-monitor">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-maxCPU"><i class="fa fa-tag"></i> Max CPU %</label>
+    <input type="number" id="node-input-maxCPU" min="0" max="100" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-maxRAM"><i class="fa fa-tag"></i> Max RAM %</label>
+    <input type="number" id="node-input-maxRAM" min="0" max="100" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-maxStorage">
+      <i class="fa fa-tag"></i> Max Storage %
+    </label>
+    <input type="number" id="node-input-maxStorage" min="0" max="100" />
+  </div>
+</script>
+
+<script type="text/html" data-help-name="resource-monitor">
+  <p>A simple node description.</p>
+</script>

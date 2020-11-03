@@ -37,7 +37,8 @@
       "timing": "timing-check/timing.js",
       "readings-watcher": "readings-watcher/readings-watcher.js",
       "balancing": "balancing/balancing.js",
-      "checkpoint": "checkpoint/checkpoint.js"
+      "checkpoint": "checkpoint/checkpoint.js",
+      "resource-monitor": "resource-monitor/resource-monitor.js"
     }
   },
   "main": "node_modules/node-red/red/red.js",
