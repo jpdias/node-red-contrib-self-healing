@@ -41,9 +41,9 @@ module.exports = function (RED) {
       setPersistentContext("active", false);
       setPersistentContext("lastMsg", "");
       setPersistentContext("timestamp", getTime());
-    } else if (active === true && lastMsg != undefined) {
+    } else if (active === true && lastMsg !== undefined) {
       setTimeout(() => {
-        node.emit("restart", lastMsg);
+        node.emit("restart");
       }, 500);
     }
 
@@ -58,11 +58,12 @@ module.exports = function (RED) {
       done();
     });
 
-    node.on("restart", function (msg) {
+    node.on("restart", function () {
+      let lastMsg = getPersistentContext("lastMsg");
       let timestamp = parseInt(getPersistentContext("timestamp"));
       if (timestamp === undefined || getTime() < timestamp + config.ttl) {
         setPersistentContext("timestamp", getTime());
-        node.send([msg]);
+        node.send([lastMsg]);
       }
     });
 
