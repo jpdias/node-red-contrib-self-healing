@@ -49,7 +49,11 @@ describe("checkpoint node", function () {
         let active = n1.context().get("active", "file");
         let lastMsg = n1.context().get("lastMsg", "file");
         let timestamp = n1.context().get("timestamp", "file");
-        if (active === undefined && lastMsg === undefined && timestamp === undefined) {
+        if (
+          active === undefined &&
+          lastMsg === undefined &&
+          timestamp === undefined
+        ) {
           done();
         } else {
           done("Local context was not reset");
@@ -141,7 +145,7 @@ describe("checkpoint node", function () {
         type: "checkpoint",
         name: "checkpoint",
         ttl: 3600,
-        wires: [["n2"]]
+        wires: [["n2"]],
       },
       {
         id: "n2",
@@ -163,7 +167,7 @@ describe("checkpoint node", function () {
           count++;
           if (count == 2) {
             done();
-          } 
+          }
         } catch (err) {
           done(err);
         }
