@@ -20,6 +20,11 @@ module.exports = function (RED) {
   function checkpoint(config) {
     RED.nodes.createNode(this, config);
     let node = this;
+    config.ttl = parseInt(config.ttl) || 3600;
+
+    function getTime() {
+      return Math.round(new Date() / 1000);
+    }
 
     function getPersistentContext(property) {
       return node.context().get(property, "file");
@@ -35,6 +40,7 @@ module.exports = function (RED) {
     if (active === undefined) {
       setPersistentContext("active", false);
       setPersistentContext("lastMsg", "");
+      setPersistentContext("timestamp", getTime());
     } else if (active === true && lastMsg != undefined) {
       setTimeout(() => {
         node.emit("restart", lastMsg);
@@ -46,18 +52,24 @@ module.exports = function (RED) {
         setPersistentContext("active", true);
       }
       setPersistentContext("lastMsg", msg);
+      setPersistentContext("timestamp", getTime());
 
       send([msg]);
       done();
     });
 
     node.on("restart", function (msg) {
-      node.send([msg]);
+      let timestamp = parseInt(getPersistentContext("timestamp"));
+      if (timestamp === undefined || getTime() < timestamp + config.ttl) {
+        setPersistentContext("timestamp", getTime());
+        node.send([msg]);
+      }
     });
 
     node.on("reset", function () {
       node.context().set("active", undefined, "file");
       node.context().set("lastMsg", undefined, "file");
+      node.context().set("timestamp", undefined, "file");
     });
   }
 

@@ -4,6 +4,7 @@
     color: "#74b9ff",
     defaults: {
       name: { value: "" },
+      ttl: { value: 3600 },
     },
     inputs: 1,
     outputs: 1,
@@ -27,6 +28,18 @@
       type="text"
       id="node-input-name"
       data-i18n="[placeholder]node-red:common.label.name"
+    />
+  </div>
+  <div class="form-row" id="minchangeCtrl">
+    <label for="node-input-ttl" style="width:80%;">
+      <i class="icon-tag"></i> Checkpoint's time to live (in seconds):
+    </label>
+    <input
+      type="number"
+      id="node-input-ttl"
+      placeholder="3600"
+      min="0"
+      step="1"
     />
   </div>
 </script>
