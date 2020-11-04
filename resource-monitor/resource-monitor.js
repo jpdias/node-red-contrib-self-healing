@@ -1,6 +1,15 @@
 module.exports = function (RED) {
-  function checkResource(receivedValue, maxValue, resource, errMsg) {
+  function checkMaxValue(receivedValue, maxValue, resource, errMsg) {
     if (receivedValue <= maxValue) {
+      return true;
+    } else {
+      errMsg[resource] = "out of bounds";
+      return false;
+    }
+  }
+
+  function checkMinValue(receivedValue, minValue, resource, errMsg) {
+    if (receivedValue >= minValue) {
       return true;
     } else {
       errMsg[resource] = "out of bounds";
@@ -18,7 +27,7 @@ module.exports = function (RED) {
       const resources = config.resourcesMask;
 
       if ((resources & 8) == 8) {
-        returnValue &= checkResource(
+        returnValue &= checkMaxValue(
           msg.payload.CPU,
           config.maxCPU,
           "CPU",
@@ -27,7 +36,7 @@ module.exports = function (RED) {
       }
 
       if ((resources & 4) == 4) {
-        returnValue &= checkResource(
+        returnValue &= checkMaxValue(
           msg.payload.RAM,
           config.maxRAM,
           "RAM",
@@ -36,10 +45,19 @@ module.exports = function (RED) {
       }
 
       if ((resources & 2) == 2) {
-        returnValue &= checkResource(
+        returnValue &= checkMaxValue(
           msg.payload.storage,
           config.maxStorage,
           "storage",
+          errMsg
+        );
+      }
+
+      if ((resources & 1) == 1) {
+        returnValue &= checkMinValue(
+          msg.payload.battery,
+          config.minBattery,
+          "battery",
           errMsg
         );
       }

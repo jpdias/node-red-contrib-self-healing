@@ -4,10 +4,15 @@
     color: "#74b9ff",
     defaults: {
       name: { value: "" },
-      resourcesMask: { value: 111 },
+      resourcesMask: { value: 1111 },
       maxCPU: { value: 50, required: true, validate: RED.validators.number() },
       maxRAM: { value: 50, required: true, validate: RED.validators.number() },
       maxStorage: {
+        value: 50,
+        required: true,
+        validate: RED.validators.number(),
+      },
+      minBattery: {
         value: 50,
         required: true,
         validate: RED.validators.number(),
@@ -28,26 +33,31 @@
 
   function resources_encode() {
     this.resourcesMask = 0;
-    if (document.getElementById("res-storage").checked) this.resourcesMask |= 1;
-    if (document.getElementById("res-RAM").checked) this.resourcesMask |= 2;
-    if (document.getElementById("res-CPU").checked) this.resourcesMask |= 4;
+    if (document.getElementById("res-battery").checked) this.resourcesMask |= 1;
+    if (document.getElementById("res-storage").checked) this.resourcesMask |= 2;
+    if (document.getElementById("res-RAM").checked) this.resourcesMask |= 4;
+    if (document.getElementById("res-CPU").checked) this.resourcesMask |= 8;
   }
 
   function resources_decode() {
     let CPU = document.getElementById("res-CPU");
     let RAM = document.getElementById("res-RAM");
     let storage = document.getElementById("res-storage");
+    let battery = document.getElementById("res-battery");
 
-    storage.checked = (this.resourcesMask & 1) == 1;
-    RAM.checked = (this.resourcesMask & 2) == 2;
-    CPU.checked = (this.resourcesMask & 4) == 4;
+    battery.checked = (this.resourcesMask & 1) == 1;
+    storage.checked = (this.resourcesMask & 2) == 2;
+    RAM.checked = (this.resourcesMask & 4) == 4;
+    CPU.checked = (this.resourcesMask & 8) == 8;
 
-    document.getElementById("storageCtrl").style.display =
+    document.getElementById("batteryCtrl").style.display =
       (this.resourcesMask & 1) == 1 ? "block" : "none";
-    document.getElementById("ramCtrl").style.display =
+    document.getElementById("storageCtrl").style.display =
       (this.resourcesMask & 2) == 2 ? "block" : "none";
-    document.getElementById("cpuCtrl").style.display =
+    document.getElementById("ramCtrl").style.display =
       (this.resourcesMask & 4) == 4 ? "block" : "none";
+    document.getElementById("cpuCtrl").style.display =
+      (this.resourcesMask & 8) == 8 ? "block" : "none";
   }
 
   function toggleVisibility(element) {
@@ -68,8 +78,8 @@
     <input type="checkbox" id="res-CPU" onclick="toggleVisibility('cpuCtrl')" />
   </div>
   <div id="cpuCtrl" class="form-row">
-    <label for="node-input-maxCPU" style="width:55%;"
-      >Maximum CPU usage % (0-100):
+    <label for="node-input-maxCPU" style="width:55%;">
+      Maximum CPU usage % (0-100):
     </label>
     <input
       type="number"
@@ -88,8 +98,8 @@
     <input type="checkbox" id="res-RAM" onclick="toggleVisibility('ramCtrl')" />
   </div>
   <div id="ramCtrl" class="form-row">
-    <label for="node-input-maxRAM" style="width:55%;"
-      >Maximum RAM usage % (0-100):
+    <label for="node-input-maxRAM" style="width:55%;">
+      Maximum RAM usage % (0-100):
     </label>
     <input
       type="number"
@@ -118,6 +128,30 @@
     <input
       type="number"
       id="node-input-maxStorage"
+      placeholder="0.0"
+      min="0"
+      max="100"
+      step="0.01"
+      style="width:20%;"
+    />
+  </div>
+  <hr />
+
+  <div class="form-row">
+    <label for="res-battery">Monitor Battery</label>
+    <input
+      type="checkbox"
+      id="res-battery"
+      onclick="toggleVisibility('batteryCtrl')"
+    />
+  </div>
+  <div id="batteryCtrl" class="form-row">
+    <label for="node-input-minBattery" style="width:55%;">
+      Minimum Battery usage % (0-100):
+    </label>
+    <input
+      type="number"
+      id="node-input-minBattery"
       placeholder="0.0"
       min="0"
       max="100"
