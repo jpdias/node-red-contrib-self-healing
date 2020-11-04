@@ -15,29 +15,34 @@ module.exports = function (RED) {
       let returnValue = true;
       let errMsg = {};
 
-      //if CPU checked confirm if there is a valid value
-      returnValue &= checkResource(
-        msg.payload.CPU,
-        config.maxCPU,
-        "CPU",
-        errMsg
-      );
+      const resources = config.resourcesMask;
 
-      //if RAM checked confirm if there is a valid value
-      returnValue &= checkResource(
-        msg.payload.RAM,
-        config.maxRAM,
-        "RAM",
-        errMsg
-      );
+      if ((resources & 8) == 8) {
+        returnValue &= checkResource(
+          msg.payload.CPU,
+          config.maxCPU,
+          "CPU",
+          errMsg
+        );
+      }
 
-      //if Storage checked
-      returnValue &= checkResource(
-        msg.payload.Storage,
-        config.maxStorage,
-        "Storage",
-        errMsg
-      );
+      if ((resources & 4) == 4) {
+        returnValue &= checkResource(
+          msg.payload.RAM,
+          config.maxRAM,
+          "RAM",
+          errMsg
+        );
+      }
+
+      if ((resources & 2) == 2) {
+        returnValue &= checkResource(
+          msg.payload.storage,
+          config.maxStorage,
+          "storage",
+          errMsg
+        );
+      }
 
       if (returnValue) {
         node.status({
@@ -45,8 +50,6 @@ module.exports = function (RED) {
           shape: "dot",
           text: "Within limits",
         });
-        send([{ payload: "Every resource is within limits." }, null]);
-        done();
       } else {
         node.status({
           fill: "red",
@@ -54,8 +57,8 @@ module.exports = function (RED) {
           text: "Out of bounds",
         });
         send([null, { payload: errMsg }]);
-        done(errMsg);
       }
+      done();
     });
   }
   RED.nodes.registerType("resource-monitor", ResourceMonitorNode);

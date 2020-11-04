@@ -5,11 +5,11 @@
     defaults: {
       name: { value: "" },
       resourcesMask: { value: 111 },
-      maxCPU: { value: 50, required: false, validate: RED.validators.number() },
-      maxRAM: { value: 50, required: false, validate: RED.validators.number() },
+      maxCPU: { value: 50, required: true, validate: RED.validators.number() },
+      maxRAM: { value: 50, required: true, validate: RED.validators.number() },
       maxStorage: {
         value: 50,
-        required: false,
+        required: true,
         validate: RED.validators.number(),
       },
     },
@@ -22,7 +22,38 @@
     label: function () {
       return this.name || "Resource Monitor";
     },
+    oneditsave: resources_encode,
+    oneditprepare: resources_decode,
   });
+
+  function resources_encode() {
+    this.resourcesMask = 0;
+    if (document.getElementById("res-storage").checked) this.resourcesMask |= 1;
+    if (document.getElementById("res-RAM").checked) this.resourcesMask |= 2;
+    if (document.getElementById("res-CPU").checked) this.resourcesMask |= 4;
+  }
+
+  function resources_decode() {
+    let CPU = document.getElementById("res-CPU");
+    let RAM = document.getElementById("res-RAM");
+    let storage = document.getElementById("res-storage");
+
+    storage.checked = (this.resourcesMask & 1) == 1;
+    RAM.checked = (this.resourcesMask & 2) == 2;
+    CPU.checked = (this.resourcesMask & 4) == 4;
+
+    document.getElementById("storageCtrl").style.display =
+      (this.resourcesMask & 1) == 1 ? "block" : "none";
+    document.getElementById("ramCtrl").style.display =
+      (this.resourcesMask & 2) == 2 ? "block" : "none";
+    document.getElementById("cpuCtrl").style.display =
+      (this.resourcesMask & 4) == 4 ? "block" : "none";
+  }
+
+  function toggleVisibility(element) {
+    let node = document.getElementById(element);
+    node.style.display = node.style.display === "none" ? "block" : "none";
+  }
 </script>
 
 <script type="text/html" data-template-name="resource-monitor">
@@ -30,36 +61,68 @@
     <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-input-name" placeholder="Name" />
   </div>
+
+  <h3>Resources to be monitored:</h3>
   <div class="form-row">
-    <label for="res-CPU">Analyse CPU</label>
-    <input type="checkbox" id="res-CPU" />
+    <label for="res-CPU">Monitor CPU</label>
+    <input type="checkbox" id="res-CPU" onclick="toggleVisibility('cpuCtrl')" />
   </div>
-  <div class="form-row">
-    <label for="node-input-maxCPU"><i class="fa fa-tag"></i> Max CPU %</label>
-    <input type="number" id="node-input-maxCPU" min="0" max="100" step="0.01" />
+  <div id="cpuCtrl" class="form-row">
+    <label for="node-input-maxCPU" style="width:55%;"
+      >Maximum CPU usage % (0-100):
+    </label>
+    <input
+      type="number"
+      id="node-input-maxCPU"
+      placeholder="0.0"
+      min="0"
+      max="100"
+      step="0.01"
+      style="width:20%;"
+    />
   </div>
+  <hr />
+
   <div class="form-row">
-    <label for="res-RAM">Analyse RAM</label>
-    <input type="checkbox" id="res-RAM" />
+    <label for="res-RAM">Monitor RAM</label>
+    <input type="checkbox" id="res-RAM" onclick="toggleVisibility('ramCtrl')" />
   </div>
-  <div class="form-row">
-    <label for="node-input-maxRAM"><i class="fa fa-tag"></i> Max RAM %</label>
-    <input type="number" id="node-input-maxRAM" min="0" max="100" step="0.01" />
+  <div id="ramCtrl" class="form-row">
+    <label for="node-input-maxRAM" style="width:55%;"
+      >Maximum RAM usage % (0-100):
+    </label>
+    <input
+      type="number"
+      id="node-input-maxRAM"
+      placeholder="0.0"
+      min="0"
+      max="100"
+      step="0.01"
+      style="width:20%;"
+    />
   </div>
+  <hr />
+
   <div class="form-row">
-    <label for="res-storage">Analyse Storage</label>
-    <input type="checkbox" id="res-storage" />
+    <label for="res-storage">Monitor Storage</label>
+    <input
+      type="checkbox"
+      id="res-storage"
+      onclick="toggleVisibility('storageCtrl')"
+    />
   </div>
-  <div class="form-row">
-    <label for="node-input-maxStorage">
-      <i class="fa fa-tag"></i> Max Storage %
+  <div id="storageCtrl" class="form-row">
+    <label for="node-input-maxStorage" style="width:55%;">
+      Maximum Storage usage % (0-100):
     </label>
     <input
       type="number"
       id="node-input-maxStorage"
+      placeholder="0.0"
       min="0"
       max="100"
       step="0.01"
+      style="width:20%;"
     />
   </div>
 </script>
