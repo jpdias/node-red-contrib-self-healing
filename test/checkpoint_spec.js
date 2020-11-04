@@ -48,7 +48,8 @@ describe("checkpoint node", function () {
       try {
         let active = n1.context().get("active", "file");
         let lastMsg = n1.context().get("lastMsg", "file");
-        if (active === undefined && lastMsg === undefined) {
+        let timestamp = n1.context().get("timestamp", "file");
+        if (active === undefined && lastMsg === undefined && timestamp === undefined) {
           done();
         } else {
           done("Local context was not reset");
@@ -118,10 +119,11 @@ describe("checkpoint node", function () {
         try {
           let active = n1.context().get("active", "file");
           let lastMsg = n1.context().get("lastMsg", "file");
-          if (active && lastMsg.payload === 42) {
+          let timestamp = n1.context().get("timestamp", "file");
+          if (active && lastMsg.payload === 42 && Number.isInteger(timestamp)) {
             done();
           } else {
-            done("Local context was not reset");
+            done("Local context was not updated");
           }
         } catch (err) {
           done(err);
@@ -129,6 +131,48 @@ describe("checkpoint node", function () {
       });
 
       n1.receive({ payload: payload });
+    });
+  });
+
+  it("should resend message after restart event", function (done) {
+    let flow = [
+      {
+        id: "n1",
+        type: "checkpoint",
+        name: "checkpoint",
+        ttl: 3600,
+        wires: [["n2"]]
+      },
+      {
+        id: "n2",
+        type: "helper",
+        name: "output-from-test-node",
+      },
+    ];
+
+    helper.load(checkpointNode, flow, function () {
+      let n1 = helper.getNode("n1");
+      let n2 = helper.getNode("n2");
+
+      let payload = 42;
+      let count = 0;
+
+      n2.on("input", (msg) => {
+        try {
+          msg.should.have.property("payload", 42);
+          count++;
+          if (count == 2) {
+            done();
+          } 
+        } catch (err) {
+          done(err);
+        }
+      });
+
+      n1.receive({ payload: payload });
+      setTimeout(() => {
+        n1.emit("restart");
+      }, 30);
     });
   });
 });
