@@ -1,4 +1,22 @@
 module.exports = function (RED) {
+  function checkInputValidity(value, resource, node, done) {
+    if (typeof value != "number" || isNaN(value) || value < 0 || value > 100) {
+      node.status({
+        fill: "red",
+        shape: "dot",
+        text: "Unexpected Input",
+      });
+
+      done(
+        "Error: Value received for " +
+          resource +
+          " must be a number between 0 and 100! If this value isn't supposed to be monitored uncheck it in node's properties."
+      );
+      return false;
+    }
+    return true;
+  }
+
   function checkMaxValue(receivedValue, maxValue, resource, errMsg) {
     if (receivedValue <= maxValue) {
       return true;
@@ -26,27 +44,35 @@ module.exports = function (RED) {
 
       const resources = config.resourcesMask;
 
+      if (resources == 0) {
+        node.status({
+          fill: "yellow",
+          shape: "dot",
+          text: "Nothing to monitor",
+        });
+
+        done();
+        return;
+      }
+
       if ((resources & 8) == 8) {
-        returnValue &= checkMaxValue(
-          msg.payload.CPU,
-          config.maxCPU,
-          "CPU",
-          errMsg
-        );
+        const CPUreceived = msg.payload.CPU;
+        if (!checkInputValidity(CPUreceived, "CPU", node, done)) return;
+        returnValue &= checkMaxValue(CPUreceived, config.maxCPU, "CPU", errMsg);
       }
 
       if ((resources & 4) == 4) {
-        returnValue &= checkMaxValue(
-          msg.payload.RAM,
-          config.maxRAM,
-          "RAM",
-          errMsg
-        );
+        const RAMreceived = msg.payload.RAM;
+        if (!checkInputValidity(RAMreceived, "RAM", node, done)) return;
+        returnValue &= checkMaxValue(RAMreceived, config.maxRAM, "RAM", errMsg);
       }
 
       if ((resources & 2) == 2) {
+        const storageReceived = msg.payload.storage;
+        if (!checkInputValidity(storageReceived, "storage", node, done)) return;
+
         returnValue &= checkMaxValue(
-          msg.payload.storage,
+          storageReceived,
           config.maxStorage,
           "storage",
           errMsg
@@ -54,8 +80,11 @@ module.exports = function (RED) {
       }
 
       if ((resources & 1) == 1) {
+        const memoryReceived = msg.payload.battery;
+        if (!checkInputValidity(memoryReceived, "battery", node, done)) return;
+
         returnValue &= checkMinValue(
-          msg.payload.battery,
+          memoryReceived,
           config.minBattery,
           "battery",
           errMsg
