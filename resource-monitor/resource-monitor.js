@@ -58,37 +58,43 @@ module.exports = function (RED) {
       if ((resources & 8) == 8) {
         const CPUreceived = msg.payload.CPU;
         if (!checkInputValidity(CPUreceived, "CPU", node, done)) return;
-        returnValue &= checkMaxValue(CPUreceived, config.maxCPU, "CPU", errMsg);
+        if (!checkMaxValue(CPUreceived, config.maxCPU, "CPU", errMsg)) {
+          send([null, { payload: "CPU usage too high" }, null, null, null]);
+          returnValue = false;
+        }
       }
 
       if ((resources & 4) == 4) {
         const RAMreceived = msg.payload.RAM;
         if (!checkInputValidity(RAMreceived, "RAM", node, done)) return;
-        returnValue &= checkMaxValue(RAMreceived, config.maxRAM, "RAM", errMsg);
+        if (!checkMaxValue(RAMreceived, config.maxRAM, "RAM", errMsg)) {
+          send([null, null, { payload: "RAM usage too high" }, null, null]);
+          returnValue = false;
+        }
       }
 
       if ((resources & 2) == 2) {
         const storageReceived = msg.payload.storage;
         if (!checkInputValidity(storageReceived, "storage", node, done)) return;
 
-        returnValue &= checkMaxValue(
-          storageReceived,
-          config.maxStorage,
-          "storage",
-          errMsg
-        );
+        if (
+          !checkMaxValue(storageReceived, config.maxStorage, "storage", errMsg)
+        ) {
+          send([null, null, null, { payload: "Storage usage too high" }, null]);
+          returnValue = false;
+        }
       }
 
       if ((resources & 1) == 1) {
         const memoryReceived = msg.payload.battery;
         if (!checkInputValidity(memoryReceived, "battery", node, done)) return;
 
-        returnValue &= checkMinValue(
-          memoryReceived,
-          config.minBattery,
-          "battery",
-          errMsg
-        );
+        if (
+          !checkMinValue(memoryReceived, config.minBattery, "battery", errMsg)
+        ) {
+          send([null, null, null, null, { payload: "Battery too low" }]);
+          returnValue = false;
+        }
       }
 
       if (returnValue) {
@@ -98,12 +104,8 @@ module.exports = function (RED) {
           text: "Within limits",
         });
       } else {
-        node.status({
-          fill: "red",
-          shape: "dot",
-          text: "Out of bounds",
-        });
-        send([null, { payload: errMsg }]);
+        node.status({});
+        send([{ payload: errMsg }], null, null, null, null);
       }
       done();
     });

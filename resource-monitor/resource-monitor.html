@@ -19,16 +19,22 @@
       },
     },
     inputs: 1,
-    outputs: 2,
+    outputs: 5,
     icon: "status.png",
     align: "left",
     inputLabels: "JSON info",
-    outputLabels: ["within limits", "resource out of bounds"],
+    outputLabels: [
+      "resource(s) out of bounds",
+      "CPU too high",
+      "RAM too high",
+      "storage too high",
+      "batery too low",
+    ],
     label: function () {
       return this.name || "Resource Monitor";
     },
-    oneditsave: resources_encode,
     oneditprepare: resources_decode,
+    oneditsave: resources_encode,
   });
 
   function resources_encode() {
