@@ -1,0 +1,8 @@
+// Constrains nothing, allows anything
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "balancing-node-input",
+  "title": "Balancing Input",
+  "description": "Input for the balancing node",
+  "type": "object"
+}
