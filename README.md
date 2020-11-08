@@ -69,6 +69,10 @@ Checks for timing issues on data inputs. There are 3 outputs that refer to data 
 
 Drop values if they are in or out of a given threshold (e.g. two close temperature readings).
 
+### :package: checkpoint
+
+Acts between a node sending a message to another, storing the last one in local context and resending it after restarts, if it's within a specified time to live.
+
 ## Todo Nodes
 
 ### :package: device-registry
