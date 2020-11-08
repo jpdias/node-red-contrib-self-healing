@@ -76,3 +76,16 @@ docker-deploy-dev:
   script:
     - docker build -t ldso2020t4g2/node-red-contrib-self-healing:next .
     - docker push ldso2020t4g2/node-red-contrib-self-healing:next
+
+docker-deploy-prod:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+  image: docker:19.03.13
+  services:
+    - docker:19.03.13-dind
+  before_script:
+    - docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PW
+  script:
+    - docker build -t ldso2020t4g2/node-red-contrib-self-healing:latest .
+    - docker push ldso2020t4g2/node-red-contrib-self-healing:latest
