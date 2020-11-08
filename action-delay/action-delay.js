@@ -1,6 +1,9 @@
+const SentryLog = require("../utils/sentry-log.js");
+
 module.exports = function (RED) {
   function ActionDelay(config) {
     RED.nodes.createNode(this, config);
+    SentryLog.sendMessage("action-delay was deployed");
     let node = this;
     let delayInMilis = parseInt(config.delay) * 1000;
     let schedule = "undefined";
