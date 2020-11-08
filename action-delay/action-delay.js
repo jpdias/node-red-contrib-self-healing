@@ -3,7 +3,8 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config);
     let node = this;
     let delayInMilis = parseInt(config.delay) * 1000;
-    let delayInterval = config.delayInterval != null ? parseInt(config.delayInterval) : 0;
+    let delayInterval =
+      config.delayInterval != null ? parseInt(config.delayInterval) : 0;
     let schedule = "undefined";
     let allActions = []; //all msg payloads
     let lastMsgTimestamp = null;
@@ -38,8 +39,7 @@ module.exports = function (RED) {
     node.on("input", function (msg, send, done) {
       const newMsgTimestamp = new Date().getTime();
       // first message
-      if (this.lastMsgTimestamp == null) 
-        {
+      if (this.lastMsgTimestamp == null) {
         node.status({
           fill: "green",
           shape: "dot",
@@ -50,12 +50,12 @@ module.exports = function (RED) {
         done();
         return;
       }
-      
+
       // message is within interval
       // and there is no message backlog
       // pass message, all clear and good
       if (
-        newMsgTimestamp - lastMsgTimestamp >= delayInMilis &&
+        newMsgTimestamp - lastMsgTimestamp >= delayInMilis - delayInterval &&
         allActions.length == 0
       ) {
         node.status({ fill: "green", shape: "dot", text: "Dispatched" });
@@ -65,7 +65,7 @@ module.exports = function (RED) {
         return;
       }
       // message isn't within interval
-      if (newMsgTimestamp - lastMsgTimestamp < delayInMilis) {
+      if (newMsgTimestamp - lastMsgTimestamp < delayInMilis - delayInterval) {
         allActions.push(msg); // add message to payload
         node.status({
           fill: "yellow",
@@ -77,13 +77,12 @@ module.exports = function (RED) {
         send([null, msg]);
         done();
       }
-      
+
       if (config.strategy == "discard") {
         allActions = []; // clear payload
       } else if (schedule == "undefined") {
         schedule = setInterval(executeMsg, delayInMilis, send, done);
       }
-
     });
   }
 
