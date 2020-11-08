@@ -84,6 +84,10 @@ module.exports = function (RED) {
         schedule = setInterval(executeMsg, delayInMilis, send, done);
       }
     });
+
+    node.on("close", function () {
+      resetSchedule();
+    });
   }
 
   RED.nodes.registerType("action-delay", ActionDelay);
