@@ -15,7 +15,6 @@
   "scripts": {
     "start": "node-red",
     "test": "mocha \"test/**/*_spec.js\"",
-    "test-single": "mocha",
     "test-coverage": "nyc mocha \"test/**/*_spec.js\"",
     "mocha": "mocha",
     "lint": "eslint --ignore-path .gitignore .",
