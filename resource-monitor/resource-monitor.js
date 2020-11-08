@@ -123,7 +123,19 @@ module.exports = function (RED) {
         });
       } else {
         node.status({});
-        send([{ payload: errMsg }], null, null, null, null);
+        send(
+          [
+            {
+              payload:
+                "At least one of the resources monitored is out of bounds!",
+              type: errMsg,
+            },
+          ],
+          null,
+          null,
+          null,
+          null
+        );
       }
       done();
     });
