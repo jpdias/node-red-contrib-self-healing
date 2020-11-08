@@ -21,7 +21,7 @@ module.exports = function (RED) {
     if (receivedValue <= maxValue) {
       return true;
     } else {
-      errMsg[resource] = "out of bounds";
+      errMsg[resource] = "too high";
       return false;
     }
   }
@@ -30,7 +30,7 @@ module.exports = function (RED) {
     if (receivedValue >= minValue) {
       return true;
     } else {
-      errMsg[resource] = "out of bounds";
+      errMsg[resource] = "too low";
       return false;
     }
   }
@@ -52,6 +52,17 @@ module.exports = function (RED) {
         });
 
         done();
+        return;
+      }
+
+      if (msg.payload.constructor !== {}.constructor) {
+        node.status({
+          fill: "red",
+          shape: "dot",
+          text: "Unexpected Input",
+        });
+
+        done("Error: Input must be a JSON object with resources usage.");
         return;
       }
 
