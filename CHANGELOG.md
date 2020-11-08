@@ -20,9 +20,8 @@ All notable changes to this project will be documented in this file.
 
 #### Added
 
-
 - Readings Watcher: add a pair of buttons ("percentile" and "fixed") to the node's UI that functions as a switch.
-  Based on which mode is selected, a "percentile" or "fixed" change is calculated and compare to the threshold 
+  Based on which mode is selected, a "percentile" or "fixed" change is calculated and compare to the threshold
   values defined for minimum/maximum change.
   Also refactors the old tests and adds new ones for the "fixed" mode. #58
 
