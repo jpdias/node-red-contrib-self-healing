@@ -35,13 +35,60 @@ module.exports = function (RED) {
     }
   }
 
+  function checkResources(config, msg, errMsg, node, send, done) {
+    const resources = config.resourcesMask;
+    let returnValue = true;
+
+    if ((resources & 8) == 8) {
+      const CPUreceived = msg.payload.CPU;
+      if (!checkInputValidity(CPUreceived, "CPU", node, done)) return;
+      if (!checkMaxValue(CPUreceived, config.maxCPU, "CPU", errMsg)) {
+        send([null, { payload: "CPU usage too high" }, null, null, null]);
+        returnValue = false;
+      }
+    }
+
+    if ((resources & 4) == 4) {
+      const RAMreceived = msg.payload.RAM;
+      if (!checkInputValidity(RAMreceived, "RAM", node, done)) return;
+      if (!checkMaxValue(RAMreceived, config.maxRAM, "RAM", errMsg)) {
+        send([null, null, { payload: "RAM usage too high" }, null, null]);
+        returnValue = false;
+      }
+    }
+
+    if ((resources & 2) == 2) {
+      const storageReceived = msg.payload.storage;
+      if (!checkInputValidity(storageReceived, "storage", node, done)) return;
+
+      if (
+        !checkMaxValue(storageReceived, config.maxStorage, "storage", errMsg)
+      ) {
+        send([null, null, null, { payload: "Storage usage too high" }, null]);
+        returnValue = false;
+      }
+    }
+
+    if ((resources & 1) == 1) {
+      const batteryReceived = msg.payload.battery;
+      if (!checkInputValidity(batteryReceived, "battery", node, done)) return;
+
+      if (
+        !checkMinValue(batteryReceived, config.minBattery, "battery", errMsg)
+      ) {
+        send([null, null, null, null, { payload: "Battery too low" }]);
+        returnValue = false;
+      }
+    }
+
+    return returnValue;
+  }
+
   function ResourceMonitorNode(config) {
     RED.nodes.createNode(this, config);
     const node = this;
     node.on("input", function (msg, send, done) {
-      let returnValue = true;
       let errMsg = {};
-
       const resources = config.resourcesMask;
 
       if (resources == 0) {
@@ -66,47 +113,7 @@ module.exports = function (RED) {
         return;
       }
 
-      if ((resources & 8) == 8) {
-        const CPUreceived = msg.payload.CPU;
-        if (!checkInputValidity(CPUreceived, "CPU", node, done)) return;
-        if (!checkMaxValue(CPUreceived, config.maxCPU, "CPU", errMsg)) {
-          send([null, { payload: "CPU usage too high" }, null, null, null]);
-          returnValue = false;
-        }
-      }
-
-      if ((resources & 4) == 4) {
-        const RAMreceived = msg.payload.RAM;
-        if (!checkInputValidity(RAMreceived, "RAM", node, done)) return;
-        if (!checkMaxValue(RAMreceived, config.maxRAM, "RAM", errMsg)) {
-          send([null, null, { payload: "RAM usage too high" }, null, null]);
-          returnValue = false;
-        }
-      }
-
-      if ((resources & 2) == 2) {
-        const storageReceived = msg.payload.storage;
-        if (!checkInputValidity(storageReceived, "storage", node, done)) return;
-
-        if (
-          !checkMaxValue(storageReceived, config.maxStorage, "storage", errMsg)
-        ) {
-          send([null, null, null, { payload: "Storage usage too high" }, null]);
-          returnValue = false;
-        }
-      }
-
-      if ((resources & 1) == 1) {
-        const memoryReceived = msg.payload.battery;
-        if (!checkInputValidity(memoryReceived, "battery", node, done)) return;
-
-        if (
-          !checkMinValue(memoryReceived, config.minBattery, "battery", errMsg)
-        ) {
-          send([null, null, null, null, { payload: "Battery too low" }]);
-          returnValue = false;
-        }
-      }
+      const returnValue = checkResources(config, msg, errMsg, node, send, done);
 
       if (returnValue) {
         node.status({
