@@ -72,7 +72,6 @@ function testInput(DispatchExpected, testFlow, done) {
       done(error);
     }
   });
-
 }
 
 describe("action-delay-test Node", function () {
@@ -86,7 +85,6 @@ describe("action-delay-test Node", function () {
     helper.unload();
     helper.stopServer(done);
   });
-
 
   it("should be loaded", function (done) {
     let testFlow = [
@@ -118,7 +116,6 @@ describe("action-delay-test Node", function () {
     let expectedFirst = [1, 2, 10];
 
     testInput(expectedFirst, testFlow, done);
-
   });
 
   it("It should send the last delayed message", function (done) {
@@ -126,7 +123,6 @@ describe("action-delay-test Node", function () {
     let expectedLast = [1, 9, 10];
 
     testInput(expectedLast, testFlow, done);
-
   });
 
   it("It should send all the delayed messages", function (done) {
