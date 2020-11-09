@@ -242,6 +242,95 @@
       "required": ["payload"]
     }
   },
+  "resource-monitor": {
+    "title": "Resource monitor node",
+    "input": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": "object",
+          "properties": {
+            "CPU": {
+              "description": "CPU usage maximum value",
+              "type": "number"
+            },
+            "RAM": {
+              "description": "RAM usage maximum value",
+              "type": "number"
+            },
+            "storage": {
+              "description": "Storage usage maximum value",
+              "type": "number"
+            },
+            "battery": {
+              "description": "Battery level minimum value",
+              "type": "number"
+            }
+          }
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": ["payload"]
+    },
+    "output": [
+      {
+        "description": "Overall resources status",
+        "type": "object",
+        "properties": {
+          "payload": {
+            "description": "Value of the message",
+            "type": "string"
+          },
+          "type": {
+            "description": "Resources out of bounds",
+            "type": "object",
+            "properties": {
+              "CPU": {
+                "description": "CPU usage exceeded limit",
+                "type": "string"
+              },
+              "RAM": {
+                "description": "RAM usage exceeded limit",
+                "type": "string"
+              },
+              "storage": {
+                "description": "Storage exceeded limit",
+                "type": "string"
+              },
+              "battery": {
+                "description": "Battery is below limit",
+                "type": "string"
+              }
+            }
+          },
+          "topic": {
+            "description": "Topic of the message",
+            "type": "string"
+          }
+        },
+        "required": ["payload"]
+      },
+      {
+        "description": "Specific resource status",
+        "type": "object",
+        "properties": {
+          "payload": {
+            "description": "Value of the message",
+            "type": "string"
+          },
+          "topic": {
+            "description": "Topic of the message",
+            "type": "string"
+          }
+        },
+        "required": ["payload"]
+      }
+    ]
+  },
   "threshold-check": {
     "title": "Threshold check node",
     "input": {
