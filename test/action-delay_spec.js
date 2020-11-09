@@ -5,6 +5,9 @@ let clock;
 
 helper.init(require.resolve("node-red"));
 
+let shouldDiscard = [2, 3, 4, 5, 6, 7, 8, 9];
+let expectedAllByOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
 function setupFlow(nodeStrategy, nodeDelay, nodeDelayInterval) {
   let testFlow = [
     {
@@ -22,6 +25,56 @@ function setupFlow(nodeStrategy, nodeDelay, nodeDelayInterval) {
   return testFlow;
 }
 
+function testInput(DispatchExpected, testFlow, done) {
+  helper.load(actionDelayTest, testFlow, function () {
+    let actionDelay = helper.getNode("node1");
+    let pass = helper.getNode("node2");
+    let delay = helper.getNode("node3");
+
+    let passMsgCounter = 0;
+    let delayMsgCounter = 0;
+
+    let passSpy = sinon.spy();
+    let delaySpy = sinon.spy();
+
+    pass.on("input", function (msg) {
+      passSpy();
+      try {
+        msg.payload.should.equal(DispatchExpected[passMsgCounter++]);
+      } catch (err) {
+        done(err);
+      }
+    });
+
+    delay.on("input", function (msg) {
+      delaySpy();
+      try {
+        msg.payload.should.equal(shouldDiscard[delayMsgCounter++]);
+      } catch (err) {
+        done(err);
+      }
+    });
+
+    for (let i = 0; i < expectedAllByOrder.length - 1; i++) {
+      actionDelay.receive({ payload: expectedAllByOrder[i] });
+    }
+    clock.tick(1001);
+    actionDelay.receive({
+      payload: expectedAllByOrder[expectedAllByOrder.length - 1],
+    });
+    clock.tick(10);
+
+    try {
+      passSpy.callCount.should.be.equal(DispatchExpected.length);
+      delaySpy.callCount.should.be.equal(shouldDiscard.length);
+      done();
+    } catch (error) {
+      done(error);
+    }
+  });
+
+}
+
 describe("action-delay-test Node", function () {
   beforeEach(function (done) {
     helper.startServer(done);
@@ -34,8 +87,6 @@ describe("action-delay-test Node", function () {
     helper.stopServer(done);
   });
 
-  let shouldDiscard = [2, 3, 4, 5, 6, 7, 8, 9];
-  let expectedAllByOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   it("should be loaded", function (done) {
     let testFlow = [
@@ -59,156 +110,23 @@ describe("action-delay-test Node", function () {
     let testFlow = setupFlow("discard", 1, 0);
     let expectedDiscard = [1, 10];
 
-    helper.load(actionDelayTest, testFlow, function () {
-      let actionDelay = helper.getNode("node1");
-      let pass = helper.getNode("node2");
-      let delay = helper.getNode("node3");
-
-      let passMsgCounter = 0;
-      let delayMsgCounter = 0;
-
-      let passSpy = sinon.spy();
-      let delaySpy = sinon.spy();
-
-      pass.on("input", function (msg) {
-        passSpy();
-        try {
-          msg.payload.should.equal(expectedDiscard[passMsgCounter++]);
-        } catch (err) {
-          done(err);
-        }
-      });
-
-      delay.on("input", function (msg) {
-        delaySpy();
-        try {
-          msg.payload.should.equal(shouldDiscard[delayMsgCounter++]);
-        } catch (err) {
-          done(err);
-        }
-      });
-
-      for (let i = 0; i < expectedAllByOrder.length - 1; i++) {
-        actionDelay.receive({ payload: expectedAllByOrder[i] });
-      }
-      clock.tick(1001);
-      actionDelay.receive({
-        payload: expectedAllByOrder[expectedAllByOrder.length - 1],
-      });
-      clock.tick(10);
-
-      try {
-        passSpy.callCount.should.be.equal(expectedDiscard.length);
-        delaySpy.callCount.should.be.equal(shouldDiscard.length);
-        done();
-      } catch (error) {
-        done(error);
-      }
-    });
+    testInput(expectedDiscard, testFlow, done);
   });
 
   it("It should send the first delayed message", function (done) {
     let testFlow = setupFlow("first", 1, 0);
     let expectedFirst = [1, 2, 10];
 
-    helper.load(actionDelayTest, testFlow, function () {
-      let actionDelay = helper.getNode("node1");
-      let pass = helper.getNode("node2");
-      let delay = helper.getNode("node3");
+    testInput(expectedFirst, testFlow, done);
 
-      let passMsgCounter = 0;
-      let delayMsgCounter = 0;
-
-      let passSpy = sinon.spy();
-      let delaySpy = sinon.spy();
-
-      pass.on("input", function (msg) {
-        passSpy();
-        try {
-          msg.payload.should.equal(expectedFirst[passMsgCounter++]);
-        } catch (err) {
-          done(err);
-        }
-      });
-
-      delay.on("input", function (msg) {
-        delaySpy();
-        try {
-          msg.payload.should.equal(shouldDiscard[delayMsgCounter++]);
-        } catch (err) {
-          done(err);
-        }
-      });
-
-      for (let i = 0; i < expectedAllByOrder.length - 1; i++) {
-        actionDelay.receive({ payload: expectedAllByOrder[i] });
-      }
-      clock.tick(1001);
-      actionDelay.receive({
-        payload: expectedAllByOrder[expectedAllByOrder.length - 1],
-      });
-      clock.tick(10);
-
-      try {
-        passSpy.callCount.should.be.equal(expectedFirst.length);
-        delaySpy.callCount.should.be.equal(shouldDiscard.length);
-        done();
-      } catch (error) {
-        done(error);
-      }
-    });
   });
 
   it("It should send the last delayed message", function (done) {
     let testFlow = setupFlow("last", 1, 0);
     let expectedLast = [1, 9, 10];
 
-    helper.load(actionDelayTest, testFlow, function () {
-      let actionDelay = helper.getNode("node1");
-      let pass = helper.getNode("node2");
-      let delay = helper.getNode("node3");
+    testInput(expectedLast, testFlow, done);
 
-      let passMsgCounter = 0;
-      let delayMsgCounter = 0;
-
-      let passSpy = sinon.spy();
-      let delaySpy = sinon.spy();
-
-      pass.on("input", function (msg) {
-        passSpy();
-        try {
-          msg.payload.should.equal(expectedLast[passMsgCounter++]);
-        } catch (err) {
-          done(err);
-        }
-      });
-
-      delay.on("input", function (msg) {
-        delaySpy();
-        try {
-          msg.payload.should.equal(shouldDiscard[delayMsgCounter++]);
-        } catch (err) {
-          done(err);
-        }
-      });
-
-      for (let i = 0; i < expectedAllByOrder.length - 1; i++) {
-        actionDelay.receive({ payload: expectedAllByOrder[i] });
-      }
-      clock.tick(1001);
-      actionDelay.receive({
-        payload: expectedAllByOrder[expectedAllByOrder.length - 1],
-      });
-      clock.tick(10);
-
-      try {
-        passSpy.callCount.should.be.equal(expectedLast.length);
-        delaySpy.callCount.should.be.equal(shouldDiscard.length);
-        done();
-      } catch (error) {
-        done(error);
-      }
-    });
   });
 
   it("It should send all the delayed messages", function (done) {
