@@ -79,7 +79,7 @@ module.exports = function (RED) {
       config.margin == 0 ||
       config.valueType === "string"
     )
-      return mean(values);
+      return values[0];
 
     if (config.result === "mean") return mean(values);
 
