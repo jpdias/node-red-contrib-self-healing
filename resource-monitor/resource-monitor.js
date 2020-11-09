@@ -76,7 +76,7 @@ module.exports = function (RED) {
       if (
         !checkMinValue(batteryReceived, config.minBattery, "battery", errMsg)
       ) {
-        send([null, null, null, null, { payload: "Battery too low" }]);
+        send([null, null, null, null, { payload: "Battery level too low" }]);
         returnValue = false;
       }
     }
