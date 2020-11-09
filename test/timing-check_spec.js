@@ -1,15 +1,19 @@
-var sinon = require("sinon");
-var helper = require("node-red-node-test-helper");
-var timingCheckNode = require("../timing-check/timing.js");
+let sinon = require("sinon");
+let helper = require("node-red-node-test-helper");
+let timingCheckNode = require("../timing-check/timing.js");
+
+let clock;
 
 helper.init(require.resolve("node-red"));
 
 describe("timing Node", function () {
   beforeEach(function (done) {
     helper.startServer(done);
+    clock = sinon.useFakeTimers();
   });
 
   afterEach(function (done) {
+    clock.restore();
     helper.unload();
     helper.stopServer(done);
   });
@@ -46,12 +50,12 @@ describe("timing Node", function () {
   });
 
   it("should be able to detect if the flow is normal in the verge of the minimum period value", function (done) {
-    const period = 0.455;
+    const period = 0.46;
     timingTest(expectedResults.normal, period, done);
   });
 
   it("should be able to detect if the flow is normal in the verge of the maximum period value", function (done) {
-    const period = 0.545;
+    const period = 0.54;
     timingTest(expectedResults.normal, period, done);
   });
 
@@ -61,7 +65,7 @@ describe("timing Node", function () {
   });
 
   it("should be able to detect if the flow is too fast when slightly less than the minimum period value", function (done) {
-    const period = 0.44;
+    const period = 0.43;
     timingTest(expectedResults.fast, period, done);
   });
 
@@ -71,7 +75,7 @@ describe("timing Node", function () {
   });
 
   it("should be able to detect if the flow is too slow when slightly greater than the maximum period value", function (done) {
-    const period = 0.56;
+    const period = 0.57;
     timingTest(expectedResults.slow, period, done);
   });
 
@@ -83,6 +87,7 @@ describe("timing Node", function () {
         name: "timing",
         period: "0.5",
         margin: "0.1",
+        slidingWindowLength: "2",
         wires: [["normalOutput"], ["fastOutput"], ["slowOutput"]],
       },
       {
@@ -116,24 +121,21 @@ describe("timing Node", function () {
       fastOutput.on("input", fastSpy);
       slowOutput.on("input", slowSpy);
 
-      timingNode.receive({ payload: "Testing" });
-
-      setTimeout(() => {
-        normalSpy.should.be.calledOnce();
-      }, 10);
-
-      setTimeout(() => {
+      try {
         timingNode.receive({ payload: "Testing" });
+        clock.tick(10);
+        normalSpy.should.be.calledOnce();
 
-        setTimeout(() => {
-          try {
-            validateOutputs(expectedResult, normalSpy, fastSpy, slowSpy);
-            done();
-          } catch (error) {
-            done(error);
-          }
-        }, 10);
-      }, messagePeriod * 1000);
+        clock.tick(messagePeriod * 1000);
+        timingNode.receive({ payload: "Testing" });
+        clock.tick(10);
+
+        validateOutputs(expectedResult, normalSpy, fastSpy, slowSpy);
+
+        done();
+      } catch (error) {
+        done(error);
+      }
     });
   }
 
