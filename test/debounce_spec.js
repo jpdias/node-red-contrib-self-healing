@@ -1,6 +1,6 @@
 var helper = require("node-red-node-test-helper");
 var sinon = require("sinon");
-var actionDelayTest = require("../action-delay/action-delay.js");
+var debounceTest = require("../debounce/debounce.js");
 let clock;
 
 helper.init(require.resolve("node-red"));
@@ -12,8 +12,8 @@ function setupFlow(nodeStrategy, nodeDelay, nodeDelayInterval) {
   let testFlow = [
     {
       id: "node1",
-      type: "action-delay",
-      name: "action-delay",
+      type: "debounce",
+      name: "debounce",
       delay: nodeDelay,
       delayInterval: nodeDelayInterval,
       strategy: nodeStrategy,
@@ -26,8 +26,8 @@ function setupFlow(nodeStrategy, nodeDelay, nodeDelayInterval) {
 }
 
 function testInput(DispatchExpected, testFlow, done) {
-  helper.load(actionDelayTest, testFlow, function () {
-    let actionDelay = helper.getNode("node1");
+  helper.load(debounceTest, testFlow, function () {
+    let debounce = helper.getNode("node1");
     let pass = helper.getNode("node2");
     let delay = helper.getNode("node3");
 
@@ -56,10 +56,10 @@ function testInput(DispatchExpected, testFlow, done) {
     });
 
     for (let i = 0; i < expectedAllByOrder.length - 1; i++) {
-      actionDelay.receive({ payload: expectedAllByOrder[i] });
+      debounce.receive({ payload: expectedAllByOrder[i] });
     }
     clock.tick(1001);
-    actionDelay.receive({
+    debounce.receive({
       payload: expectedAllByOrder[expectedAllByOrder.length - 1],
     });
     clock.tick(10);
@@ -74,7 +74,7 @@ function testInput(DispatchExpected, testFlow, done) {
   });
 }
 
-describe("action-delay-test Node", function () {
+describe("debounce-test Node", function () {
   beforeEach(function (done) {
     helper.startServer(done);
     clock = sinon.useFakeTimers();
@@ -87,16 +87,14 @@ describe("action-delay-test Node", function () {
   });
 
   it("should be loaded", function (done) {
-    let testFlow = [
-      { id: "node1", type: "action-delay", name: "action-delay" },
-    ];
+    let testFlow = [{ id: "node1", type: "debounce", name: "debounce" }];
 
     // Load flow and start it
-    helper.load(actionDelayTest, testFlow, function () {
+    helper.load(debounceTest, testFlow, function () {
       let myTestNode = helper.getNode("node1");
 
       try {
-        myTestNode.should.have.property("name", "action-delay");
+        myTestNode.should.have.property("name", "debounce");
         done();
       } catch (error) {
         done(error);
@@ -128,8 +126,8 @@ describe("action-delay-test Node", function () {
   it("It should send all the delayed messages", function (done) {
     let testFlow = setupFlow("allByOrder", 1, 0);
 
-    helper.load(actionDelayTest, testFlow, function () {
-      let actionDelay = helper.getNode("node1");
+    helper.load(debounceTest, testFlow, function () {
+      let debounce = helper.getNode("node1");
       let pass = helper.getNode("node2");
       let delay = helper.getNode("node3");
 
@@ -158,10 +156,10 @@ describe("action-delay-test Node", function () {
       });
 
       for (let i = 0; i < expectedAllByOrder.length - 1; i++) {
-        actionDelay.receive({ payload: expectedAllByOrder[i] });
+        debounce.receive({ payload: expectedAllByOrder[i] });
       }
       clock.tick(9090);
-      actionDelay.receive({
+      debounce.receive({
         payload: expectedAllByOrder[expectedAllByOrder.length - 1],
       });
       clock.tick(10);

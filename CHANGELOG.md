@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 #### Added
 
 - Added Checkpoint node #61
-- Action Delay: add tests for the following strategies: first, last and allByOder. #55
+- Action Delay/Debounce: add tests for the following strategies: first, last and allByOder. Cheanged the name and functionality of action delay to debounce. #55 #18
 
 #### Changed
 

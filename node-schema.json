@@ -3,8 +3,8 @@
   "$id": "node-schema",
   "title": "Node Json Schema",
   "description": "Structure of the inputs and outputs of the developed nodes",
-  "action-delay": {
-    "title": "Action delay node",
+  "debounce": {
+    "title": "Debounce node",
     "input": true,
     "output": true
   },

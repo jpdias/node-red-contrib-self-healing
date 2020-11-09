@@ -1,5 +1,5 @@
 module.exports = function (RED) {
-  function ActionDelay(config) {
+  function Debounce(config) {
     RED.nodes.createNode(this, config);
     let node = this;
     let delayInMilis = parseInt(config.delay) * 1000;
@@ -90,5 +90,5 @@ module.exports = function (RED) {
     });
   }
 
-  RED.nodes.registerType("action-delay", ActionDelay);
+  RED.nodes.registerType("debounce", Debounce);
 };
