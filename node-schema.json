@@ -13,6 +13,11 @@
     "input": true,
     "output": true
   },
+  "checkpoint": {
+    "title": "Checkpoint node",
+    "input": true,
+    "output": true
+  },
   "compensate": {
     "title": "Compensate Node",
     "input": {
