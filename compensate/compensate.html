@@ -1,38 +1,3 @@
-<script type="text/x-red" data-template-name="sensor-compensate">
-  <div class="form-row">
-      <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
-      <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
-  </div>
-  <div class="form-row">
-      <label for="node-input-msghistory"><i class="fa fa-tag"></i> Message History</label>
-      <input type="number" id="node-input-msghistory" placeholder="10">
-  </div>
-  <div class="form-row">
-      <label for="node-input-timeout"><i class="fa fa-tag"></i> Timeout (s)</label>
-      <input type="number" id="node-input-timeout" placeholder="10">
-  </div>
-  <div class="form-row">
-      <label for="node-input-strategy"><i class="fa fa-tag"></i> Compensate Strategy</label>
-      <select type="text" id="node-input-strategy">
-          <option>min</option>
-          <option>max</option>
-          <option>last</option>
-          <option>mode</option>
-          <option>mean</option>
-      </select>
-  </div>
-  <p> Confidence does an eval of a valid JS expression. Both compensated values counter (compensatedCounter) and history values (history) can be used. Example: (1 / compensatedCounter) >= 1 ? 1 : (1 / compensatedCounter) </p>
-  <div class="form-row">
-      <label for="node-input-confidenceFormula"><i class="fa fa-tag"></i> Confidence Formula</label>
-      <input type="text" id="node-input-confidenceFormula" placeholder="compensatedCounter">
-  </div>
-</script>
-
-<script type="text/x-red" data-help-name="sensor-compensate">
-  <p>Some useful help text to introduce the node.</p>
-  <p>Some more information about the node.</p>
-</script>
-
 <script type="text/javascript">
   RED.nodes.registerType("sensor-compensate", {
     category: "SHEN",
@@ -43,19 +8,119 @@
         required: true,
         validate: RED.validators.number(),
       },
-      timeout: { value: 5, required: true, validate: RED.validators.number() },
+      timeout: {
+        value: 5,
+        required: true,
+        validate: RED.validators.number(),
+      },
       strategy: { value: "last", required: true },
       confidenceFormula: { value: "", required: false },
     },
-    icon: "status.png",
-    color: "#74b9ff",
     inputs: 1,
     outputs: 1,
-    align: "left",
-    inputLabels: "number",
-    outputLabels: ["msg"],
+    color: "#74b9ff",
     label: function () {
       return this.name || "Sensor Compensate";
     },
+    inputLabels: "number",
+    outputLabels: ["msg"],
+    icon: "status.png",
+    align: "left",
   });
+</script>
+
+<script type="text/html" data-template-name="sensor-compensate">
+  <div class="form-row">
+    <label for="node-input-name"
+      ><i class="fa fa-tag"></i>
+      <span data-i18n="node-red:common.label.name"></span
+    ></label>
+    <input
+      type="text"
+      id="node-input-name"
+      data-i18n="[placeholder]node-red:common.label.name"
+    />
+  </div>
+  <div class="form-row">
+    <label for="node-input-msghistory"> Message History </label>
+    <input type="number" id="node-input-msghistory" placeholder="10" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-timeout"> Timeout (s) </label>
+    <input
+      type="number"
+      id="node-input-timeout"
+      step="0.01"
+      placeholder="10.0"
+    />
+  </div>
+  <div class="form-row">
+    <label for="node-input-strategy"> Compensate Strategy </label>
+    <select type="text" id="node-input-strategy">
+      <option>min</option>
+      <option>max</option>
+      <option>last</option>
+      <option>mode</option>
+      <option>mean</option>
+    </select>
+  </div>
+  <p>
+    Confidence does an eval of a valid JS expression. Both compensated values
+    counter (compensatedCounter) and history values (history) can be used.
+    Example: (1 / compensatedCounter) >= 1 ? 1 : (1 / compensatedCounter)
+  </p>
+  <div class="form-row">
+    <label for="node-input-confidenceFormula"> Confidence Formula </label>
+    <input
+      type="text"
+      id="node-input-confidenceFormula"
+      placeholder="compensatedCounter"
+    />
+  </div>
+</script>
+
+<script type="text/html" data-help-name="sensor-compensate">
+  <p>A node to compensate missing values with a pre-defined strategy.</p>
+
+  <h3>Properties</h3>
+  <dl class="message-properties">
+    <dt>
+      name
+      <span class="property-type">string</span>
+    </dt>
+    <dd>name of node to be displayed in editor.</dd>
+    <dt>message history</dt>
+    <dd>
+      number of previous messages that the node uses in order to calculate the
+      missing value.
+    </dd>
+    <dt>timeout</dt>
+    <dd>time before a message is considered missing</dd>
+    <dt>strategy</dt>
+    <dd>strategy the node will use to calculate the missing value.</dd>
+    <dt>confidence formula</dt>
+    <dd>formula that provides a confidence level on the compensated values.</dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <p>Any input provided that the message payload is a number</p>
+  </dl>
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <p>
+      If a new message arrives at the node before the designed timeout, the node
+      will output that message.
+    </p>
+    <p>
+      If not, it will output the value calculated through the defined strategy.
+    </p>
+  </dl>
+
+  <h3>Details</h3>
+  <p>
+    This node is used to prevent the disruption of the message flow by
+    compensating missing values with the ones that are calculated based on
+    previous messages.
+  </p>
 </script>
