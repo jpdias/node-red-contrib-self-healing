@@ -13,7 +13,6 @@
       protocol: { required: true },
       onfail: { required: true, value: false },
       httpendpoint: { required: false },
-      mqttopic: { required: false },
       mqttdelay: {
         value: 5,
         required: false,
@@ -36,9 +35,12 @@
     if (chosenProtocol == "http") {
       divHttp.style.visibility = "visible";
       divMqtt.style.visibility = "hidden";
-    } else if (chosenProtocol == "mqtt") {
+    } else if (chosenProtocol == "mqtt passive") {
       divHttp.style.visibility = "hidden";
       divMqtt.style.visibility = "visible";
+    } else if (chosenProtocol == "mqtt active") {
+      divHttp.style.visibility = "hidden";
+      divMqtt.style.visibility = "hidden";
     }
   }
 </script>
@@ -57,7 +59,8 @@
     </label>
     <select type="text" id="node-input-protocol" onChange="showHttp()">
       <option>http</option>
-      <option>mqtt</option>
+      <option>mqtt passive</option>
+      <option>mqtt active</option>
     </select>
   </div>
   <div class="form-row">
@@ -78,13 +81,6 @@
   </div>
 
   <div id="mqttinput" style="visibility: hidden">
-    <div class="form-row">
-      <label for="node-input-mqttopic">
-        <i class="icon-tag"></i>MQTT Topic
-      </label>
-      <input type="text" id="node-input-mqttopic" placeholder="Topic" />
-    </div>
-
     <div class="form-row">
       <label for="node-input-mqttdelay">
         <i class="icon-tag"></i>Delay (s)
