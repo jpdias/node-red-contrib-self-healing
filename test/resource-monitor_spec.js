@@ -51,7 +51,7 @@ describe("resource-mointor Node", function () {
 
       try {
         monitor.receive({ payload: 12 });
-        clock.tick(100);
+        clock.tick(2);
         monitor.error.should.be.calledWith(
           "Error: Input must be a JSON object with resources usage."
         );
@@ -69,7 +69,7 @@ describe("resource-mointor Node", function () {
 
       try {
         monitor.receive({ payload: {} });
-        clock.tick(100);
+        clock.tick(2);
         monitor.error.should.be.calledWith(
           "Error: Value received for CPU must be a number between 0 and 100! If this value isn't supposed to be monitored uncheck it in node's properties."
         );
@@ -87,7 +87,7 @@ describe("resource-mointor Node", function () {
 
       try {
         monitor.receive({ payload: { CPU: "3" } });
-        clock.tick(100);
+        clock.tick(2);
         monitor.error.should.be.calledOnce();
         done();
       } catch (error) {
@@ -103,7 +103,7 @@ describe("resource-mointor Node", function () {
 
       try {
         monitor.receive({ payload: { RAN: "3" } });
-        clock.tick(100);
+        clock.tick(2);
         monitor.error.should.be.calledOnce();
         done();
       } catch (error) {
@@ -119,7 +119,7 @@ describe("resource-mointor Node", function () {
 
       try {
         monitor.receive({ payload: { storage: "3" } });
-        clock.tick(100);
+        clock.tick(2);
         monitor.error.should.be.calledOnce();
         done();
       } catch (error) {
@@ -136,7 +136,7 @@ describe("resource-mointor Node", function () {
 
       try {
         monitor.receive({ payload: { battery: "3" } });
-        clock.tick(100);
+        clock.tick(2);
         monitor.error.should.be.calledOnce();
         done();
       } catch (error) {
@@ -155,7 +155,7 @@ describe("resource-mointor Node", function () {
         monitor.receive({
           payload: { CPU: 34 },
         });
-        clock.tick(100);
+        clock.tick(2);
 
         monitor.status.should.be.calledWithExactly({
           fill: "green",
@@ -206,7 +206,7 @@ describe("resource-mointor Node", function () {
         payload: { CPU: 64 },
       });
 
-      clock.tick(100);
+      clock.tick(2);
 
       try {
         allSpy.callCount.should.be.equal(1);
@@ -228,7 +228,7 @@ describe("resource-mointor Node", function () {
         monitor.receive({
           payload: { RAM: 34 },
         });
-        clock.tick(100);
+        clock.tick(2);
 
         monitor.status.should.be.calledWithExactly({
           fill: "green",
@@ -279,7 +279,7 @@ describe("resource-mointor Node", function () {
         payload: { RAM: 64 },
       });
 
-      clock.tick(100);
+      clock.tick(2);
 
       try {
         allSpy.callCount.should.be.equal(1);
@@ -301,7 +301,7 @@ describe("resource-mointor Node", function () {
         monitor.receive({
           payload: { storage: 34 },
         });
-        clock.tick(100);
+        clock.tick(2);
 
         monitor.status.should.be.calledWithExactly({
           fill: "green",
@@ -352,7 +352,7 @@ describe("resource-mointor Node", function () {
         payload: { storage: 64 },
       });
 
-      clock.tick(100);
+      clock.tick(2);
 
       try {
         allSpy.callCount.should.be.equal(1);
@@ -374,7 +374,7 @@ describe("resource-mointor Node", function () {
         monitor.receive({
           payload: { battery: 70 },
         });
-        clock.tick(100);
+        clock.tick(2);
 
         monitor.status.should.be.calledWithExactly({
           fill: "green",
@@ -425,7 +425,7 @@ describe("resource-mointor Node", function () {
         payload: { battery: 30 },
       });
 
-      clock.tick(100);
+      clock.tick(2);
 
       try {
         allSpy.callCount.should.be.equal(1);
