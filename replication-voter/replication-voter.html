@@ -6,7 +6,7 @@
         value: "",
       },
       valueType: {
-        value: "Number",
+        value: "number",
         required: true,
       },
       majority: {
@@ -15,6 +15,10 @@
       },
       countInputs: {
         value: "2",
+        required: false,
+      },
+      margin: {
+        value: null,
         required: false,
       },
     },
@@ -64,6 +68,13 @@
       value is ignored)</label
     >
     <input type="number" id="node-input-countInputs" placeholder="3" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-margin"
+      ><i class="fa fa-tag"></i> Margin (%) (if input type is String, value is
+      ignored)</label
+    >
+    <input type="number" id="node-input-margin" placeholder="0" />
   </div>
 </script>
 
