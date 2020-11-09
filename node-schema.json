@@ -1,0 +1,285 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "node-schema",
+  "title": "Node Json Schema",
+  "description": "Structure of the inputs and outputs of the developed nodes",
+  "action-delay": {
+    "title": "Action delay node",
+    "input": true,
+    "output": true
+  },
+  "balancing": {
+    "title": "Balancing node",
+    "input": true,
+    "output": true
+  },
+  "checkpoint": {
+    "title": "Checkpoint node",
+    "input": true,
+    "output": true
+  },
+  "compensate": {
+    "title": "Compensate Node",
+    "input": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": "number"
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": ["payload"]
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": "number"
+        },
+        "confidenceValue": {
+          "description": "Confidence value of the message sent",
+          "type": "number"
+        },
+        "timestamp": {
+          "description": "Time of when the message was sent",
+          "type": "string"
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": ["payload", "timestamp"]
+    }
+  },
+  "flow-control": {
+    "title": "Flow control node",
+    "input": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": "boolean"
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": ["payload"]
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": ["string", "object"],
+          "properties": {
+            "flow": {
+              "description": "Target flow",
+              "type": "string"
+            },
+            "disabled": {
+              "description": "State of the target flow",
+              "type": "boolean"
+            },
+            "required": ["flow", "disabled"]
+          }
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": ["payload"]
+    }
+  },
+  "heartbeat": {
+    "title": "Heartbeat Node",
+    "input": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": "number"
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": []
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": "object",
+          "properties": {
+            "status": {
+              "description": "Connection status",
+              "type": "integer"
+            },
+            "statusMessage": {
+              "description": "Description of the connection status",
+              "type": "string"
+            }
+          },
+          "required": ["status", "statusMessage"]
+        },
+        "timestamp": {
+          "description": "Time of when the message was sent",
+          "type": "string"
+        }
+      },
+      "required": ["payload", "timestamp"]
+    }
+  },
+  "kalman-noise-filter": {
+    "title": "Kalman noise filter",
+    "input": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": ["number", "array"]
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": ["payload"]
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": ["number", "array"]
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": ["payload"]
+    }
+  },
+  "readings-watcher": {
+    "title": "Readings watcher node",
+    "input": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": "number"
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": ["payload"]
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": ["number", "array"]
+        },
+        "timestamp": {
+          "description": "Time of when the message was sent",
+          "type": "string"
+        },
+        "type": {
+          "description": "Error description if exists",
+          "type": "string"
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": ["payload", "timestamp"]
+    }
+  },
+  "replication-voter": {
+    "title": "Replication voter node",
+    "input": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": ["number", "array"]
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": ["payload"]
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": ["number", "string"]
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": ["payload"]
+    }
+  },
+  "threshold-check": {
+    "title": "Threshold check node",
+    "input": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": ["string", "number", "object", "array", "boolean", "null"]
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": ["payload"]
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": ["string", "number", "object", "array", "boolean", "null"]
+        },
+        "fault": {
+          "description": "Explains why the message failed.",
+          "type": "string"
+        },
+        "topic": {
+          "description": "Topic of the message.",
+          "type": "string"
+        }
+      },
+      "required": ["payload"]
+    }
+  },
+  "timing-check": {
+    "title": "Timing check node",
+    "input": true,
+    "output": true
+  }
+}
