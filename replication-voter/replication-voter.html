@@ -21,6 +21,10 @@
         value: null,
         required: false,
       },
+      result: {
+        value: "mean",
+        required: true,
+      },
     },
     icon: "status.png",
     color: "#74b9ff",
@@ -75,6 +79,17 @@
       ignored)</label
     >
     <input type="number" id="node-input-margin" placeholder="0" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-result"
+      ><i class="fa fa-tag"></i> Result type (only appliable when there is a
+      margin)</label
+    >
+    <select type="text" id="node-input-result">
+      <option value="mean" selected>Mean value</option>
+      <option value="highest">Highest value</option>
+      <option value="lowest">Lowest value</option>
+    </select>
   </div>
 </script>
 

@@ -49,6 +49,47 @@ module.exports = function (RED) {
     return total / values.length;
   }
 
+  function max(values) {
+    let maxValue = values[0];
+    let i;
+
+    for (i = 1; i < values.length; i++) {
+      if (values[i] > maxValue) maxValue = values[i];
+    }
+
+    return maxValue;
+  }
+
+  function min(values) {
+    let minValue = values[0];
+    let i;
+
+    for (i = 1; i < values.length; i++) {
+      if (values[i] < minValue) minValue = values[i];
+    }
+
+    return minValue;
+  }
+
+  function msgToSend(values, config) {
+    if (values.length == 0) return null;
+
+    if (
+      config.margin == null ||
+      config.margin == 0 ||
+      config.valueType === "string"
+    )
+      return mean(values);
+
+    if (config.result === "mean") return mean(values);
+
+    if (config.result === "highest") return max(values);
+
+    if (config.result === "lowest") return min(values);
+
+    return null;
+  }
+
   function createSameTypeArray(arr, type) {
     let newArr = [];
     let i;
@@ -115,7 +156,8 @@ module.exports = function (RED) {
           modeValues = mode(sameTypeArray, config.margin / 100);
         else modeValues = mode(sameTypeArray, null);
 
-        msg.payload = mean(modeValues);
+        msg.payload = msgToSend(modeValues, config);
+
         allValues = [];
 
         sendOut(
@@ -135,11 +177,16 @@ module.exports = function (RED) {
         if (allValues.length == config.countInputs) {
           let modeValues;
 
-          if (config.valueType === "number" && config.margin != null)
+          if (
+            config.valueType === "number" &&
+            config.margin != null &&
+            config.margin != 0
+          )
             modeValues = mode(allValues, config.margin / 100);
           else modeValues = mode(allValues, null);
 
-          msg.payload = mean(modeValues);
+          msg.payload = msgToSend(modeValues, config);
+
           allValues = [];
 
           sendOut(
