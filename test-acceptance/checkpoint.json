@@ -1,0 +1,52 @@
+[
+  {
+    "id": "9097f43d.d74298",
+    "type": "tab",
+    "label": "Checkpoint",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "6c6f5ef8.9f87f",
+    "type": "inject",
+    "z": "9097f43d.d74298",
+    "name": "Inject",
+    "props": [{ "p": "payload" }],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "1234",
+    "payloadType": "num",
+    "x": 310,
+    "y": 380,
+    "wires": [["bbdd74bf.3f2188"]]
+  },
+  {
+    "id": "a1a1d572.4f0a8",
+    "type": "debug",
+    "z": "9097f43d.d74298",
+    "name": "",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "false",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 690,
+    "y": 380,
+    "wires": []
+  },
+  {
+    "id": "bbdd74bf.3f2188",
+    "type": "checkpoint",
+    "z": "9097f43d.d74298",
+    "name": "",
+    "ttl": 3600,
+    "x": 490,
+    "y": 380,
+    "wires": [["a1a1d572.4f0a8"]]
+  }
+]

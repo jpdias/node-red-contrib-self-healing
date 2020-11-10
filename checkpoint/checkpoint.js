@@ -1,3 +1,5 @@
+const SentryLog = require("../utils/sentry-log.js");
+
 /**
  * 
  * In order for the checkpoint node to work properly,
@@ -19,6 +21,7 @@
 module.exports = function (RED) {
   function checkpoint(config) {
     RED.nodes.createNode(this, config);
+    SentryLog.sendMessage("checkpoint was deployed");
     let node = this;
     config.ttl = parseInt(config.ttl) || 3600;
 

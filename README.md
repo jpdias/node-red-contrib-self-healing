@@ -73,6 +73,10 @@ Drop values if they are in or out of a given threshold (e.g. two close temperatu
 
 Acts between a node sending a message to another, storing the last one in local context and resending it after restarts, if it's within a specified time to live.
 
+### :package: resource-monitor
+
+Monitors system resources, ranging from battery levels to resources usage.
+
 ## Todo Nodes
 
 ### :package: device-registry
