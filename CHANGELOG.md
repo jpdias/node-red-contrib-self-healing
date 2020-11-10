@@ -9,12 +9,14 @@ All notable changes to this project will be documented in this file.
 #### Added
 
 - Added Checkpoint node #61
+- Action Delay/Debounce: add tests for the following strategies: first, last and allByOder. Changed the name and functionality of action delay to debounce. #55 #18
 
 #### Changed
 
 - Enhancement of Timing Check node by adding a sliding window and determining the average of periods between
   consecutive messages, which allows achieving a more concise conclusion about the general flow. Sliding window
   size can be defined in the node's settings. #57
+- Action Delay: refactor discard strategy test #55
 - Enhancement of Replication Voter node by adding the possibility of using strings and using a margin when calculating the majority value.
 
 ### Week of 28/10/2020 - 03/11/2020
@@ -25,10 +27,12 @@ All notable changes to this project will be documented in this file.
   Based on which mode is selected, a "percentile" or "fixed" change is calculated and compare to the threshold
   values defined for minimum/maximum change.
   Also refactors the old tests and adds new ones for the "fixed" mode. #58
+- Action Delay: added margin for the delay. #55
 
 #### Changed
 
 - Rebuilt pipelines to focus on merge requests and protected branches #53
+- Refactored node Action Delay #55
 
 ### Week of 21/10/2020 - 27/10/2020
 

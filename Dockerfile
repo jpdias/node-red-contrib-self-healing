@@ -5,7 +5,7 @@ WORKDIR /usr/src/node-red
 COPY --chown=node-red package.json selfhealing/package.json
 COPY --chown=node-red package-lock.json selfhealing/package-lock.json
 
-COPY --chown=node-red action-delay selfhealing/action-delay
+COPY --chown=node-red debounce selfhealing/debounce
 COPY --chown=node-red compensate selfhealing/compensate
 COPY --chown=node-red flow-control selfhealing/flow-control
 COPY --chown=node-red network-aware selfhealing/network-aware
