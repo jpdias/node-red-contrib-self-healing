@@ -17,6 +17,7 @@ COPY --chown=node-red balancing selfhealing/balancing
 COPY --chown=node-red readings-watcher selfhealing/readings-watcher
 COPY --chown=node-red checkpoint selfhealing/checkpoint
 COPY --chown=node-red utils selfhealing/utils
+COPY --chown=node-red resource-monitor selfhealing/resource-monitor
 
 USER node-red
 
