@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 #### Added
 
+- Added Sonarqube Integration #65
 - Added Checkpoint node #61
 
 #### Changed
