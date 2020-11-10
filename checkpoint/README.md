@@ -1,3 +1,5 @@
+### Objective
+
 A node that saves messages sent to an actuator and resends on restart. 
 
 ### Details
@@ -6,7 +8,7 @@ This node can be placed between a node that is sending a message do another node
 
 ### Setup 
 
-In order for the checkpoint node to work properly, local context storage must be set in your .node-red folder, by adding the following:
+In order for the checkpoint node to work properly, local context storage must be set on the settings.js file of your .node-red folder, by adding the following:
 
 <dl>
 
@@ -27,11 +29,11 @@ In order for the checkpoint node to work properly, local context storage must be
 
 <dl class="message-properties">
 
-<dt>name<span class="property-type">string</span></dt>
+<dt>name<span class="property-type">: string</span></dt>
 
 <dd>name of node to be displayed in editor</dd>
 
-<dt>ttl<span class="property-type">integer</span></dt>
+<dt>ttl<span class="property-type">: integer</span></dt>
 
 <dd>last message's time to live, in seconds</dd>
 
@@ -44,3 +46,7 @@ In order for the checkpoint node to work properly, local context storage must be
 ### Outputs
 
 <dl class="message-properties">Equal to the last message sent as input</dl>
+
+### Example Flow
+
+![](https://i.imgur.com/DcdZCrI.png)
