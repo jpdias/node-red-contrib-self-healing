@@ -1,3 +1,5 @@
+## Objective
+
 A node to delay actions or messages in order to avoid overload
 
 ## Details

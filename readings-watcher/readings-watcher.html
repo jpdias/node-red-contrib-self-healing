@@ -217,10 +217,10 @@
     </dd>
 
     <dt>minchange<span class="property-type">number</span></dt>
-    <dd>Minimum % change allowed between consecutive readings</dd>
+    <dd>Minimum change allowed between consecutive readings</dd>
 
     <dt>maxchange<span class="property-type">number</span></dt>
-    <dd>Maximum % change allowed between consecutive readings</dd>
+    <dd>Maximum change allowed between consecutive readings</dd>
 
     <dt>stucklimit<span class="property-type">number</span></dt>
     <dd>Number of equal value readings allowed before triggering error</dd>
@@ -265,13 +265,10 @@
     <code>0.5 "percentile change</code> or a <code>5 "fixed" change</code>
   </p>
   <p>
-    <code>minchange</code> will trigger an error if the percentual difference
-    between two consecutive readings is lower than the specified limit
+    <code>minchange</code> will trigger an error if the difference between two
+    consecutive readings is lower than the specified limit
   </p>
-  <p>
-    <code>maxchange</code> will do the same if the difference is higher than the
-    limit
-  </p>
+  <p><code>maxchange</code> will do the same if the is higher than the limit</p>
   <p>
     <code>stucklimit</code> will compare the last <code>X</code> readings and
     trigger an error if they are all the same value

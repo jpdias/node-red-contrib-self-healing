@@ -1,0 +1,82 @@
+[
+  {
+    "id": "28a0a6d9.926bba",
+    "type": "tab",
+    "label": "Flow 1",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "a1ff5094.fdeeb",
+    "type": "inject",
+    "z": "28a0a6d9.926bba",
+    "name": "reading value",
+    "props": [{ "p": "payload" }, { "p": "topic", "vt": "str" }],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 240,
+    "y": 280,
+    "wires": [["2d3a3b89.f846a4"]]
+  },
+  {
+    "id": "39d7ca.49653836",
+    "type": "debug",
+    "z": "28a0a6d9.926bba",
+    "name": "success actuator",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 770,
+    "y": 200,
+    "wires": []
+  },
+  {
+    "id": "2d3a3b89.f846a4",
+    "type": "threshold-check",
+    "z": "28a0a6d9.926bba",
+    "name": "",
+    "rules": [
+      {
+        "property": "payload",
+        "propertyType": "msg",
+        "type": "eq",
+        "value": "",
+        "valueType": "str",
+        "value2": "",
+        "valueType2": "str",
+        "case": false,
+        "failMsg": ""
+      }
+    ],
+    "x": 510,
+    "y": 280,
+    "wires": [["39d7ca.49653836"], ["eb57ab52.9ca408"]]
+  },
+  {
+    "id": "eb57ab52.9ca408",
+    "type": "debug",
+    "z": "28a0a6d9.926bba",
+    "name": "error actuator",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 760,
+    "y": 340,
+    "wires": []
+  }
+]
