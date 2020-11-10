@@ -86,7 +86,7 @@ describe("balancing node", function () {
 
       setTimeout(function () {
         if (count == 1) done();
-      }, 10);
+      }, 20);
     });
   }
 
