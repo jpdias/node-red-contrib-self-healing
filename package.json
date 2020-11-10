@@ -16,6 +16,7 @@
     "start": "node-red",
     "test": "mocha \"test/**/*_spec.js\"",
     "test-coverage": "nyc mocha \"test/**/*_spec.js\"",
+    "test-pbt": "mocha \"test-pbt/**/*_spec.js\"",
     "mocha": "mocha",
     "lint": "eslint --ignore-path .gitignore .",
     "format": "prettier --write --ignore-path .gitignore .",
