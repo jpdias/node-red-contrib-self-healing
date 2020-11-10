@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - Enhancement of Timing Check node by adding a sliding window and determining the average of periods between
   consecutive messages, which allows achieving a more concise conclusion about the general flow. Sliding window
   size can be defined in the node's settings. #57
+- Enhancement of Replication Voter node by adding the possibility of using strings and using a margin when calculating the majority value.
 
 ### Week of 28/10/2020 - 03/11/2020
 
