@@ -10,6 +10,7 @@ class BoundedStack {
   }
 
   push(element) {
+    if (this.maxsize == 0) return;
     if (this.isFull()) this.stack.shift();
     this.stack.push(element);
   }
