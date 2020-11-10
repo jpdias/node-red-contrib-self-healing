@@ -16,7 +16,7 @@
       mqttdelay: {
         value: 5,
         required: false,
-        //validate: RED.validators.number(),
+        validate: RED.validators.number(),
       },
     },
     inputs: 1,
@@ -35,12 +35,12 @@
     if (chosenProtocol == "http") {
       divHttp.style.visibility = "visible";
       divMqtt.style.visibility = "hidden";
-    } else if (chosenProtocol == "mqtt passive") {
+    } else if (
+      chosenProtocol == "mqtt passive" ||
+      chosenProtocol == "mqtt active"
+    ) {
       divHttp.style.visibility = "hidden";
       divMqtt.style.visibility = "visible";
-    } else if (chosenProtocol == "mqtt active") {
-      divHttp.style.visibility = "hidden";
-      divMqtt.style.visibility = "hidden";
     }
   }
 </script>

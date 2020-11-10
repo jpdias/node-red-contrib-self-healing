@@ -11,15 +11,21 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config);
 
     this.interval = null;
+    this.brokerInterval = null;
     this.frequency = config.frequency;
     this.protocol = config.protocol;
     this.onfail = config.onfail;
     this.httpendpoint = config.httpendpoint;
+    this.delay = config.mqttdelay;
     let node = this;
 
     this.interval = setInterval(function () {
       node.emit("input", {});
     }, this.frequency * 1000); //from seconds to milliseconds
+
+    this.brokerInterval = setInterval(function () {
+      node.emit("verify", {});
+    }, this.delay * 1000); //from seconds to milliseconds
 
     this.on("input", function (msg, send, done) {
       //HTTP protocol
@@ -63,7 +69,7 @@ module.exports = function (RED) {
             }
           });
       }
-      //MQTT protocol
+      //MQTT protocol - MQTT Passive
       else if (this.protocol == "mqtt passive") {
         if (!this.interval) {
           this.interval = setInterval(
@@ -75,21 +81,17 @@ module.exports = function (RED) {
         }
         clearInterval(this.interval);
 
-        console.log("mqtt passive");
-
-        //must receive this message within X seconds
-        //o uptime dá o tempo em segundos que o broker está ativo
-        if (msg.topic == "$SYS/broker/uptime") {
-          this.status({ fill: "green", shape: "dot", text: "OK" });
-          console.log("I received uptime! :)");
-          msg.payload = "Connection to the MQTT broker is alive.";
-          send(msg);
-        }
-        // else{
-        //   this.status({ fill: "red", shape: "dot", text: "ERROR" });
-        //   msg.error.message = "Could not connect to the MQTT broker.";
-        //   send(msg);
-        // }
+        this.on("verify", function () {
+          if (msg.topic == "$SYS/broker/uptime") {
+            this.status({ fill: "green", shape: "dot", text: "OK" });
+            msg.payload = "Connection to the MQTT broker is alive.";
+            send(msg);
+          } else {
+            this.status({ fill: "red", shape: "dot", text: "ERROR" });
+            msg.payload = "Could not connect to the MQTT broker.";
+            send(msg);
+          }
+        });
 
         this.interval = setInterval(
           failedTrigger,
@@ -97,7 +99,9 @@ module.exports = function (RED) {
           msg,
           send
         );
-      } else if (this.protocol == "mqtt active") {
+      }
+      //MQTT protocol - MQTT Active
+      else if (this.protocol == "mqtt active") {
         if (!this.interval) {
           this.interval = setInterval(
             failedTrigger,
@@ -107,10 +111,17 @@ module.exports = function (RED) {
           );
         }
         clearInterval(this.interval);
-
-        console.log("mqtt active");
-
-        //the mqtt in node must receive, after the delay (?), the same message heartbeat sent to the mqtt out node
+        this.on("verify", function (newMsg) {
+          newMsg.payload = "Connection to the MQTT broker is alive.";
+          send(newMsg);
+          if (msg.payload == newMsg.payload) {
+            this.status({ fill: "green", shape: "dot", text: "OK" });
+            //"Connection to the MQTT broker is alive."
+            send(msg);
+            done();
+            clearInterval(this.brokerInterval);
+          }
+        });
 
         this.interval = setInterval(
           failedTrigger,
@@ -123,6 +134,7 @@ module.exports = function (RED) {
 
     this.on("close", function () {
       clearInterval(this.interval);
+      clearInterval(this.brokerInterval);
     });
   }
 
