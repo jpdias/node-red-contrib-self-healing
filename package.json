@@ -33,13 +33,14 @@
       "kalman-noise-filter": "kalman-noise-filter/kalman.js",
       "threshold-check": "threshold-check/threshold-check.js",
       "redundancy-manager": "redundancy/redundancy.js",
-      "action-delay": "action-delay/action-delay.js",
+      "debounce": "debounce/debounce.js",
       "network-aware": "network-aware/network-aware.js",
       "heartbeat": "heartbeat/heartbeat.js",
       "timing": "timing-check/timing.js",
       "readings-watcher": "readings-watcher/readings-watcher.js",
       "balancing": "balancing/balancing.js",
-      "checkpoint": "checkpoint/checkpoint.js"
+      "checkpoint": "checkpoint/checkpoint.js",
+      "resource-monitor": "resource-monitor/resource-monitor.js"
     }
   },
   "main": "node_modules/node-red/red/red.js",
@@ -49,6 +50,7 @@
     "ajv": "^6.12.4",
     "asn1": "^0.2.4",
     "child_process": "^1.0.2",
+    "dotenv": "^8.2.0",
     "kalmanjs": "^1.1.0",
     "local-devices": "git+https://github.com/Miosame/local-devices.git",
     "network-list": "^1.1.5",
@@ -69,6 +71,10 @@
     "nyc": "^15.1.0",
     "prettier": "^2.1.2",
     "sonarqube-scanner": "^2.7.0"
+  },
+  "optionalDependencies": {
+    "@sentry/node": "^5.27.2",
+    "@sentry/tracing": "^5.27.2"
   },
   "husky": {
     "hooks": {
