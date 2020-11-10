@@ -113,8 +113,20 @@ Stores the internal state of all flows, making it available to different Node-RE
 
 - Clone or download this repository.
 - In your node-red user directory, typically ~/.node-red (in Windows something like `C:\Users\<my_name>\.node_red`), run: `npm install <path_to_downloaded_folder>/node-red-contrib-self-healing`
+  - Note: this will come with [Sentry](https://sentry.io/) support, providing some app telemetry. In order to disable it, add the `--no-optional` flag. Since it's an optional dependency, Sentry won't be installed.
 - Start (or restart) Node-RED.
 - Nodes should be available under the SHEN tab of the _node palette_.
+
+### Running tests
+
+- Unit tests for every node: `npm run test`
+- Unit tests with coverage: `npm run test-coverage`
+- Mutation tests: `npm run mutate`
+- Property based tests: `npm run test-pbt`
+- Acceptance tests: `npm run test-acceptance`
+- Static analysis with sonarqube (requires docker): `npm run sonar-server` then `npm run sonar-scanner <path-to-node-js-file>`
+
+### Helper documentation
 
 - [Installing Costum Nodes -- Official Documentation](https://nodered.org/docs/creating-nodes/first-node#testing-your-node-in-node-red)
 
@@ -133,4 +145,3 @@ If you find this code useful in your research, please consider citing:
         pages="357--370",
         isbn="978-3-030-50426-7"
     }
-

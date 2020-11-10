@@ -1,12 +1,12 @@
 ### Objective
 
-A node that saves messages sent to an actuator and resends on restart. 
+A node that saves messages sent to an actuator and resends on restart.
 
 ### Details
 
 This node can be placed between a node that is sending a message do another node, in order to store the last message that is sent. Every message is immediatelly redirected to the destination node as soon as it's received by the checkpoint node. When there's a restart, the checkpoint will resend the last message if it's within a specified time to live.
 
-### Setup 
+### Setup
 
 In order for the checkpoint node to work properly, local context storage must be set on the settings.js file of your .node-red folder, by adding the following:
 
