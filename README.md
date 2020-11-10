@@ -133,4 +133,3 @@ If you find this code useful in your research, please consider citing:
         pages="357--370",
         isbn="978-3-030-50426-7"
     }
-
