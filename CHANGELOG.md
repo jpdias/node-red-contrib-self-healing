@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 #### Added
 
+- Added Sentry Integration, with the option of not using it on production #62
 - Added Checkpoint node #61
 
 #### Changed
