@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 #### Added
 
 - Added Checkpoint node #61
+- Added acceptance testing using selenium #67
 
 #### Changed
 
