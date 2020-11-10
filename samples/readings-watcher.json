@@ -1,0 +1,82 @@
+[
+  {
+    "id": "ca43a1c7.8814d8",
+    "type": "tab",
+    "label": "Readings Watcher",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "dcd31a9a.6309f",
+    "type": "inject",
+    "z": "ca43a1c7.8814d8",
+    "name": "Command",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 420,
+    "y": 440,
+    "wires": [["741a43ac.c6c304"]]
+  },
+  {
+    "id": "fbc8eb00.1cba5",
+    "type": "debug",
+    "z": "ca43a1c7.8814d8",
+    "name": "OK",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 790,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "741a43ac.c6c304",
+    "type": "readings-watcher",
+    "z": "ca43a1c7.8814d8",
+    "name": "",
+    "strategyMask": 1,
+    "valueType": "percentile",
+    "minchange": "0.05",
+    "maxchange": 1,
+    "stucklimit": 2,
+    "x": 610,
+    "y": 440,
+    "wires": [["fbc8eb00.1cba5"], ["4337d7c0.02e96"]]
+  },
+  {
+    "id": "4337d7c0.02e96",
+    "type": "debug",
+    "z": "ca43a1c7.8814d8",
+    "name": "ERROR",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 800,
+    "y": 480,
+    "wires": []
+  }
+]
