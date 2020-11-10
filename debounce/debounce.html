@@ -1,9 +1,10 @@
 <script type="text/javascript">
-  RED.nodes.registerType("action-delay", {
+  RED.nodes.registerType("debounce", {
     category: "SHEN",
     defaults: {
       name: { value: "" },
       delay: { value: "2", required: true },
+      delayInterval: { value: "0", required: false },
       strategy: { value: "last", required: false },
     },
     icon: "status.png",
@@ -14,12 +15,12 @@
     inputLabels: "JSONArray",
     outputLabels: ["execute", "delayed"],
     label: function () {
-      return this.name || "Action Delay";
+      return this.name || "Debounce";
     },
   });
 </script>
 
-<script type="text/html" data-template-name="action-delay">
+<script type="text/html" data-template-name="debounce">
   <div class="form-row">
     <label for="node-input-name" style="width:80%;">
       <i class="fa fa-tag"></i>
@@ -33,9 +34,21 @@
   </div>
   <div class="form-row">
     <label for="node-input-delay" style="width:80%;">
-      <i class="fa fa-tag"></i> Minimum delay between actions (s)
+      <i class="fa fa-tag"></i> Minimum delay between messages/actions (s)
     </label>
     <input type="number" id="node-input-delay" min="0" placeholder="2" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-delayInterval" style="width:80%;">
+      <i class="fa fa-tag"></i> Time delay interval (ms)
+    </label>
+    <input
+      type="number"
+      id="node-input-delayInterval"
+      step="1"
+      min="0"
+      placeholder="0"
+    />
   </div>
   <div class="form-row">
     <label for="node-input-strategy" style="width:80%;"
@@ -50,7 +63,7 @@
   </div>
 </script>
 
-<script type="text/html" data-help-name="action-delay">
+<script type="text/html" data-help-name="debounce">
   <p>A node to delay messages in order to avoid overload</p>
   <h3>Details</h3>
   <p>

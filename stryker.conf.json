@@ -2,7 +2,7 @@
   "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
   "packageManager": "npm",
   "mutate": [
-    "action-delay/*.js",
+    "debounce/*.js",
     "balancing/*.js",
     "compensate/*.js",
     "flow-control/*.js",
