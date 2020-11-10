@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 
 #### Added
 
+- Added JSONSchema for each of the node's input/outputs
+- Added Sonarqube Integration #65
 - Added Sentry Integration, with the option of not using it on production #62
 - Added Checkpoint node #61
 - Action Delay/Debounce: add tests for the following strategies: first, last and allByOder. Changed the name and functionality of action delay to debounce. #55 #18
