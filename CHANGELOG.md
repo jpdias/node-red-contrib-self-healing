@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 #### Added
 
 - Added Property Based Tests with JSVerify for bounded-stack, used with bounded-stack node. #66
-- Added JSONSchema for each of the node's input/outputs.
+- Added JSONSchema for each of the node's input/outputs. #63
 - Added Sonarqube Integration #65
 - Added Sentry Integration, with the option of not using it on production #62
 - Added Checkpoint node #61
