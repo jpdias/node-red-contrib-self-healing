@@ -1,0 +1,96 @@
+[
+  {
+    "id": "714e3786.007b4",
+    "type": "tab",
+    "label": "Flow 1",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "f3dbdcf3.9a6c1",
+    "type": "timing",
+    "z": "714e3786.007b4",
+    "period": 30,
+    "margin": 0.1,
+    "slidingWindowLength": 5,
+    "x": 640,
+    "y": 320,
+    "wires": [["c4171bf2.01b658"], ["4eac4cd4.6af594"], ["703cc2aa.0fdafc"]]
+  },
+  {
+    "id": "796cad52.08b5dc",
+    "type": "inject",
+    "z": "714e3786.007b4",
+    "name": "Input Message",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 360,
+    "y": 320,
+    "wires": [["f3dbdcf3.9a6c1"]]
+  },
+  {
+    "id": "c4171bf2.01b658",
+    "type": "debug",
+    "z": "714e3786.007b4",
+    "name": "Normal",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 880,
+    "y": 240,
+    "wires": []
+  },
+  {
+    "id": "4eac4cd4.6af594",
+    "type": "debug",
+    "z": "714e3786.007b4",
+    "name": "Too Fast",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 890,
+    "y": 320,
+    "wires": []
+  },
+  {
+    "id": "703cc2aa.0fdafc",
+    "type": "debug",
+    "z": "714e3786.007b4",
+    "name": "Too Slow",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 890,
+    "y": 420,
+    "wires": []
+  }
+]
