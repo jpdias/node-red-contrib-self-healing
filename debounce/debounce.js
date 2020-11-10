@@ -1,6 +1,9 @@
+const SentryLog = require("../utils/sentry-log.js");
+
 module.exports = function (RED) {
   function Debounce(config) {
     RED.nodes.createNode(this, config);
+    SentryLog.sendMessage("debounce was deployed");
     let node = this;
     let delayInMilis = parseInt(config.delay) * 1000;
     let delayInterval =

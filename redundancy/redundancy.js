@@ -1,3 +1,5 @@
+const SentryLog = require("../utils/sentry-log.js");
+
 module.exports = function (RED) {
   /*get my ip stuff*/
   const os = require("os");
@@ -83,6 +85,8 @@ module.exports = function (RED) {
 
   function RedundancyManager(config) {
     RED.nodes.createNode(this, config);
+    SentryLog.sendMessage("redundancy was deployed");
+
     var node = this;
     let voting = "undefined";
     let alive = "undefined";
