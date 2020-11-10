@@ -49,4 +49,4 @@ In order for the checkpoint node to work properly, local context storage must be
 
 ### Example Flow
 
-![](https://i.imgur.com/DcdZCrI.png)
+![](../samples/checkpoint.png)
