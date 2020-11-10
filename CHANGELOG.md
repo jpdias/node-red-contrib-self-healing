@@ -19,7 +19,6 @@ All notable changes to this project will be documented in this file.
 - Action Delay: refactor discard strategy test #55
 - Enhancement of Replication Voter node by adding the possibility of using strings and using a margin when calculating the majority value.
 
-
 ### Week of 28/10/2020 - 03/11/2020
 
 #### Added
