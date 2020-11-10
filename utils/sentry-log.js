@@ -1,4 +1,10 @@
-require("dotenv").config({ path: __dirname + "/../.env" });
+let SENTRY_DSN = "";
+try {
+  require("dotenv").config({ path: __dirname + "/../.env" });
+  SENTRY_DSN = process.env.SENTRY_DSN;
+} catch (e) {
+  SENTRY_DSN = "";
+}
 
 let Sentry = null;
 try {
@@ -9,7 +15,7 @@ try {
 
 if (Sentry) {
   Sentry.init({
-    dsn: process.env.SENTRY_DSN,
+    dsn: SENTRY_DSN,
     tracesSampleRate: 1.0,
   });
 }
