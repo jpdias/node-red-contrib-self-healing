@@ -4,9 +4,41 @@ All notable changes to this project will be documented in this file.
 
 ## Sprint 2 (21/10/2020 - 10/11/2020)
 
+### Week of 04/11/2020 - 10/11/2020
+
+#### Added
+
+- Added Property Based Tests with JSVerify for bounded-stack, used with bounded-stack node. #66
+- Added JSONSchema for each of the node's input/outputs. #63
+- Added Sonarqube Integration #65
+- Added Sentry Integration, with the option of not using it on production #62
+- Added Checkpoint node #61
+- Added acceptance testing using selenium #67
+- Action Delay/Debounce: add tests for the following strategies: first, last and allByOder. Changed the name and functionality of action delay to debounce. #55 #18
+- Added Resource Monitor node #59
+
+#### Changed
+
+- Enhancement of Timing Check node by adding a sliding window and determining the average of periods between
+  consecutive messages, which allows achieving a more concise conclusion about the general flow. Sliding window
+  size can be defined in the node's settings. #57
+- Action Delay: refactor discard strategy test #55
+- Enhancement of Replication Voter node by adding the possibility of using strings and using a margin when calculating the majority value.
+
 ### Week of 28/10/2020 - 03/11/2020
 
+#### Added
+
+- Readings Watcher: add a pair of buttons ("percentile" and "fixed") to the node's UI that functions as a switch.
+  Based on which mode is selected, a "percentile" or "fixed" change is calculated and compare to the threshold
+  values defined for minimum/maximum change.
+  Also refactors the old tests and adds new ones for the "fixed" mode. #58
+- Action Delay: added margin for the delay. #55
+
+#### Changed
+
 - Rebuilt pipelines to focus on merge requests and protected branches #53
+- Refactored node Action Delay #55
 
 ### Week of 21/10/2020 - 27/10/2020
 

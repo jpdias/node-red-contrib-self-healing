@@ -1,11 +1,16 @@
+const SentryLog = require("../utils/sentry-log.js");
+
 module.exports = function (RED) {
-  function ActionDelay(config) {
+  function Debounce(config) {
     RED.nodes.createNode(this, config);
+    SentryLog.sendMessage("debounce was deployed");
     let node = this;
     let delayInMilis = parseInt(config.delay) * 1000;
+    let delayInterval =
+      config.delayInterval != null ? parseInt(config.delayInterval) : 0;
     let schedule = "undefined";
     let allActions = []; //all msg payloads
-    let lastMsgTimestamp = 0;
+    let lastMsgTimestamp = null;
 
     function resetSchedule() {
       clearInterval(schedule);
@@ -36,10 +41,24 @@ module.exports = function (RED) {
     };
     node.on("input", function (msg, send, done) {
       const newMsgTimestamp = new Date().getTime();
+      // first message
+      if (this.lastMsgTimestamp == null) {
+        node.status({
+          fill: "green",
+          shape: "dot",
+          text: "First",
+        });
+        this.lastMsgTimestamp = newMsgTimestamp; // add latest sent message timestamp
+        node.send([msg, null]);
+        done();
+        return;
+      }
+
       // message is within interval
+      // and there is no message backlog
       // pass message, all clear and good
       if (
-        newMsgTimestamp - lastMsgTimestamp >= delayInMilis &&
+        newMsgTimestamp - lastMsgTimestamp >= delayInMilis - delayInterval &&
         allActions.length == 0
       ) {
         node.status({ fill: "green", shape: "dot", text: "Dispatched" });
@@ -49,7 +68,8 @@ module.exports = function (RED) {
         return;
       }
       // message isn't within interval
-      if (newMsgTimestamp - lastMsgTimestamp < delayInMilis) {
+      if (newMsgTimestamp - lastMsgTimestamp < delayInMilis - delayInterval) {
+        allActions.push(msg); // add message to payload
         node.status({
           fill: "yellow",
           shape: "dot",
@@ -57,18 +77,21 @@ module.exports = function (RED) {
         });
         const newMsg = msg;
         newMsg.timestamp = newMsgTimestamp;
-        // lastMsgTimestamp = newMsgTimestamp;
-        allActions.push(msg); // add message to payload
         send([null, msg]);
         done();
       }
+
       if (config.strategy == "discard") {
         allActions = []; // clear payload
       } else if (schedule == "undefined") {
         schedule = setInterval(executeMsg, delayInMilis, send, done);
       }
     });
+
+    node.on("close", function () {
+      resetSchedule();
+    });
   }
 
-  RED.nodes.registerType("action-delay", ActionDelay);
+  RED.nodes.registerType("debounce", Debounce);
 };

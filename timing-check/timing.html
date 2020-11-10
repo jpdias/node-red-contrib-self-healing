@@ -5,6 +5,11 @@
     defaults: {
       period: { value: 30, required: true, validate: RED.validators.number() },
       margin: { value: 0.1, required: true, validate: RED.validators.number() },
+      slidingWindowLength: {
+        value: 5,
+        required: true,
+        validate: RED.validators.number(),
+      },
     },
     inputs: 1,
     outputs: 3,
@@ -29,6 +34,12 @@
     >
     <input type="text" id="node-input-margin" placeholder="0.1" />
   </div>
+  <div class="form-row">
+    <label for="node-input-slidingWindowLength"
+      ><i class="icon-tag"></i>Size of the sliding windows (> 1)</label
+    >
+    <input type="text" id="node-input-slidingWindowLength" placeholder="5" />
+  </div>
 </script>
 
 <script type="text/html" data-help-name="timing">
@@ -49,6 +60,12 @@
     seconds. It is, therefore, a fraction of the period and must be represented
     in a float between [0, 1].
   </p>
+  <p>
+    <b>Sliding Window</b> defines the number of messages to be considered in the
+    calculation of the flow. A flow's density is then the time average between
+    the messages in the window (even if, initially, there are less messages than
+    the full capacity).
+  </p>
   <h3>Input</h3>
   <p>If MQTT is selected, input must be provided.</p>
   <p>Input is a mere message.</p>
@@ -56,9 +73,9 @@
   <p>
     <b>Normal: </b>
     If the period between the last message arrival and the current one falls
-    between
-    <i>Period-Margin*Period</i> and <i>Period+Margin*Period</i> seconds then the
-    flow is normal and the message is sent through the first output.
+    between <i>Period-Margin*Period</i> and <i>Period+Margin*Period</i>
+    seconds then the flow is normal and the message is sent through the first
+    output.
   </p>
   <p>
     <b>Too slow: </b>
