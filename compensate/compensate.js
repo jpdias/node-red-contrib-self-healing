@@ -1,11 +1,12 @@
+const SentryLog = require("../utils/sentry-log.js");
+
 module.exports = function (RED) {
-  var compensatedCounter = 0;
-  var history = [];
-  var scheduler;
-  var strategy;
-  var confidenceFormula;
+  let history = [];
+  let compensatedCounter = 0;
+  let scheduler;
+  let confidenceFormula;
+
   function confidenceLevel(_compensatedCounter, _history) {
-    console.log(confidenceFormula);
     if (confidenceFormula == "") {
       return NaN;
     }
@@ -27,13 +28,13 @@ module.exports = function (RED) {
       null
     );
 
-  function modeCompensate(node, mode, history, histSize, send, done) {
+  function modeCompensate(node, mode, history, send, done) {
     node.status({
       fill: "yellow",
       shape: "dot",
       text: "Timeout. Sending Mode",
     });
-    let modeval = mode(history);
+    const modeval = mode(history);
 
     send([
       {
@@ -45,7 +46,7 @@ module.exports = function (RED) {
     done();
   }
 
-  function lastCompensate(node, history, histSize, send, done) {
+  function lastCompensate(node, history, send, done) {
     node.status({
       fill: "yellow",
       shape: "dot",
@@ -62,7 +63,7 @@ module.exports = function (RED) {
     done();
   }
 
-  function minCompensate(history, node, histSize, send, done) {
+  function minCompensate(history, node, send, done) {
     let min = history.reduce((prev, curr) => {
       return Math.min(prev, curr);
     });
@@ -81,7 +82,7 @@ module.exports = function (RED) {
     done();
   }
 
-  function maxCompensate(history, node, histSize, send, done) {
+  function maxCompensate(history, node, send, done) {
     let max = history.reduce((prev, curr) => {
       return Math.max(prev, curr);
     });
@@ -100,7 +101,7 @@ module.exports = function (RED) {
     done();
   }
 
-  function meanCompensate(history, node, histSize, send, done) {
+  function meanCompensate(history, node, send, done) {
     /*
         Moving Average (MA) Model (since hist only contains the "histSize" values)
         */
@@ -108,6 +109,7 @@ module.exports = function (RED) {
       return a + b;
     });
     let avg = sum / history.length;
+
     node.status({
       fill: "yellow",
       shape: "dot",
@@ -123,24 +125,24 @@ module.exports = function (RED) {
     done();
   }
 
-  function sendMessage(node, send, done, strategy, histSize) {
+  function sendMessage(node, send, done, strategy) {
     if (history.length > 0) {
       compensatedCounter++;
       switch (strategy) {
         case "mean":
-          meanCompensate(history, node, histSize, send, done);
+          meanCompensate(history, node, send, done);
           break;
         case "max":
-          maxCompensate(history, node, histSize, send, done);
+          maxCompensate(history, node, send, done);
           break;
         case "min":
-          minCompensate(history, node, histSize, send, done);
+          minCompensate(history, node, send, done);
           break;
         case "last":
-          lastCompensate(node, history, histSize, send, done);
+          lastCompensate(node, history, send, done);
           break;
         case "mode":
-          modeCompensate(node, mode, history, histSize, send, done);
+          modeCompensate(node, mode, history, send, done);
           break;
         default:
           break;
@@ -156,30 +158,37 @@ module.exports = function (RED) {
 
   function Compensate(config) {
     RED.nodes.createNode(this, config);
-    var node = this;
-    clearInterval(scheduler);
+    SentryLog.sendMessage("compensate was deployed");
+    const node = this;
+    const strategy = config.strategy;
+    const messageTimeout = config.timeout;
+    const msghistory = config.msghistory;
+    confidenceFormula = config.confidenceFormula;
     compensatedCounter = 0;
     history = [];
-    strategy = config.strategy;
-    confidenceFormula = config.confidenceFormula;
+
+    clearInterval(scheduler);
+
     node.on("input", function (msg, send, done) {
       if (!scheduler && typeof msg.payload === "number") {
         scheduler = setInterval(
           sendMessage,
-          parseInt(config.timeout) * 1000,
+          parseFloat(messageTimeout) * 1000,
           node,
           send,
           done,
-          strategy,
-          config.msghistory
+          strategy
         );
       }
+
       clearInterval(scheduler);
+
       if (typeof msg.payload === "number") {
-        if (history.length > config.msghistory) {
+        if (history.length >= msghistory) {
           history.shift();
         }
         history.push(msg.payload);
+
         node.status({ fill: "green", shape: "dot", text: "Ok" });
         compensatedCounter == 0
           ? (compensatedCounter = 0)
@@ -194,12 +203,11 @@ module.exports = function (RED) {
         ]);
         scheduler = setInterval(
           sendMessage,
-          parseInt(config.timeout) * 1000,
+          parseFloat(messageTimeout) * 1000,
           node,
           send,
           done,
-          strategy,
-          config.msghistory
+          strategy
         );
         done();
       } else {
@@ -209,6 +217,10 @@ module.exports = function (RED) {
           text: "Payload Not a Number",
         });
       }
+    });
+
+    this.on("close", function () {
+      clearInterval(scheduler);
     });
   }
 

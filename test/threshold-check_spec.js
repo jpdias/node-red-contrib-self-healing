@@ -111,7 +111,7 @@ describe("threshold-check node", function () {
         } else {
           done();
         }
-      }, 200);
+      }, 20);
     });
   }
 
@@ -661,7 +661,7 @@ describe("threshold-check node", function () {
         } else {
           done();
         }
-      }, 200);
+      }, 20);
     });
   });
 
@@ -729,7 +729,7 @@ describe("threshold-check node", function () {
         } else {
           done();
         }
-      }, 200);
+      }, 20);
     });
   });
 });

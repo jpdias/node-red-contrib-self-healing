@@ -1,3 +1,10 @@
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "dev"
+
 default:
   image: node:lts
   before_script:
@@ -35,34 +42,55 @@ lint_check:
 njsscan:
   stage: test
   image: python
+  cache:
+
   before_script:
     - pip3 install --upgrade njsscan
   script:
     - njsscan .
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
+    - if: $CI_COMMIT_BRANCH == "master"
   allow_failure: true
-  only:
-    - master
 
 github-deploy:
   stage: deploy
   inherit:
     default: false
     variables: true
-  only:
-    refs:
-      - master
-  when: manual
-  image: registry.gitlab.com/feup-tbs/ldso2021/t4g2/github-deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+  image: registry.gitlab.com/feup-tbs/ldso2021/t4g2/github-deploy:1.0.0
   variables:
     GIT_STRATEGY: none
   script:
     - gh repo clone node-red-contrib-self-healing
     - cd node-red-contrib-self-healing
-    - git remote add gitlab "https://${GITLAB_TOKEN_USER}:${GITLAB_TOKEN_PW}@gitlab.com/feup-tbs/ldso2021/t4g2.git"
-    - git fetch gitlab
-    - git checkout -b gitlab-master gitlab/master
-    - git checkout master
-    - git merge --ff-only gitlab-master
-    - git remote set-url origin "https://ldso2020-t4g2:${GITHUB_TOKEN}@github.com/ldso2020-t4g2/node-red-contrib-self-healing.git"
-    - git push
-    - gh pr create -R jpdias/node-red-contrib-self-healing -B master -t "Integrate changes from LDSO T4G2 group" --fill
+    - gh pr create -R jpdias/node-red-contrib-self-healing -B master -t "Integrate changes from LDSO T4G2 group" -b "Check the CHANGELOG.md file for more details"
+
+docker-deploy-dev:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+  image: docker:19.03.13
+  services:
+    - docker:19.03.13-dind
+  before_script:
+    - docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PW
+  script:
+    - docker build -t ldso2020t4g2/node-red-contrib-self-healing:next .
+    - docker push ldso2020t4g2/node-red-contrib-self-healing:next
+
+docker-deploy-prod:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+  image: docker:19.03.13
+  services:
+    - docker:19.03.13-dind
+  before_script:
+    - docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PW
+  script:
+    - docker build -t ldso2020t4g2/node-red-contrib-self-healing:latest .
+    - docker push ldso2020t4g2/node-red-contrib-self-healing:latest
