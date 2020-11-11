@@ -61,8 +61,12 @@ github-deploy:
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
       when: manual
-  image: registry.gitlab.com/feup-tbs/ldso2021/t4g2/github-deploy
+  image: registry.gitlab.com/feup-tbs/ldso2021/t4g2/github-deploy:1.0.0
+  variables:
+    GIT_STRATEGY: none
   script:
+    - gh repo clone node-red-contrib-self-healing
+    - cd node-red-contrib-self-healing
     - gh pr create -R jpdias/node-red-contrib-self-healing -B master -t "Integrate changes from LDSO T4G2 group" -b "Check the CHANGELOG.md file for more details"
 
 docker-deploy-dev:
