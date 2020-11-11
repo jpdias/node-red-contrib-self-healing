@@ -1,6 +1,9 @@
+const SentryLog = require("../utils/sentry-log.js");
+
 module.exports = function (RED) {
   function Balancing(config) {
     RED.nodes.createNode(this, config);
+    SentryLog.sendMessage("balancing was deployed");
     let node = this;
 
     let numberOutputs = config.outputs;
@@ -33,7 +36,6 @@ module.exports = function (RED) {
         }
         case "2": {
           let totalWeight = roundRobinWeights.reduce((x, y) => x + y);
-
           let rand = Math.random();
           let a = 0;
           out = 0;

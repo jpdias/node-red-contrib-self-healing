@@ -1,3 +1,5 @@
+const SentryLog = require("../utils/sentry-log.js");
+
 module.exports = function (RED) {
   const https = require("https");
 
@@ -9,6 +11,7 @@ module.exports = function (RED) {
 
   function Heartbeat(config) {
     RED.nodes.createNode(this, config);
+    SentryLog.sendMessage("heartbeat was deployed");
 
     this.interval = null;
     this.frequency = config.frequency;

@@ -34,10 +34,13 @@ describe("replication-voter node", function () {
   });
 
   function basicTest(
+    valueType,
     majorityValue,
     countInputs,
+    margin,
+    result,
+    inputType,
     sendPayload,
-    type,
     majority,
     shouldFail,
     done
@@ -47,8 +50,11 @@ describe("replication-voter node", function () {
         id: "n1",
         type: "replication-voter",
         name: "replication-voter",
+        valueType: valueType,
         majority: majorityValue,
         countInputs: countInputs,
+        margin: margin,
+        result: result,
         wires: [["n2"], ["n3"]],
       },
       {
@@ -92,13 +98,13 @@ describe("replication-voter node", function () {
 
       let testNode = helper.getNode("n1");
 
-      if (type == "number") {
+      if (inputType == "number" || inputType == "string") {
         let i;
 
         for (i = 0; i < sendPayload.length; i++) {
           testNode.receive({ payload: sendPayload[i] });
         }
-      } else if (type == "array") {
+      } else if (inputType == "array") {
         testNode.receive({ payload: sendPayload });
       }
 
@@ -112,33 +118,220 @@ describe("replication-voter node", function () {
     });
   }
 
-  it("should pass when there is a majority in the inputs", function (done) {
+  it("should pass when there is a majority number in the inputs", function (done) {
     let sendPayload = [1, 2, 2, 3];
 
-    basicTest(2, 4, sendPayload, "number", 2, false, done);
+    basicTest("number", 2, 4, 0, "mean", "number", sendPayload, 2, false, done);
   });
 
-  it("should fail when there is no majority in the inputs", function (done) {
+  it("should fail when there is no majority number in the inputs", function (done) {
     let sendPayload = [1, 2, 3];
 
-    basicTest(2, 3, sendPayload, "number", null, true, done);
+    basicTest(
+      "number",
+      2,
+      3,
+      0,
+      "mean",
+      "number",
+      sendPayload,
+      null,
+      true,
+      done
+    );
   });
 
-  it("should pass when there is a majority in the array", function (done) {
+  it("should pass when there is a majority number in the array", function (done) {
     let sendPayload = [1, 2, 2, 3];
 
-    basicTest(2, 4, sendPayload, "array", 2, false, done);
+    basicTest("number", 2, 4, 0, "mean", "array", sendPayload, 2, false, done);
   });
 
-  it("should fail when there is no majority in the inputs", function (done) {
+  it("should fail when there is no majority number in the array", function (done) {
     let sendPayload = [1, 2, 3];
 
-    basicTest(2, 3, sendPayload, "array", null, true, done);
+    basicTest(
+      "number",
+      2,
+      3,
+      0,
+      "mean",
+      "array",
+      sendPayload,
+      null,
+      true,
+      done
+    );
+  });
+
+  it("should pass when there is a majority string in the inputs", function (done) {
+    let sendPayload = ["world", "hello", "hello", "ldso"];
+
+    basicTest(
+      "string",
+      2,
+      4,
+      0,
+      "mean",
+      "string",
+      sendPayload,
+      "hello",
+      false,
+      done
+    );
+  });
+
+  it("should fail when there is no majority string in the inputs", function (done) {
+    let sendPayload = ["hello", "world", "ldso"];
+
+    basicTest(
+      "string",
+      2,
+      3,
+      0,
+      "mean",
+      "string",
+      sendPayload,
+      null,
+      true,
+      done
+    );
+  });
+
+  it("should pass when there is a majority string in the array", function (done) {
+    let sendPayload = ["hello", "world", "world", "ldso"];
+
+    basicTest(
+      "string",
+      2,
+      4,
+      0,
+      "mean",
+      "array",
+      sendPayload,
+      "world",
+      false,
+      done
+    );
+  });
+
+  it("should fail when there is no majority string in the array", function (done) {
+    let sendPayload = ["hello", "world", "ldso"];
+
+    basicTest(
+      "string",
+      2,
+      3,
+      0,
+      "mean",
+      "array",
+      sendPayload,
+      null,
+      true,
+      done
+    );
+  });
+
+  it("should pass when the value type is number and the inputs are numbers and strings", function (done) {
+    let sendPayload = [1, "hello", 2, 2, "world", 3];
+
+    basicTest("number", 2, 4, 0, "mean", "array", sendPayload, 2, false, done);
+  });
+
+  it("should pass when the value type is string and the inputs are numbers and strings", function (done) {
+    let sendPayload = [1, "hello", 2, 2, "world", "world", 3];
+
+    basicTest("string", 2, 4, 0, "mean", "array", sendPayload, 2, false, done);
+  });
+
+  it("should pass when there is a high margin that makes the majority happen", function (done) {
+    let sendPayload = [1, 1, 2, 2];
+
+    basicTest(
+      "number",
+      3,
+      4,
+      70,
+      "mean",
+      "number",
+      sendPayload,
+      1.5,
+      false,
+      done
+    );
+  });
+
+  it("should fail when there is a low margin that doesn't make the majority happen", function (done) {
+    let sendPayload = [1, 1, 2, 2];
+
+    basicTest(
+      "number",
+      3,
+      4,
+      40,
+      "mean",
+      "number",
+      sendPayload,
+      null,
+      true,
+      done
+    );
+  });
+
+  it("should pass when the result type is the mean value and the majority is the mean value", function (done) {
+    let sendPayload = [1, 1, 2, 2];
+
+    basicTest(
+      "number",
+      3,
+      4,
+      70,
+      "mean",
+      "number",
+      sendPayload,
+      1.5,
+      false,
+      done
+    );
+  });
+
+  it("should pass when the result type is the highest value and the majority is the highest value", function (done) {
+    let sendPayload = [1, 1, 2, 2];
+
+    basicTest(
+      "number",
+      3,
+      4,
+      70,
+      "highest",
+      "number",
+      sendPayload,
+      2,
+      false,
+      done
+    );
+  });
+
+  it("should pass when the result type is the lowest value and the majority is the lowest value", function (done) {
+    let sendPayload = [1, 1, 2, 2];
+
+    basicTest(
+      "number",
+      3,
+      4,
+      70,
+      "lowest",
+      "number",
+      sendPayload,
+      1,
+      false,
+      done
+    );
   });
 
   it("should pass when the biggest of two possible majorities is considered the majority", function (done) {
     let sendPayload = [1, 2, 2, 3, 3, 3];
 
-    basicTest(2, 6, sendPayload, "number", 3, false, done);
+    basicTest("number", 2, 6, 0, "mean", "number", sendPayload, 3, false, done);
   });
 });

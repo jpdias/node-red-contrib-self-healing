@@ -1,0 +1,66 @@
+[
+  {
+    "id": "fd254d31.c47e58",
+    "type": "tab",
+    "label": "Debounce",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "cce5fa21.25bbd",
+    "type": "inject",
+    "z": "fd254d31.c47e58",
+    "name": "",
+    "props": [{ "p": "payload" }],
+    "repeat": "1",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "0.1",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 190,
+    "y": 360,
+    "wires": [["1cba10f9.b421a7"]]
+  },
+  {
+    "id": "b376d5d3.5607d8",
+    "type": "file",
+    "z": "fd254d31.c47e58",
+    "name": "dispatched",
+    "filename": "../dispatched_test.txt",
+    "appendNewline": true,
+    "createDir": true,
+    "overwriteFile": "false",
+    "encoding": "none",
+    "x": 870,
+    "y": 320,
+    "wires": [[]]
+  },
+  {
+    "id": "862bbd65.24d27",
+    "type": "file",
+    "z": "fd254d31.c47e58",
+    "name": "delayed",
+    "filename": "../delayed_test.txt",
+    "appendNewline": true,
+    "createDir": true,
+    "overwriteFile": "false",
+    "encoding": "none",
+    "x": 860,
+    "y": 400,
+    "wires": [[]]
+  },
+  {
+    "id": "1cba10f9.b421a7",
+    "type": "debounce",
+    "z": "fd254d31.c47e58",
+    "name": "",
+    "delay": "2",
+    "delayInterval": "0",
+    "strategy": "last",
+    "x": 490,
+    "y": 360,
+    "wires": [["b376d5d3.5607d8"], ["862bbd65.24d27"]]
+  }
+]
