@@ -24,26 +24,37 @@
   });
 </script>
 
-<script type="text/javascript" data-template-name="network-aware">
+<script type="text/html" data-template-name="network-aware">
   <div class="form-row">
-      <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="node-red:common.label.name"></span></label>
-      <input type="text" id="node-input-name" data-i18n="[placeholder]node-red:common.label.name">
+    <label for="node-input-name">
+      <i class="fa fa-tag"></i>
+      <span data-i18n="node-red:common.label.name"></span>
+    </label>
+    <input
+      type="text"
+      id="node-input-name"
+      data-i18n="[placeholder]node-red:common.label.name"
+    />
   </div>
   <div class="form-row">
-      <label for="node-input-baseip"><i class="fa fa-tag"></i> Base IP</label>
-      <input id="node-input-baseip" placeholder="192.168.0.1/24">
+    <label for="node-input-baseip"> <i class="fa fa-tag"></i> Base IP </label>
+    <input id="node-input-baseip" placeholder="192.168.0.1/24" />
   </div>
   <div class="form-row">
-      <label for="node-input-scanInterval"><i class="fa fa-tag"></i> scanInterval (s)</label>
-      <input type="number" id="node-input-scanInterval" placeholder="300">
+    <label for="node-input-scanInterval">
+      <i class="fa fa-tag"></i> scanInterval (s)
+    </label>
+    <input type="number" id="node-input-scanInterval" placeholder="300" />
   </div>
   <div class="form-row">
-      <label for="node-input-emit"><i class="fa fa-tag"></i> Emit on scan complete</label>
-      <input type="checkbox" id="node-input-emit">
+    <label for="node-input-emit">
+      <i class="fa fa-tag"></i> Emit on scan complete
+    </label>
+    <input type="checkbox" id="node-input-emit" />
   </div>
 </script>
 
-<script type="text/javascript" data-help-name="network-aware">
+<script type="text/html" data-help-name="network-aware">
   <p>Some useful help text to introduce the node.</p>
   <p>Some more information about the node.</p>
 </script>
