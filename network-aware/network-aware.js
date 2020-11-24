@@ -21,7 +21,7 @@ module.exports = function (RED) {
     });
   }
 
-  function devScan(config, done, node, msg, send) {
+  function devScan(config, done, node, send) {
     node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
     if (!Array.isArray(node.context().get("devices"))) {
       node.context().set("devices", new Array());
@@ -104,9 +104,9 @@ module.exports = function (RED) {
     node.on("input", function (msg, send, done) {
       if (!started) {
         node.context().set("devices", new Array());
-        devScan(config, done, node, msg, send);
+        devScan(config, done, node, send);
         setInterval(() => {
-          devScan(config, done, node, msg, send);
+          devScan(config, done, node, send);
         }, parseInt(config.scanInterval) * 1000);
         started = true;
       } else if (firstScanComplete) {
