@@ -4,8 +4,8 @@ const oui = require("oui");
 const SentryLog = require("../utils/sentry-log.js");
 
 module.exports = function (RED) {
-  var started = false;
-  var firstScanComplete = false;
+  let started = false;
+  let firstScanComplete = false;
 
   function containsDevice(obj, list) {
     return list.some((element) => element.id == obj.id);
@@ -15,7 +15,7 @@ module.exports = function (RED) {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
       c
     ) {
-      var r = (Math.random() * 16) | 0,
+      const r = (Math.random() * 16) | 0,
         v = c == "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
@@ -99,7 +99,7 @@ module.exports = function (RED) {
   function NetworkAware(config) {
     RED.nodes.createNode(this, config);
     SentryLog.sendMessage("network-aware was deployed");
-    var node = this;
+    const node = this;
     node.emit("input", { payload: "internal-sync" });
     node.on("input", function (msg, send, done) {
       if (!started) {
