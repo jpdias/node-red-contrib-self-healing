@@ -7,16 +7,6 @@ module.exports = function (RED) {
   let started = false;
   let firstScanComplete = false;
 
-  function uuidv4() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
-      c
-    ) {
-      const r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  }
-
   function devScan(config, done, node, send) {
     node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
 
@@ -25,48 +15,57 @@ module.exports = function (RED) {
         let newDevList = new Array();
 
         devicesScan.forEach((obj) => {
-          let idsha = uuidv4();
+          let idsha;
           let mnf = "unknown";
           let name = "unknown";
-
-          if (typeof obj.mac == "string") {
-            // If not mac, set uuid
-            idsha = crypto.createHash("sha256").update(obj.mac).digest("hex");
-
-            // Look up MAC addresses for their vendor in the IEEE OUI database
-            mnf = oui(obj.mac.substring(0, 8));
-          }
-
-          if (mnf != "unknown") {
-            mnf = oui(obj.mac.substring(0, 8)).split("\n")[0];
-          }
+          let dev;
 
           if (typeof obj.name == "string") {
             name = obj.name;
           }
 
-          let dev = {
-            id: idsha,
-            ip: obj.ip,
-            name: name,
-            manufacturer: mnf,
-            timestamp: new Date().toISOString(),
-          };
+          if (typeof obj.mac == "string") {
+            idsha = crypto
+              .createHash("sha256")
+              .update(obj.ip + obj.mac)
+              .digest("hex");
+
+            // Look up MAC addresses for their vendor in the IEEE OUI database
+            mnf = oui(obj.mac.substring(0, 8));
+
+            if (mnf != "unknown" && mnf != null) {
+              mnf = oui(obj.mac.substring(0, 8)).split("\n")[0];
+            }
+
+            dev = {
+              id: idsha,
+              ip: obj.ip,
+              name: name,
+              manufacturer: mnf,
+              timestamp: new Date().toISOString(),
+            };
+            send([{ payload: dev }, null]);
+          } else {
+            dev = {
+              ip: obj.ip,
+              name: name,
+              manufacturer: mnf,
+              timestamp: new Date().toISOString(),
+            };
+
+            send([null, { payload: dev }]);
+          }
           newDevList.push(dev);
         });
-        return newDevList;
-      })
-      .then((newDevList) => {
+
+        node.context().set("devices", newDevList);
+
         firstScanComplete = true;
         node.status({
           fill: "green",
           shape: "dot",
           text: "Scan Complete: " + new Date().toISOString(),
         });
-
-        if (config.emit) {
-          send({ payload: newDevList });
-        }
 
         done();
       })
@@ -93,11 +92,15 @@ module.exports = function (RED) {
         }, parseInt(config.scanInterval) * 1000);
         started = true;
       } else if (firstScanComplete) {
-        node.status({
-          fill: "green",
-          shape: "dot",
-          text: "Already scanned, waiting for next scan",
+        let scannedDevices = node.context().get("devices");
+        scannedDevices.forEach((device) => {
+          if (device.id) {
+            send([{ payload: device }, null]);
+          } else {
+            send([null, { payload: device }]);
+          }
         });
+        done();
       } else {
         node.status({
           fill: "yellow",
