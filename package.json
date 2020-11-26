@@ -25,7 +25,9 @@
     "mutate-init": "stryker init",
     "mutate": "stryker run",
     "sonar-server": "docker run --rm -it --name sonarqube -p 9876:9000 -p 9092:9092 sonarqube",
-    "sonar-scanner": "node sonar-project.js"
+    "sonar-scanner": "node sonar-project.js",
+    "selenium-server": "docker-compose up",
+    "selenium-test": "docker exec -it nodered npm run test-accept"
   },
   "node-red": {
     "nodes": {
