@@ -8,6 +8,36 @@
     "input": true,
     "output": true
   },
+  "action-audit": {
+    "title": "Action audit node",
+    "input": {
+      "type": "object",
+      "properties": {
+        "action_or_ack": {
+          "description": "Description of an issued action or ack",
+          "type": "any",
+          "enum": ["action", "ack"]
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "description": "Description of the acknowledged action",
+          "type": "any"
+        },
+        "error": {
+          "description": "An error in case of timeout during acknowledgement",
+          "type": "String"
+        },
+        "exception": {
+          "description": "Exception message",
+          "type": "String"
+        }
+      }
+    }
+  },
   "balancing": {
     "title": "Balancing node",
     "input": true,
