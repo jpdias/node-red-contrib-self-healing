@@ -42,7 +42,8 @@
       "readings-watcher": "readings-watcher/readings-watcher.js",
       "balancing": "balancing/balancing.js",
       "checkpoint": "checkpoint/checkpoint.js",
-      "resource-monitor": "resource-monitor/resource-monitor.js"
+      "resource-monitor": "resource-monitor/resource-monitor.js",
+      "device-registry": "device-registry/device-registry.js"
     }
   },
   "main": "node_modules/node-red/red/red.js",
