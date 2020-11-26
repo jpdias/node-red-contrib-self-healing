@@ -20,7 +20,7 @@ describe("checkpoint node", async function () {
   it("should be test checkpoint", async function () {
     driver = await new Builder()
       .forBrowser("firefox")
-      .usingServer("http://localhost:9001/wd/hub")
+      .usingServer("http://selenium:4444/wd/hub")
       .build();
 
     const testJson = "test-acceptance/checkpoint.json";
@@ -29,7 +29,8 @@ describe("checkpoint node", async function () {
     });
 
     try {
-      await driver.get("http://host.docker.internal:8090");
+      await driver.sleep(5000); //TODO: Switch with elementIsVisible
+      await driver.get("http://nodered:8090");
 
       await driver.sleep(2000); //TODO: Switch with elementIsVisible
       await driver

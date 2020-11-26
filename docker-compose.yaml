@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  nodered:
+    container_name: nodered
+    build: ./test-acceptance
+    ports:
+      - "8888:1880"
+    volumes:
+      - ./test-acceptance:/usr/src/node-red/selfhealing/test-acceptance
+    tty: true
+
+  selenium:
+    container_name: selenium
+    image: "selenium/standalone-firefox-debug"
+    ports:
+      - "9001:4444"
+      - "9002:5900"
+    shm_size: 2gb
+    tty: false
