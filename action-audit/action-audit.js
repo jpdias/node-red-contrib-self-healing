@@ -34,7 +34,7 @@ module.exports = function (RED) {
         msg.exception = "Received ack with no queued actions";
         send([null, null, msg]);
       } else {
-        let action = actionQueue.dequeue();
+        const action = actionQueue.dequeue();
         clearTimeout(action.timeoutId);
         send([action.msg, null, null]);
       }
