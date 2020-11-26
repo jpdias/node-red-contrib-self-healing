@@ -25,7 +25,8 @@
     "mutate-init": "stryker init",
     "mutate": "stryker run",
     "sonar-server": "docker run --rm -it --name sonarqube -p 9876:9000 -p 9092:9092 sonarqube",
-    "sonar-scanner": "node sonar-project.js"
+    "sonar-scanner": "node sonar-project.js",
+    "selenium-server": "docker run --rm -p 9001:4444 -p 9002:5900 --shm-size 2g selenium/standalone-firefox-debug"
   },
   "node-red": {
     "nodes": {
@@ -42,7 +43,8 @@
       "readings-watcher": "readings-watcher/readings-watcher.js",
       "balancing": "balancing/balancing.js",
       "checkpoint": "checkpoint/checkpoint.js",
-      "resource-monitor": "resource-monitor/resource-monitor.js"
+      "resource-monitor": "resource-monitor/resource-monitor.js",
+      "action-audit": "action-audit/action-audit.js"
     }
   },
   "main": "node_modules/node-red/red/red.js",
