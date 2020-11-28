@@ -1,0 +1,13 @@
+[
+  {
+    "id": "b46ef88a.b99e78",
+    "type": "network-aware",
+    "z": "c395ceb0.007bb",
+    "name": "",
+    "baseip": "192.168.1.1/24",
+    "scanInterval": "7",
+    "x": 600,
+    "y": 164,
+    "wires": [["28cc4ded.ab3332"], ["caab653a.5ed6c8"]]
+  }
+]
