@@ -43,7 +43,7 @@ module.exports = function (RED) {
     node.on("input", function (msg, send, done) {
       if (msg.action !== undefined) {
         receiveAction(msg, done);
-      } else if (msg.ack != undefined) {
+      } else if (msg.ack !== undefined) {
         receiveAck(msg, send);
       } else {
         msg.exception = "Msg has neither action or ack field";
