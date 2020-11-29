@@ -86,7 +86,6 @@ module.exports = function (RED) {
 
       //MQTT protocol - MQTT Active
       else if (this.protocol == "mqtt active") {
-        console.log(msg);
         if (msg.payload == this.checkMsg.payload) {
           node.status({ fill: "green", shape: "dot", text: "OK" });
           done();
@@ -95,12 +94,18 @@ module.exports = function (RED) {
     });
 
     this.on("checkAlive", function () {
+      //MQTT protocol - MQTT Passive
       if (this.protocol == "mqtt passive") {
         this.timeout = setTimeout(function () {
+          this.late = true;
+
           node.status({ fill: "red", shape: "dot", text: "ERROR" });
           node.send({ payload: "Could not connect to the MQTT broker." });
         }, this.delay * 1000);
-      } else if (this.protocol == "mqtt active") {
+      }
+
+      //MQTT protocol - MQTT Active
+      else if (this.protocol == "mqtt active") {
         this.checkMsg = { payload: "Connection to the MQTT broker is alive." };
         node.send(this.checkMsg);
 
