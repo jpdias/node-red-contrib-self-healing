@@ -26,7 +26,8 @@
     "mutate": "stryker run",
     "sonar-server": "docker run --rm -it --name sonarqube -p 9876:9000 -p 9092:9092 sonarqube",
     "sonar-scanner": "node sonar-project.js",
-    "selenium-server": "docker run --rm -p 9001:4444 -p 9002:5900 --shm-size 2g selenium/standalone-firefox-debug"
+    "selenium-server": "docker-compose up",
+    "selenium-test": "docker exec -it nodered npm run test-accept"
   },
   "node-red": {
     "nodes": {
