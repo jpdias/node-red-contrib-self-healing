@@ -17,6 +17,7 @@ module.exports = function (RED) {
     this.delay = config.mqttdelay;
 
     this.late = false;
+    let result = [null, null, null];
 
     this.interval = setInterval(function () {
       node.emit("checkAlive", {});
@@ -79,7 +80,8 @@ module.exports = function (RED) {
         if (msg.topic == "$SYS/broker/uptime") {
           node.status({ fill: "green", shape: "dot", text: "OK" });
           msg.payload = "Connection to the MQTT broker is alive.";
-          send(msg);
+          result[1] = msg;
+          send(result);
           done();
         }
       }
@@ -88,6 +90,7 @@ module.exports = function (RED) {
       else if (this.protocol == "mqtt active") {
         if (msg.payload == this.checkMsg.payload) {
           node.status({ fill: "green", shape: "dot", text: "OK" });
+          result[1] = msg;
           done();
         }
       }
@@ -100,20 +103,24 @@ module.exports = function (RED) {
           this.late = true;
 
           node.status({ fill: "red", shape: "dot", text: "ERROR" });
-          node.send({ payload: "Could not connect to the MQTT broker." });
+          result[2] = { payload: "Could not connect to the MQTT broker." };
+          node.send(result);
         }, this.delay * 1000);
       }
 
       //MQTT protocol - MQTT Active
       else if (this.protocol == "mqtt active") {
         this.checkMsg = { payload: "Connection to the MQTT broker is alive." };
-        node.send(this.checkMsg);
+        result[0] = this.checkMsg;
+        result[1] = this.checkMsg;
+        node.send(result);
 
         this.timeout = setTimeout(function () {
           this.late = true;
 
           node.status({ fill: "red", shape: "dot", text: "ERROR" });
-          node.send({ payload: "Could not connect to the MQTT broker." });
+          result[2] = { payload: "Could not connect to the MQTT broker." };
+          node.send(result);
         }, this.delay * 1000);
       }
     });
