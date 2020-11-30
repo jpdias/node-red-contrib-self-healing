@@ -1,0 +1,119 @@
+[
+  {
+    "id": "28a0a6d9.926bba",
+    "type": "tab",
+    "label": "Flow 1",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "a1ff5094.fdeeb",
+    "type": "inject",
+    "z": "28a0a6d9.926bba",
+    "name": "actuator",
+    "props": [
+      { "p": "payload" },
+      { "p": "action", "v": "turn on lights", "vt": "str" }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "hello",
+    "payloadType": "str",
+    "x": 180,
+    "y": 320,
+    "wires": [["98ed7adc.aa5038"]]
+  },
+  {
+    "id": "39d7ca.49653836",
+    "type": "debug",
+    "z": "28a0a6d9.926bba",
+    "name": "print",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 830,
+    "y": 380,
+    "wires": []
+  },
+  {
+    "id": "c47ca0e5.cdc8b",
+    "type": "action-audit",
+    "z": "28a0a6d9.926bba",
+    "name": "",
+    "duration": "1",
+    "x": 620,
+    "y": 380,
+    "wires": [["39d7ca.49653836"], ["39d7ca.49653836"], ["39d7ca.49653836"]]
+  },
+  {
+    "id": "53ab9c4e.473d84",
+    "type": "inject",
+    "z": "28a0a6d9.926bba",
+    "name": "sensor",
+    "props": [{ "p": "payload" }, { "p": "topic", "vt": "str" }],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "turned lights on",
+    "payload": "acknowledging...",
+    "payloadType": "str",
+    "x": 170,
+    "y": 420,
+    "wires": [["71509352.55068c"]]
+  },
+  {
+    "id": "98ed7adc.aa5038",
+    "type": "change",
+    "z": "28a0a6d9.926bba",
+    "name": "ACTION",
+    "rules": [
+      {
+        "t": "set",
+        "p": "action",
+        "pt": "msg",
+        "to": "Turn light on",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 360,
+    "y": 320,
+    "wires": [["c47ca0e5.cdc8b"]]
+  },
+  {
+    "id": "71509352.55068c",
+    "type": "change",
+    "z": "28a0a6d9.926bba",
+    "name": "ACK ",
+    "rules": [
+      {
+        "t": "set",
+        "p": "ack",
+        "pt": "msg",
+        "to": "Acknowledge light",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 370,
+    "y": 420,
+    "wires": [["c47ca0e5.cdc8b"]]
+  }
+]
