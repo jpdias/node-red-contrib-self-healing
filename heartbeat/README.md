@@ -5,9 +5,13 @@ A node that provides a heartbeat probe for the HTTP and MQTT communication proto
 ### Details
 
 This node has two different methods of verifying if a connection is alive or not, either "passive" or "active".
+
 The "passive" option requires both an "inject" node (repeating periodically) connected to an "MQTT out" node, and an "MQTT in" node connected as input for Heartbeat. The user must select the same topic for both these nodes. If a connection was established successfully within "frequency" seconds (the heart "beat" defined by the user), then the node signals "OK". Otherwise, it signals "FAIL".
+
 The "active" option requires both the "MQTT in" node as input and the "MQTT out" as the first output, configured with the same topic. Heartbeat will send a message to the "MQTT out" node and, if a connection is established and the message was received back at "MQTT in" node after, at most, "delay" seconds (chosen by the user), then the node signals "OK". Otherwise, it signals "FAIL".
+
 For example, if "frequency" is 10 seconds and "delay" 5 seconds, in "passive", a message must be received at least once within those 10 seconds. In "active", the message cannot, within those 10 seconds, take more than 5 seconds to arrive.
+
 The same logic is used for the HTTP protocol, using the "HTTP in" and "HTTP request", configured with the same URLs.
 The second and third outputs represent "success" and "error" routes respectively. The user can connect "debug" nodes to check the messages received.
 
