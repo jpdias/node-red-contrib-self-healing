@@ -1,0 +1,128 @@
+[
+  {
+    "id": "a67ae376.3be4",
+    "type": "tab",
+    "label": "mqtt passive",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "ce8d711e.3920c",
+    "type": "debug",
+    "z": "a67ae376.3be4",
+    "name": "success",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 700,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "id": "50578245.5b2d0c",
+    "type": "debug",
+    "z": "a67ae376.3be4",
+    "name": "error",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 690,
+    "y": 360,
+    "wires": []
+  },
+  {
+    "id": "827c2360.43a15",
+    "type": "inject",
+    "z": "a67ae376.3be4",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "10",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 350,
+    "y": 180,
+    "wires": [["879b6d2a.c6721"]]
+  },
+  {
+    "id": "879b6d2a.c6721",
+    "type": "mqtt out",
+    "z": "a67ae376.3be4",
+    "name": "",
+    "topic": "mqtt",
+    "qos": "",
+    "retain": "",
+    "broker": "9e9202b4.186a5",
+    "x": 690,
+    "y": 180,
+    "wires": []
+  },
+  {
+    "id": "37c2e3a4.285abc",
+    "type": "mqtt in",
+    "z": "a67ae376.3be4",
+    "name": "",
+    "topic": "mqtt",
+    "qos": "2",
+    "datatype": "auto",
+    "broker": "9e9202b4.186a5",
+    "x": 220,
+    "y": 300,
+    "wires": [["f477cd.29f7383"]]
+  },
+  {
+    "id": "f477cd.29f7383",
+    "type": "heartbeat",
+    "z": "a67ae376.3be4",
+    "frequency": "10",
+    "protocol": "passive",
+    "onfail": false,
+    "delay": 5,
+    "x": 460,
+    "y": 300,
+    "wires": [[], ["ce8d711e.3920c"], ["50578245.5b2d0c"]]
+  },
+  {
+    "id": "9e9202b4.186a5",
+    "type": "mqtt-broker",
+    "z": "",
+    "name": "",
+    "broker": "localhost",
+    "port": "1883",
+    "clientid": "",
+    "usetls": false,
+    "compatmode": false,
+    "keepalive": "60",
+    "cleansession": true,
+    "birthTopic": "heartbeat",
+    "birthQos": "0",
+    "birthPayload": "Alive",
+    "closeTopic": "",
+    "closeQos": "0",
+    "closePayload": "Disconnecting",
+    "willTopic": "",
+    "willQos": "0",
+    "willPayload": "Unexpected disconnection occured"
+  }
+]
