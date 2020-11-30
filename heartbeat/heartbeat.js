@@ -1,8 +1,6 @@
 const SentryLog = require("../utils/sentry-log.js");
 
 module.exports = function (RED) {
-  const https = require("https");
-
   function Heartbeat(config) {
     RED.nodes.createNode(this, config);
     SentryLog.sendMessage("heartbeat was deployed");
@@ -14,9 +12,10 @@ module.exports = function (RED) {
     this.protocol = config.protocol;
     this.onfail = config.onfail;
     this.httpendpoint = config.httpendpoint;
-    this.delay = config.mqttdelay;
+    this.delay = config.delay;
 
     this.late = false;
+    this.connection = false;
     let result = [null, null, null];
 
     this.interval = setInterval(function () {
@@ -33,62 +32,19 @@ module.exports = function (RED) {
         this.timeout = null;
       }
 
-      //HTTP protocol
-      if (this.protocol == "http") {
-        https
-          .get(this.httpendpoint, (res) => {
-            const { statusCode, statusMessage } = res;
-            //everything OK
-            if (statusCode == 200) {
-              this.status({ fill: "green", shape: "dot", text: "OK" });
-              if (!this.onfail) {
-                msg.payload = {
-                  status: statusCode,
-                  statusMessage: statusMessage,
-                };
-                msg.timestamp = Date.now().toString();
-
-                send(msg);
-              }
-            } else {
-              this.status({ fill: "red", shape: "ring", text: "FAIL" });
-              msg.payload = {
-                status: statusCode,
-                statusMessage: statusMessage,
-              };
-              msg.timestamp = Date.now().toString();
-              send(msg);
-            }
-          })
-          .on("error", (err) => {
-            this.status({ fill: "red", shape: "dot", text: "ERROR" });
-            msg.payload = { status: 0, statusMessage: err.message };
-            msg.timestamp = Date.now().toString();
-            send(msg);
-            if (done) {
-              // Node-RED 1.0 compatible
-              done(err);
-            } else {
-              // Node-RED 0.x compatible
-              node.error(err, msg);
-            }
-          });
+      //Passive protocol
+      if (this.protocol == "passive") {
+        this.connection = true;
+        node.status({ fill: "green", shape: "dot", text: "OK" });
+        msg.payload = "Connection successful";
+        result[1] = msg;
+        send(result);
+        done();
       }
 
-      //MQTT protocol - MQTT Passive
-      else if (this.protocol == "mqtt passive") {
-        if (msg.topic == "$SYS/broker/uptime") {
-          node.status({ fill: "green", shape: "dot", text: "OK" });
-          msg.payload = "Connection to the MQTT broker is alive.";
-          result[1] = msg;
-          send(result);
-          done();
-        }
-      }
-
-      //MQTT protocol - MQTT Active
-      else if (this.protocol == "mqtt active") {
-        if (msg.payload == this.checkMsg.payload) {
+      //Active protocol
+      else if (this.protocol == "active") {
+        if (msg == this.checkMsg) {
           node.status({ fill: "green", shape: "dot", text: "OK" });
           result[1] = msg;
           done();
@@ -97,20 +53,20 @@ module.exports = function (RED) {
     });
 
     this.on("checkAlive", function () {
-      //MQTT protocol - MQTT Passive
-      if (this.protocol == "mqtt passive") {
+      //Passive protocol
+      if (this.protocol == "passive") {
         this.timeout = setTimeout(function () {
           this.late = true;
 
           node.status({ fill: "red", shape: "dot", text: "ERROR" });
-          result[2] = { payload: "Could not connect to the MQTT broker." };
+          result[2] = { payload: "Could not connect" };
           node.send(result);
-        }, this.delay * 1000);
+        }, this.frequency * 1000);
       }
 
-      //MQTT protocol - MQTT Active
-      else if (this.protocol == "mqtt active") {
-        this.checkMsg = { payload: "Connection to the MQTT broker is alive." };
+      //Active protocol
+      else if (this.protocol == "active") {
+        this.checkMsg = { payload: "Connection successful" };
         result[0] = this.checkMsg;
         result[1] = this.checkMsg;
         node.send(result);
@@ -119,7 +75,7 @@ module.exports = function (RED) {
           this.late = true;
 
           node.status({ fill: "red", shape: "dot", text: "ERROR" });
-          result[2] = { payload: "Could not connect to the MQTT broker." };
+          result[2] = { payload: "Could not connect" };
           node.send(result);
         }, this.delay * 1000);
       }

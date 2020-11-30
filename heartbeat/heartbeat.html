@@ -12,8 +12,7 @@
       },
       protocol: { required: true },
       onfail: { required: true, value: false },
-      httpendpoint: { required: false },
-      mqttdelay: {
+      delay: {
         value: 5,
         required: false,
         validate: RED.validators.number(),
@@ -27,20 +26,14 @@
     },
   });
 
-  function showHttp() {
+  function showDelay() {
     let chosenProtocol = document.getElementById("node-input-protocol").value;
-    let divHttp = document.getElementById("httpinput");
-    let divMqtt = document.getElementById("mqttinput");
+    let divActive = document.getElementById("activeinput");
 
-    if (chosenProtocol == "http") {
-      divHttp.style.visibility = "visible";
-      divMqtt.style.visibility = "hidden";
-    } else if (
-      chosenProtocol == "mqtt passive" ||
-      chosenProtocol == "mqtt active"
-    ) {
-      divHttp.style.visibility = "hidden";
-      divMqtt.style.visibility = "visible";
+    if (chosenProtocol == "passive") {
+      divActive.style.visibility = "hidden";
+    } else if (chosenProtocol == "active") {
+      divActive.style.visibility = "visible";
     }
   }
 </script>
@@ -57,10 +50,9 @@
     <label for="node-input-protocol">
       <i class="fa fa-tag"></i> Heartbeat Protocol
     </label>
-    <select type="text" id="node-input-protocol" onChange="showHttp()">
-      <option>http</option>
-      <option>mqtt passive</option>
-      <option>mqtt active</option>
+    <select type="text" id="node-input-protocol" onChange="showDelay()">
+      <option>passive</option>
+      <option>active</option>
     </select>
   </div>
   <div class="form-row">
@@ -69,23 +61,10 @@
     </label>
     <input type="checkbox" id="node-input-onfail" />
   </div>
-  <div class="form-row" id="httpinput" style="visibility: hidden">
-    <label for="node-input-httpendpoint">
-      <i class="icon-tag"></i>HTTP Endpoint
-    </label>
-    <input
-      type="text"
-      id="node-input-httpendpoint"
-      placeholder="https://google.com"
-    />
-  </div>
-
-  <div id="mqttinput" style="visibility: hidden">
+  <div id="activeinput" style="visibility: hidden">
     <div class="form-row">
-      <label for="node-input-mqttdelay">
-        <i class="icon-tag"></i>Delay (s)
-      </label>
-      <input type="text" id="node-input-mqttdelay" placeholder="5" />
+      <label for="node-input-delay"> <i class="icon-tag"></i>Delay (s) </label>
+      <input type="text" id="node-input-delay" placeholder="5" />
     </div>
   </div>
 </script>
