@@ -15,7 +15,6 @@ module.exports = function (RED) {
     this.delay = config.delay;
 
     this.late = false;
-    this.connection = false;
     let result = [null, null, null];
 
     this.interval = setInterval(function () {
@@ -34,7 +33,6 @@ module.exports = function (RED) {
 
       //Passive protocol
       if (this.protocol == "passive") {
-        this.connection = true;
         node.status({ fill: "green", shape: "dot", text: "OK" });
         msg.payload = "Connection successful";
         result[1] = msg;
@@ -44,11 +42,9 @@ module.exports = function (RED) {
 
       //Active protocol
       else if (this.protocol == "active") {
-        if (msg == this.checkMsg) {
-          node.status({ fill: "green", shape: "dot", text: "OK" });
-          result[1] = msg;
-          done();
-        }
+        node.status({ fill: "green", shape: "dot", text: "OK" });
+        result[1] = msg;
+        done();
       }
     });
 
