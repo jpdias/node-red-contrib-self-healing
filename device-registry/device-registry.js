@@ -11,15 +11,15 @@
     Outputs:
         Lista de obejtos devices
           - name
-          - ip
-          - manufacturer
+          - ip (mandatory and unique)
+          - connection (mqtt/http/unknown)
+          - manufacturer (not mandatory)
           - state (on/off/unknown)
           - lastSeen
         New device
         Device gone
 
-    Adicionar lógica de mensagem mqtt
-
+    ListOfDevies to be kept in a HashTable
 
     [ {"deviceId":"1", "deviceName":"FireSensor", "deviceIp":"192.160.111"},
       {"deviceId":"2", "deviceName":"FireSensor", "deviceIp":"192.160.112"} ]
@@ -27,20 +27,22 @@
 
 const SentryLog = require("../utils/sentry-log.js");
 
+let internalDeviceList = new Map();
 let deviceList = [];
 //let deviceListStruct = [];
 
 module.exports = function (RED) {
   /*function updateDeviceListStruct(index, isActive) {
-        let timestamp = new Date().getTime();
+    let timestamp = new Date().getTime();
 
-        if (condition) { // elemento está dentro do array
+    if (condition) { // elemento está dentro do array
             
-        } else { // elemento não está dentro do array
-            deviceListStruct.push({ index: index, lastSeen:  timestamp, active: isActive});
-        }
+    } else { // elemento não está dentro do array
+      deviceListStruct.push({ index: index, lastSeen:  timestamp, active: isActive});
+    }
 
-    }*/
+  }*/
+
   function RegisterDevice(device) {
     let lastSeen = Date.now().toString();
 
@@ -51,40 +53,20 @@ module.exports = function (RED) {
     )
       return false;
 
-    // check if deviceId and deviceIP(?) is on deviceList
-    deviceList.forEach((deviceInList) => {
-      if (
-        deviceInList.deviceId == device.deviceId ||
-        deviceInList.deviceIp == device.deviceIp
-      )
-        return false;
-    });
+    if (internalDeviceList.has(device.deviceId)) return false;
 
-    deviceList.push({
-      deviceId: device.deviceId,
-      deviceName: device.deviceName,
-      deviceIp: device.deviceIp,
-      deviceStatus: "on",
-      deviceLastSeen: lastSeen,
+    if (device.deviceStatus == null) device.deviceStatus = "on";
+    internalDeviceList.set(device.deviceId, {
+      Name: device.deviceName,
+      Ip: device.deviceIp,
+      Status: device.deviceStatus,
+      LastSeen: lastSeen,
     });
   }
 
-  function RemoveDevice(deviceId) {
-    for (let i = 0; i < deviceList.length; i++) {
-      if (deviceList[i].deviceId == deviceId) {
-        deviceList.splice(i, 1);
-        i--;
-      }
-    }
-  }
-
-  function CheckIdInList(deviceId) {
-    // check if deviceId is on deviceList
-    deviceList.forEach((deviceInList) => {
-      if (deviceInList.deviceId == deviceId) return true;
-    });
-    return false;
-  }
+  // function isClicked() {
+  //   send([{ payload: internalDeviceList }, null, null]);
+  // }
 
   function DeviceRegistry(config) {
     RED.nodes.createNode(this, config);
@@ -97,7 +79,7 @@ module.exports = function (RED) {
 
       if (Array.isArray(receivedDevice)) {
         receivedDevice.forEach((device) => {
-          if (!CheckIdInList(device.deviceId)) {
+          if (!internalDeviceList.has(device.deviceId)) {
             node.status({
               fill: "blue",
               shape: "dot",
@@ -110,36 +92,18 @@ module.exports = function (RED) {
 
         // TODO: check if new device list has a missing device from deviceList
         receivedDevice.forEach((device) => {
-          if (CheckIdInList(device.deviceId)) {
+          if (internalDeviceList.has(device.deviceId)) {
             node.status({
               fill: "yellow",
               shape: "dot",
               text: "Removed device",
             });
-            RemoveDevice(device.deviceId);
+
             send([null, null, { payload: device }]);
           }
         });
 
         deviceList = receivedDevice;
-        send({ payload: deviceList }, null, null);
-      } else if (Number.isInteger(receivedDevice)) {
-        if (deviceList.indexOf(receivedDevice) >= 0) {
-          node.status({
-            fill: "green",
-            shape: "dot",
-            text: "Device already connected",
-          });
-        } else {
-          node.status({
-            fill: "blue",
-            shape: "dot",
-            text: "Received new device",
-          });
-          deviceList.push(receivedDevice);
-          send([null, { payload: receivedDevice }, null]);
-        }
-
         send({ payload: deviceList }, null, null);
       } else {
         node.status({
