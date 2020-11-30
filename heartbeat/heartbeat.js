@@ -36,7 +36,7 @@ module.exports = function (RED) {
         node.status({ fill: "green", shape: "dot", text: "OK" });
         msg.payload = "Connection successful";
         result[1] = msg;
-        send(result);
+        if (!this.onfail) send(result);
         done();
       }
 
@@ -44,6 +44,7 @@ module.exports = function (RED) {
       else if (this.protocol == "active") {
         node.status({ fill: "green", shape: "dot", text: "OK" });
         result[1] = msg;
+        if (!this.onfail) send(result[1]);
         done();
       }
     });
@@ -64,7 +65,6 @@ module.exports = function (RED) {
       else if (this.protocol == "active") {
         this.checkMsg = { payload: "Connection successful" };
         result[0] = this.checkMsg;
-        result[1] = this.checkMsg;
         node.send(result);
 
         this.timeout = setTimeout(function () {
