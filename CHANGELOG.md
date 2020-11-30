@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Sprint 2 (11/11/2020 - 01/12/2020)
+## Sprint 3 (11/11/2020 - 01/12/2020)
 
 ### Week of 25/11/2020 - 01/12/2020
 
