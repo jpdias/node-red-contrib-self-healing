@@ -17,6 +17,10 @@ This work is part of an ongoing PhD thesis in Software Engineering and Internet-
 
 ## Available Nodes
 
+### :package: action-audit
+
+Checks if an action was completed by using sensor acknowledgements.
+
 ### :package: balancing
 
 Balances the distribution of messages through multiple outputs using three different strategies: Round Robin, Weighted Round Robin and Random.
