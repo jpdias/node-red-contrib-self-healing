@@ -1,0 +1,147 @@
+[
+  {
+    "id": "f0d23a40.81ed6",
+    "type": "tab",
+    "label": "Flow 1",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "93c04722.21845",
+    "type": "device-registry",
+    "z": "f0d23a40.81ed6",
+    "name": "Device Registry",
+    "x": 460,
+    "y": 240,
+    "wires": [["f07fbbbe.66416"], ["39a9c198.9b3eae"], ["6cc8823a.d3d1cc"]]
+  },
+  {
+    "id": "39a9c198.9b3eae",
+    "type": "debug",
+    "z": "f0d23a40.81ed6",
+    "name": "Added devices",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 700,
+    "y": 240,
+    "wires": []
+  },
+  {
+    "id": "f07fbbbe.66416",
+    "type": "debug",
+    "z": "f0d23a40.81ed6",
+    "name": "All devices",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 690,
+    "y": 140,
+    "wires": []
+  },
+  {
+    "id": "6cc8823a.d3d1cc",
+    "type": "debug",
+    "z": "f0d23a40.81ed6",
+    "name": "Removed devices",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 710,
+    "y": 340,
+    "wires": []
+  },
+  {
+    "id": "333b4872.18d3c8",
+    "type": "inject",
+    "z": "f0d23a40.81ed6",
+    "name": "Timestamp1",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 90,
+    "y": 160,
+    "wires": [["39a814c.2a0186c"]]
+  },
+  {
+    "id": "39a814c.2a0186c",
+    "type": "function",
+    "z": "f0d23a40.81ed6",
+    "name": "Function1",
+    "func": "msg.payload = [ {\"Id\":\"1\", \"Name\":\"FireSensor\", \"Ip\":\"192.160.111\"},\n      {\"Id\":\"2\", \"Name\":\"FireSensor\", \"Ip\":\"192.160.112\"} ];\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "x": 240,
+    "y": 160,
+    "wires": [["93c04722.21845"]]
+  },
+  {
+    "id": "5904a737.45bd68",
+    "type": "inject",
+    "z": "f0d23a40.81ed6",
+    "name": "Timestamp2",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 90,
+    "y": 320,
+    "wires": [["766b77a6.92ab"]]
+  },
+  {
+    "id": "766b77a6.92ab",
+    "type": "function",
+    "z": "f0d23a40.81ed6",
+    "name": "Function2",
+    "func": "msg.payload = [ {\"Id\":\"1\", \"Name\":\"FireSensor\", \"Ip\":\"192.160.111\", \"Status\": \"off\"},\n      {\"Id\":\"3\", \"Name\":\"HumiditySensor\", \"Ip\":\"192.160.113\"} ];\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "x": 240,
+    "y": 320,
+    "wires": [["93c04722.21845"]]
+  }
+]
