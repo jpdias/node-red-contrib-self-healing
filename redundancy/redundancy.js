@@ -1,14 +1,12 @@
 const SentryLog = require("../utils/sentry-log.js");
+const os = require("os");
 
 module.exports = function (RED) {
-  /*get my ip stuff*/
-  const os = require("os");
   function getIp() {
     let ips = [];
-    var interfaces = os.networkInterfaces();
-    for (var i in interfaces) {
-      interfaces[i].forEach(function (details) {
-        details.interface = i;
+    const interfaces = os.networkInterfaces();
+    for (const key in interfaces) {
+      interfaces[key].forEach(function (details) {
         if (!details.internal) {
           ips.push(details.address);
         }
@@ -17,13 +15,7 @@ module.exports = function (RED) {
     return ips[0];
   }
 
-  var master = false;
-  var masterExists = false;
-  var lastAlive = {};
-  var ips = new Set();
-  var thisip = 0;
-
-  //last octect
+  // Find ip with highest last octect and return the octect
   function getMajor(res) {
     let resArray = Array.from(res);
     if (resArray.length == 0) return 0;
@@ -33,107 +25,114 @@ module.exports = function (RED) {
   }
 
   //Bully Algorithm
-  function setMaster(send, node) {
-    if (masterExists) {
+  function voteMaster(node) {
+    if (node.masterExists) return;
+
+    if (node.ips.size == 0 && !node.masterIsMe) {
+      node.masterIsMe = true;
+      node.masterExists = true;
+      node.status({ fill: "green", shape: "dot", text: "I'm Master" });
+      node.send([
+        { payload: { master: node.masterIsMe } },
+        { payload: Array.from(node.ips) },
+        { payload: { sync: "ping", master: node.masterIsMe, hostip: node.ip } },
+      ]);
       return;
     }
 
     let major = 0;
-
-    if (ips.size > 0) {
-      major = getMajor(ips);
+    if (node.ips.size > 0) {
+      major = getMajor(node.ips);
     }
 
-    if (ips.size == 0 && !master) {
-      master = true;
-      masterExists = true;
-      node.status({ fill: "green", shape: "dot", text: "I'm Master" });
-    } else if (major <= thisip && !master) {
-      master = true;
-      masterExists = true;
+    if (major <= node.lastOctect) {
+      node.masterIsMe = true;
+      node.masterExists = true;
       node.status({ fill: "green", shape: "dot", text: "I'm Master" });
     } else {
-      master = false;
+      node.masterIsMe = false;
       node.status({ fill: "yellow", shape: "dot", text: "Master is" });
     }
 
-    send([
-      { payload: { master: master } },
-      { payload: Array.from(ips) },
-      { payload: { sync: "ping", master: master } },
+    node.send([
+      { payload: { master: node.masterIsMe } },
+      { payload: Array.from(node.ips) },
+      { payload: { sync: "ping", master: node.masterIsMe, hostip: node.ip } },
     ]);
   }
 
-  function aliveBeat(timeout, send, node) {
-    for (let [key, value] of Object.entries(lastAlive)) {
-      //console.log(`${key}: ${JSON.stringity(value)}`);
+  function aliveCheck(timeout, node) {
+    for (let [key, value] of Object.entries(node.lastAlive)) {
       if (Date.now() - value.last >= timeout) {
         if (value.isMaster) {
-          console.log("hey");
-          masterExists = false;
-          setMaster(send, node);
+          node.masterExists = false;
+          voteMaster(node);
         }
-        ips.delete(key.replace("-", "."));
-        delete lastAlive[key];
+        node.ips.delete(key.replace("-", "."));
+        delete node.lastAlive[key];
       }
     }
 
-    send([
-      { payload: { master: master } },
-      { payload: Array.from(ips) },
-      { payload: { sync: "ping", master: master } },
+    node.send([
+      { payload: { master: node.masterIsMe } },
+      { payload: Array.from(node.ips) },
+      { payload: { sync: "ping", master: node.masterIsMe, hostip: node.ip } },
     ]);
+  }
+
+  function init(node, config) {
+    node.ip = getIp();
+    node.lastOctect = parseInt(node.ip.split(".")[3]);
+    node.masterIsMe = false;
+    node.masterExists = false;
+    node.ips = new Set();
+    node.lastAlive = {};
+
+    node.send([
+      null,
+      null,
+      { payload: { sync: "ping", master: node.masterIsMe, hostip: node.ip } },
+    ]);
+
+    node.voting = setInterval(
+      voteMaster,
+      parseInt(config.frequency) * 1000,
+      node
+    );
+
+    node.alive = setInterval(
+      aliveCheck,
+      parseInt(config.pingInterval) * 1000,
+      parseInt(config.timeout) * 1000,
+      node
+    );
+
+    node.status({ fill: "yellow", shape: "dot", text: "Sync in Progress" });
   }
 
   function RedundancyManager(config) {
     RED.nodes.createNode(this, config);
     SentryLog.sendMessage("redundancy was deployed");
 
-    var node = this;
-    let voting = "undefined";
-    let alive = "undefined";
-    let init = false;
+    let node = this;
+    init(node, config);
 
-    node.emit("input", { payload: "internal-sync" });
+    node.on("input", function (msg, _send, _done) {
+      console.log(node.lastAlive);
 
-    node.status({ fill: "yellow", shape: "dot", text: "Sync in Progress" });
-
-    node.on("input", function (msg, send, _done) {
-      //update ip list
-      if (typeof msg.hostip != "undefined") {
-        lastAlive[msg.hostip.replace(".", "-")] = {
-          last: Date.now(),
-          isMaster: msg.payload.master,
-        };
-        ips.add(msg.hostip);
+      // Update ip list
+      if (typeof msg.payload != "undefined") {
+        const payload = JSON.parse(msg.payload); //TODO: parse exception
+        if (payload.sync != null && payload.sync == "ping") {
+          node.lastAlive[payload.hostip.replace(".", "-")] = {
+            last: Date.now(),
+            isMaster: payload.master,
+          };
+          node.ips.add(payload.hostip);
+        }
       }
 
-      if (voting == "undefined" && alive == "undefined" && !init) {
-        thisip = parseInt(getIp().split(".")[3]);
-
-        master = false;
-        masterExists = false;
-        lastAlive = {};
-        ips = new Set();
-        thisip = 0;
-
-        send([null, null, { payload: { sync: "ping", master: master } }]);
-        voting = setInterval(
-          setMaster,
-          parseInt(config.frequency) * 1000,
-          send,
-          node
-        );
-        alive = setInterval(
-          aliveBeat,
-          parseInt(config.pingInterval) * 1000,
-          parseInt(config.timeout) * 1000,
-          send,
-          node
-        );
-        init = true;
-      }
-
+      /*
       if (msg.payload.master && !master) {
         master = false;
         masterExists = true;
@@ -142,6 +141,7 @@ module.exports = function (RED) {
           shape: "dot",
           text: "Master is " + msg.hostip,
         });
+
       } else if (msg.payload.master && master && getMajor(ips) > thisip) {
         node.status({
           fill: "yellow",
@@ -151,8 +151,12 @@ module.exports = function (RED) {
         master = false;
         masterExists = true;
       }
+
+      */
     });
   }
 
   RED.nodes.registerType("redundancy-manager", RedundancyManager);
 };
+
+// lançar processos de node-red
