@@ -10,16 +10,8 @@
     "id": "ed27bc58.a0f48",
     "type": "inject",
     "z": "9596f70.b23f208",
-    "name": "",
-    "props": [
-      {
-        "p": "payload"
-      },
-      {
-        "p": "topic",
-        "vt": "str"
-      }
-    ],
+    "name": "Inject",
+    "props": [{ "p": "payload" }, { "p": "topic", "vt": "str" }],
     "repeat": "",
     "crontab": "",
     "once": false,
@@ -36,9 +28,9 @@
     "type": "flow-control",
     "z": "9596f70.b23f208",
     "name": "",
-    "targetHost": "localhost",
-    "targetFlow": "4790f485.89e7ec",
-    "targetPort": 1880,
+    "targetHost": "nodered",
+    "targetFlow": "309cb3e0.b801bc",
+    "targetPort": 8090,
     "x": 510,
     "y": 260,
     "wires": [["eb41869.e2c8578"], ["4afe4167.90cac"]]
@@ -76,5 +68,13 @@
     "x": 710,
     "y": 300,
     "wires": []
+  },
+  {
+    "type": "tab",
+    "label": "Test Flow",
+    "id": "309cb3e0.b801bc",
+    "info": "",
+    "disabled": false,
+    "z": "309cb3e0.b801bc"
   }
 ]
