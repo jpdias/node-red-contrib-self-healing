@@ -1,15 +1,15 @@
 [
   {
-    "id": "a8d4898a.913fe8",
+    "id": "72a91e64.b28e7",
     "type": "tab",
     "label": "Resource Monitor",
     "disabled": false,
     "info": ""
   },
   {
-    "id": "911e196c.4762f8",
+    "id": "5fdb4fdb.36906",
     "type": "inject",
-    "z": "a8d4898a.913fe8",
+    "z": "72a91e64.b28e7",
     "name": "Input",
     "props": [
       {
@@ -30,18 +30,13 @@
     "x": 210,
     "y": 320,
     "wires": [
-      [
-        "26c0951f.4778fa",
-        "a7b3761e.d49808",
-        "c0f261b4.6feb2",
-        "e6748438.e82df8"
-      ]
+      ["5e4844e7.15bf9c", "9ede9b39.57faa8", "b8f8b05f.e7ba8", "dd270df6.25444"]
     ]
   },
   {
-    "id": "26c0951f.4778fa",
+    "id": "5e4844e7.15bf9c",
     "type": "change",
-    "z": "a8d4898a.913fe8",
+    "z": "72a91e64.b28e7",
     "name": "Storage",
     "rules": [
       {
@@ -59,12 +54,12 @@
     "reg": false,
     "x": 520,
     "y": 360,
-    "wires": [["b7f4854c.89f7f8"]]
+    "wires": [["f5238de9.6be88"]]
   },
   {
-    "id": "b7f4854c.89f7f8",
+    "id": "f5238de9.6be88",
     "type": "join",
-    "z": "a8d4898a.913fe8",
+    "z": "72a91e64.b28e7",
     "name": "",
     "mode": "custom",
     "build": "merged",
@@ -83,12 +78,12 @@
     "reduceFixup": "",
     "x": 850,
     "y": 320,
-    "wires": [["c7e24dd8.656d8"]]
+    "wires": [["6d6f079f.ae5778"]]
   },
   {
-    "id": "1a8ff8fd.de3f17",
+    "id": "3a824924.9928f6",
     "type": "debug",
-    "z": "a8d4898a.913fe8",
+    "z": "72a91e64.b28e7",
     "name": "Out of bounds",
     "active": true,
     "tosidebar": true,
@@ -103,9 +98,9 @@
     "wires": []
   },
   {
-    "id": "317b0738.cedd58",
+    "id": "9860fcaf.ea5e7",
     "type": "debug",
-    "z": "a8d4898a.913fe8",
+    "z": "72a91e64.b28e7",
     "name": "CPU too high",
     "active": true,
     "tosidebar": true,
@@ -120,9 +115,9 @@
     "wires": []
   },
   {
-    "id": "c7e24dd8.656d8",
+    "id": "6d6f079f.ae5778",
     "type": "resource-monitor",
-    "z": "a8d4898a.913fe8",
+    "z": "72a91e64.b28e7",
     "name": "",
     "resourcesMask": 15,
     "maxCPU": "100",
@@ -132,17 +127,17 @@
     "x": 1070,
     "y": 320,
     "wires": [
-      ["1a8ff8fd.de3f17"],
-      ["317b0738.cedd58"],
-      ["7185a720.238c38"],
-      ["71b916be.4d0bd8"],
-      ["ff1111fe.5c2fa"]
+      ["3a824924.9928f6"],
+      ["9860fcaf.ea5e7"],
+      ["a50236a0.766bd8"],
+      ["b53cf87.71e1708"],
+      ["9f63950.4538468"]
     ]
   },
   {
-    "id": "7185a720.238c38",
+    "id": "a50236a0.766bd8",
     "type": "debug",
-    "z": "a8d4898a.913fe8",
+    "z": "72a91e64.b28e7",
     "name": "RAM too high",
     "active": true,
     "tosidebar": true,
@@ -157,9 +152,9 @@
     "wires": []
   },
   {
-    "id": "71b916be.4d0bd8",
+    "id": "b53cf87.71e1708",
     "type": "debug",
-    "z": "a8d4898a.913fe8",
+    "z": "72a91e64.b28e7",
     "name": "Storage too high",
     "active": true,
     "tosidebar": true,
@@ -174,9 +169,9 @@
     "wires": []
   },
   {
-    "id": "ff1111fe.5c2fa",
+    "id": "9f63950.4538468",
     "type": "debug",
-    "z": "a8d4898a.913fe8",
+    "z": "72a91e64.b28e7",
     "name": "Battery too low",
     "active": true,
     "tosidebar": true,
@@ -191,9 +186,9 @@
     "wires": []
   },
   {
-    "id": "a7b3761e.d49808",
+    "id": "9ede9b39.57faa8",
     "type": "change",
-    "z": "a8d4898a.913fe8",
+    "z": "72a91e64.b28e7",
     "name": "CPU",
     "rules": [
       {
@@ -211,12 +206,12 @@
     "reg": false,
     "x": 510,
     "y": 300,
-    "wires": [["b7f4854c.89f7f8"]]
+    "wires": [["f5238de9.6be88"]]
   },
   {
-    "id": "c0f261b4.6feb2",
+    "id": "b8f8b05f.e7ba8",
     "type": "change",
-    "z": "a8d4898a.913fe8",
+    "z": "72a91e64.b28e7",
     "name": "Battery",
     "rules": [
       {
@@ -234,13 +229,13 @@
     "reg": false,
     "x": 520,
     "y": 420,
-    "wires": [["b7f4854c.89f7f8"]]
+    "wires": [["f5238de9.6be88"]]
   },
   {
-    "id": "e6748438.e82df8",
+    "id": "dd270df6.25444",
     "type": "change",
-    "z": "a8d4898a.913fe8",
-    "name": "Memory",
+    "z": "72a91e64.b28e7",
+    "name": "RAM",
     "rules": [
       {
         "t": "set",
@@ -255,8 +250,8 @@
     "from": "",
     "to": "",
     "reg": false,
-    "x": 520,
+    "x": 510,
     "y": 240,
-    "wires": [["b7f4854c.89f7f8"]]
+    "wires": [["f5238de9.6be88"]]
   }
 ]
