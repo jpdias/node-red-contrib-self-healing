@@ -1,72 +1,35 @@
-/*
-    Valores a guardar por device:
-    nome - from node-red-node-discovery
-    ip - from node-red-node-discovery
-    manufacturer
-    last seen - timestamp
-    Features/Endpoints (?)
-    
-    Inputs:
-
-    Outputs:
-        Lista de obejtos devices
-          - name
-          - ip (mandatory and unique)
-          - connection (mqtt/http/unknown)
-          - manufacturer (not mandatory)
-          - state (on/off/unknown)
-          - lastSeen
-        New device
-        Device gone
-
-    ListOfDevies to be kept in a HashTable
-
-    [ {"deviceId":"1", "deviceName":"FireSensor", "deviceIp":"192.160.111"},
-      {"deviceId":"2", "deviceName":"FireSensor", "deviceIp":"192.160.112"} ]
-*/
-
 const SentryLog = require("../utils/sentry-log.js");
 
 let internalDeviceList = new Map();
-let deviceList = [];
-//let deviceListStruct = [];
+let receivedDevice;
 
 module.exports = function (RED) {
-  /*function updateDeviceListStruct(index, isActive) {
-    let timestamp = new Date().getTime();
-
-    if (condition) { // elemento está dentro do array
-            
-    } else { // elemento não está dentro do array
-      deviceListStruct.push({ index: index, lastSeen:  timestamp, active: isActive});
-    }
-
-  }*/
-
-  function RegisterDevice(device) {
+  function registerDevice(device) {
     let lastSeen = Date.now().toString();
 
-    if (
-      device.deviceId == null ||
-      device.deviceName == null ||
-      device.deviceIp == null
-    )
+    if (device.Id == null || device.Name == null || device.Ip == null)
       return false;
 
-    if (internalDeviceList.has(device.deviceId)) return false;
-
-    if (device.deviceStatus == null) device.deviceStatus = "on";
-    internalDeviceList.set(device.deviceId, {
-      Name: device.deviceName,
-      Ip: device.deviceIp,
-      Status: device.deviceStatus,
+    if (device.Status == null) device.Status = "on";
+    internalDeviceList.set(device.Id, {
+      Id: device.Id,
+      Name: device.Name,
+      Ip: device.Ip,
+      Status: device.Status,
       LastSeen: lastSeen,
     });
+
+    return true;
   }
 
-  // function isClicked() {
-  //   send([{ payload: internalDeviceList }, null, null]);
-  // }
+  function mapToJSON() {
+    let output = [];
+    internalDeviceList.forEach((element) => {
+      output.push(element);
+    });
+
+    return output;
+  }
 
   function DeviceRegistry(config) {
     RED.nodes.createNode(this, config);
@@ -74,37 +37,48 @@ module.exports = function (RED) {
 
     var node = this;
 
+    internalDeviceList.clear();
+
     node.on("input", function (msg, send, _done) {
-      let receivedDevice = msg.payload;
+      receivedDevice = msg.payload;
 
       if (Array.isArray(receivedDevice)) {
         receivedDevice.forEach((device) => {
-          if (!internalDeviceList.has(device.deviceId)) {
-            node.status({
-              fill: "blue",
-              shape: "dot",
-              text: "Received new device",
-            });
-            RegisterDevice(device);
-            send([null, { payload: device }, null]);
+          if (!internalDeviceList.has(device.Id)) {
+            if (registerDevice(device)) {
+              node.status({
+                fill: "blue",
+                shape: "dot",
+                text: "Registered new device",
+              });
+              send([null, { payload: device }, null]);
+            } else {
+              node.status({
+                fill: "red",
+                shape: "dot",
+                text: "Failed to register device",
+              });
+            }
+          } else {
+            if (registerDevice(device)) {
+              node.status({
+                fill: "green",
+                shape: "dot",
+                text: "Updated device",
+              });
+            } else {
+              node.status({
+                fill: "red",
+                shape: "dot",
+                text: "Failed to update device",
+              });
+            }
           }
         });
 
-        // TODO: check if new device list has a missing device from deviceList
-        receivedDevice.forEach((device) => {
-          if (internalDeviceList.has(device.deviceId)) {
-            node.status({
-              fill: "yellow",
-              shape: "dot",
-              text: "Removed device",
-            });
+        let output = mapToJSON();
 
-            send([null, null, { payload: device }]);
-          }
-        });
-
-        deviceList = receivedDevice;
-        send({ payload: deviceList }, null, null);
+        send({ payload: output }, null, null);
       } else {
         node.status({
           fill: "red",
@@ -114,5 +88,6 @@ module.exports = function (RED) {
       }
     });
   }
+
   RED.nodes.registerType("device-registry", DeviceRegistry);
 };
