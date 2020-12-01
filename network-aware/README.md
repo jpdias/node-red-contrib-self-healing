@@ -1,15 +1,16 @@
-<p>
-    A node to continuously scan the network to find new or removed devices,
-    using arp tables. Can be combined with the device-registry node.
-  </p>
-  
-  ### Properties
+### Objective
+
+A node to continuously scan the network to find new or removed devices,
+using arp tables. Can be combined with the device-registry node.
+
+### Properties
+
   <dl class="message-properties">
-    <dt>name<span class="property-type">string</span></dt>
+    <dt>name: string</dt>
     <dd>Name of node to be displayed in editor.</dd>
-    <dt>baseip<span class="property-type">string</span></dt>
+    <dt>baseip: string</dt>
     <dd>Network IP to be scanned.</dd>
-    <dt>scanInterval<span class="property-type">number</span></dt>
+    <dt>scanInterval: number</dt>
     <dd>Time interval between scans, in seconds.</dd>
   </dl>
 
