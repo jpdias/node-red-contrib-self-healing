@@ -1,0 +1,80 @@
+[
+  {
+    "id": "9596f70.b23f208",
+    "type": "tab",
+    "label": "Flow Control",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "ed27bc58.a0f48",
+    "type": "inject",
+    "z": "9596f70.b23f208",
+    "name": "Inject",
+    "props": [{ "p": "payload" }, { "p": "topic", "vt": "str" }],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "false",
+    "payloadType": "bool",
+    "x": 310,
+    "y": 260,
+    "wires": [["887617b4.9f1808"]]
+  },
+  {
+    "id": "887617b4.9f1808",
+    "type": "flow-control",
+    "z": "9596f70.b23f208",
+    "name": "",
+    "targetHost": "nodered",
+    "targetFlow": "309cb3e0.b801bc",
+    "targetPort": 8090,
+    "x": 510,
+    "y": 260,
+    "wires": [["eb41869.e2c8578"], ["4afe4167.90cac"]]
+  },
+  {
+    "id": "eb41869.e2c8578",
+    "type": "debug",
+    "z": "9596f70.b23f208",
+    "name": "Success",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 720,
+    "y": 220,
+    "wires": []
+  },
+  {
+    "id": "4afe4167.90cac",
+    "type": "debug",
+    "z": "9596f70.b23f208",
+    "name": "Fault",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 710,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "type": "tab",
+    "label": "Test Flow",
+    "id": "309cb3e0.b801bc",
+    "info": "",
+    "disabled": false,
+    "z": "309cb3e0.b801bc"
+  }
+]
