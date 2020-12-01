@@ -1,28 +1,15 @@
 [
   {
-    "id": "f46cbdac.2828",
+    "id": "a8d4898a.913fe8",
     "type": "tab",
     "label": "Resource Monitor",
     "disabled": false,
     "info": ""
   },
   {
-    "id": "31d0bc90.732184",
-    "type": "cpu",
-    "z": "f46cbdac.2828",
-    "name": "",
-    "msgCore": false,
-    "msgOverall": true,
-    "msgArray": false,
-    "msgTemp": false,
-    "x": 424,
-    "y": 320,
-    "wires": [["4e432c20.bcd014"]]
-  },
-  {
-    "id": "8e876cc3.1132d",
+    "id": "911e196c.4762f8",
     "type": "inject",
-    "z": "f46cbdac.2828",
+    "z": "a8d4898a.913fe8",
     "name": "Input",
     "props": [
       {
@@ -44,33 +31,24 @@
     "y": 320,
     "wires": [
       [
-        "141ff910.5e23a7",
-        "31d0bc90.732184",
-        "a6d88b04.eab928",
-        "778ed827.6a2c28"
+        "26c0951f.4778fa",
+        "a7b3761e.d49808",
+        "c0f261b4.6feb2",
+        "e6748438.e82df8"
       ]
     ]
   },
   {
-    "id": "141ff910.5e23a7",
-    "type": "Memory",
-    "z": "f46cbdac.2828",
-    "name": "",
-    "x": 414,
-    "y": 220,
-    "wires": [["644fc2e2.19cffc"]]
-  },
-  {
-    "id": "a6d88b04.eab928",
+    "id": "26c0951f.4778fa",
     "type": "change",
-    "z": "f46cbdac.2828",
+    "z": "a8d4898a.913fe8",
     "name": "Storage",
     "rules": [
       {
         "t": "set",
         "p": "payload",
         "pt": "msg",
-        "to": "{\"storage\": 50}",
+        "to": "{\"storage\": 40}",
         "tot": "json"
       }
     ],
@@ -80,67 +58,13 @@
     "to": "",
     "reg": false,
     "x": 520,
-    "y": 420,
-    "wires": [["7c35f35b.745ddc"]]
+    "y": 360,
+    "wires": [["b7f4854c.89f7f8"]]
   },
   {
-    "id": "644fc2e2.19cffc",
-    "type": "change",
-    "z": "f46cbdac.2828",
-    "name": "Mem into JSON",
-    "rules": [
-      {
-        "t": "delete",
-        "p": "payload.totalmem",
-        "pt": "msg"
-      },
-      {
-        "t": "delete",
-        "p": "payload.freemem",
-        "pt": "msg"
-      },
-      {
-        "t": "move",
-        "p": "payload.memusage",
-        "pt": "msg",
-        "to": "payload.RAM",
-        "tot": "msg"
-      },
-      {
-        "t": "set",
-        "p": "payload.RAM",
-        "pt": "msg",
-        "to": "$number(payload.RAM)",
-        "tot": "jsonata"
-      }
-    ],
-    "action": "",
-    "property": "",
-    "from": "",
-    "to": "",
-    "reg": false,
-    "x": 634,
-    "y": 220,
-    "wires": [["7c35f35b.745ddc"]]
-  },
-  {
-    "id": "4e432c20.bcd014",
-    "type": "function",
-    "z": "f46cbdac.2828",
-    "name": "CPU into JSON",
-    "func": "let newMsg = {payload: {CPU: msg.payload}};\nreturn newMsg;",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "x": 634,
-    "y": 320,
-    "wires": [["7c35f35b.745ddc"]]
-  },
-  {
-    "id": "7c35f35b.745ddc",
+    "id": "b7f4854c.89f7f8",
     "type": "join",
-    "z": "f46cbdac.2828",
+    "z": "a8d4898a.913fe8",
     "name": "",
     "mode": "custom",
     "build": "merged",
@@ -157,14 +81,14 @@
     "reduceInit": "",
     "reduceInitType": "",
     "reduceFixup": "",
-    "x": 864,
+    "x": 850,
     "y": 320,
-    "wires": [["64d5e578.0d182c"]]
+    "wires": [["c7e24dd8.656d8"]]
   },
   {
-    "id": "1b1f55e6.70ef9a",
+    "id": "1a8ff8fd.de3f17",
     "type": "debug",
-    "z": "f46cbdac.2828",
+    "z": "a8d4898a.913fe8",
     "name": "Out of bounds",
     "active": true,
     "tosidebar": true,
@@ -174,14 +98,14 @@
     "targetType": "msg",
     "statusVal": "",
     "statusType": "auto",
-    "x": 1320,
+    "x": 1340,
     "y": 240,
     "wires": []
   },
   {
-    "id": "96b15eab.a9ca",
+    "id": "317b0738.cedd58",
     "type": "debug",
-    "z": "f46cbdac.2828",
+    "z": "a8d4898a.913fe8",
     "name": "CPU too high",
     "active": true,
     "tosidebar": true,
@@ -191,14 +115,14 @@
     "targetType": "msg",
     "statusVal": "",
     "statusType": "auto",
-    "x": 1310,
+    "x": 1330,
     "y": 280,
     "wires": []
   },
   {
-    "id": "64d5e578.0d182c",
+    "id": "c7e24dd8.656d8",
     "type": "resource-monitor",
-    "z": "f46cbdac.2828",
+    "z": "a8d4898a.913fe8",
     "name": "",
     "resourcesMask": 15,
     "maxCPU": "100",
@@ -208,42 +132,17 @@
     "x": 1070,
     "y": 320,
     "wires": [
-      ["1b1f55e6.70ef9a"],
-      ["96b15eab.a9ca"],
-      ["65c34a52.018064"],
-      ["c6f0ca04.412878"],
-      ["c7fedc0c.69b96"]
+      ["1a8ff8fd.de3f17"],
+      ["317b0738.cedd58"],
+      ["7185a720.238c38"],
+      ["71b916be.4d0bd8"],
+      ["ff1111fe.5c2fa"]
     ]
   },
   {
-    "id": "778ed827.6a2c28",
-    "type": "battery",
-    "z": "f46cbdac.2828",
-    "name": "",
-    "level": true,
-    "charging": true,
-    "x": 420,
-    "y": 500,
-    "wires": [["701e061e.e1d198"]]
-  },
-  {
-    "id": "701e061e.e1d198",
-    "type": "function",
-    "z": "f46cbdac.2828",
-    "name": "CPU into JSON",
-    "func": "let newMsg = {payload: {battery: msg.payload.percent}};\nreturn newMsg;",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "x": 620,
-    "y": 500,
-    "wires": [["7c35f35b.745ddc"]]
-  },
-  {
-    "id": "65c34a52.018064",
+    "id": "7185a720.238c38",
     "type": "debug",
-    "z": "f46cbdac.2828",
+    "z": "a8d4898a.913fe8",
     "name": "RAM too high",
     "active": true,
     "tosidebar": true,
@@ -253,14 +152,14 @@
     "targetType": "msg",
     "statusVal": "",
     "statusType": "auto",
-    "x": 1320,
+    "x": 1340,
     "y": 320,
     "wires": []
   },
   {
-    "id": "c6f0ca04.412878",
+    "id": "71b916be.4d0bd8",
     "type": "debug",
-    "z": "f46cbdac.2828",
+    "z": "a8d4898a.913fe8",
     "name": "Storage too high",
     "active": true,
     "tosidebar": true,
@@ -270,14 +169,14 @@
     "targetType": "msg",
     "statusVal": "",
     "statusType": "auto",
-    "x": 1320,
+    "x": 1340,
     "y": 360,
     "wires": []
   },
   {
-    "id": "c7fedc0c.69b96",
+    "id": "ff1111fe.5c2fa",
     "type": "debug",
-    "z": "f46cbdac.2828",
+    "z": "a8d4898a.913fe8",
     "name": "Battery too low",
     "active": true,
     "tosidebar": true,
@@ -287,8 +186,77 @@
     "targetType": "msg",
     "statusVal": "",
     "statusType": "auto",
-    "x": 1320,
+    "x": 1340,
     "y": 400,
     "wires": []
+  },
+  {
+    "id": "a7b3761e.d49808",
+    "type": "change",
+    "z": "a8d4898a.913fe8",
+    "name": "CPU",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "{\"CPU\": 30}",
+        "tot": "json"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 510,
+    "y": 300,
+    "wires": [["b7f4854c.89f7f8"]]
+  },
+  {
+    "id": "c0f261b4.6feb2",
+    "type": "change",
+    "z": "a8d4898a.913fe8",
+    "name": "Battery",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "{\"battery\": 70}",
+        "tot": "json"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 520,
+    "y": 420,
+    "wires": [["b7f4854c.89f7f8"]]
+  },
+  {
+    "id": "e6748438.e82df8",
+    "type": "change",
+    "z": "a8d4898a.913fe8",
+    "name": "Memory",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "{\"RAM\": 50}",
+        "tot": "json"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 520,
+    "y": 240,
+    "wires": [["b7f4854c.89f7f8"]]
   }
 ]
