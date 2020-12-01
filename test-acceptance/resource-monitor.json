@@ -1,0 +1,262 @@
+[
+  {
+    "id": "a8d4898a.913fe8",
+    "type": "tab",
+    "label": "Resource Monitor",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "911e196c.4762f8",
+    "type": "inject",
+    "z": "a8d4898a.913fe8",
+    "name": "Input",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": "1",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 210,
+    "y": 320,
+    "wires": [
+      [
+        "26c0951f.4778fa",
+        "a7b3761e.d49808",
+        "c0f261b4.6feb2",
+        "e6748438.e82df8"
+      ]
+    ]
+  },
+  {
+    "id": "26c0951f.4778fa",
+    "type": "change",
+    "z": "a8d4898a.913fe8",
+    "name": "Storage",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "{\"storage\": 40}",
+        "tot": "json"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 520,
+    "y": 360,
+    "wires": [["b7f4854c.89f7f8"]]
+  },
+  {
+    "id": "b7f4854c.89f7f8",
+    "type": "join",
+    "z": "a8d4898a.913fe8",
+    "name": "",
+    "mode": "custom",
+    "build": "merged",
+    "property": "payload",
+    "propertyType": "msg",
+    "key": "topic",
+    "joiner": "\\n",
+    "joinerType": "str",
+    "accumulate": false,
+    "timeout": "",
+    "count": "4",
+    "reduceRight": false,
+    "reduceExp": "",
+    "reduceInit": "",
+    "reduceInitType": "",
+    "reduceFixup": "",
+    "x": 850,
+    "y": 320,
+    "wires": [["c7e24dd8.656d8"]]
+  },
+  {
+    "id": "1a8ff8fd.de3f17",
+    "type": "debug",
+    "z": "a8d4898a.913fe8",
+    "name": "Out of bounds",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1340,
+    "y": 240,
+    "wires": []
+  },
+  {
+    "id": "317b0738.cedd58",
+    "type": "debug",
+    "z": "a8d4898a.913fe8",
+    "name": "CPU too high",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1330,
+    "y": 280,
+    "wires": []
+  },
+  {
+    "id": "c7e24dd8.656d8",
+    "type": "resource-monitor",
+    "z": "a8d4898a.913fe8",
+    "name": "",
+    "resourcesMask": 15,
+    "maxCPU": "100",
+    "maxRAM": "100",
+    "maxStorage": "100",
+    "minBattery": "0",
+    "x": 1070,
+    "y": 320,
+    "wires": [
+      ["1a8ff8fd.de3f17"],
+      ["317b0738.cedd58"],
+      ["7185a720.238c38"],
+      ["71b916be.4d0bd8"],
+      ["ff1111fe.5c2fa"]
+    ]
+  },
+  {
+    "id": "7185a720.238c38",
+    "type": "debug",
+    "z": "a8d4898a.913fe8",
+    "name": "RAM too high",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1340,
+    "y": 320,
+    "wires": []
+  },
+  {
+    "id": "71b916be.4d0bd8",
+    "type": "debug",
+    "z": "a8d4898a.913fe8",
+    "name": "Storage too high",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1340,
+    "y": 360,
+    "wires": []
+  },
+  {
+    "id": "ff1111fe.5c2fa",
+    "type": "debug",
+    "z": "a8d4898a.913fe8",
+    "name": "Battery too low",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1340,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "a7b3761e.d49808",
+    "type": "change",
+    "z": "a8d4898a.913fe8",
+    "name": "CPU",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "{\"CPU\": 30}",
+        "tot": "json"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 510,
+    "y": 300,
+    "wires": [["b7f4854c.89f7f8"]]
+  },
+  {
+    "id": "c0f261b4.6feb2",
+    "type": "change",
+    "z": "a8d4898a.913fe8",
+    "name": "Battery",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "{\"battery\": 70}",
+        "tot": "json"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 520,
+    "y": 420,
+    "wires": [["b7f4854c.89f7f8"]]
+  },
+  {
+    "id": "e6748438.e82df8",
+    "type": "change",
+    "z": "a8d4898a.913fe8",
+    "name": "Memory",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "{\"RAM\": 50}",
+        "tot": "json"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 520,
+    "y": 240,
+    "wires": [["b7f4854c.89f7f8"]]
+  }
+]
