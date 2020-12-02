@@ -150,26 +150,11 @@
       "properties": {
         "payload": {
           "description": "Value of the message",
-          "type": "object",
-          "properties": {
-            "status": {
-              "description": "Connection status",
-              "type": "integer"
-            },
-            "statusMessage": {
-              "description": "Description of the connection status",
-              "type": "string"
-            }
-          },
-          "required": ["status", "statusMessage"]
-        },
-        "timestamp": {
-          "description": "Time of when the message was sent",
-          "type": "string"
+          "type": "object"
         }
-      },
-      "required": ["payload", "timestamp"]
-    }
+      }
+    },
+    "required": ["payload"]
   },
   "kalman-noise-filter": {
     "title": "Kalman noise filter",

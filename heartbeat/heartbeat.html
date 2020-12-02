@@ -12,15 +12,30 @@
       },
       protocol: { required: true },
       onfail: { required: true, value: false },
-      httpendpoint: { required: false },
+      delay: {
+        value: 5,
+        required: false,
+        validate: RED.validators.number(),
+      },
     },
     inputs: 1,
-    outputs: 1,
+    outputs: 3,
     icon: "status.png",
     label: function () {
       return this.name || "heartbeat";
     },
   });
+
+  function showDelay() {
+    let chosenProtocol = document.getElementById("node-input-protocol").value;
+    let divActive = document.getElementById("activeinput");
+
+    if (chosenProtocol == "passive") {
+      divActive.style.visibility = "hidden";
+    } else if (chosenProtocol == "active") {
+      divActive.style.visibility = "visible";
+    }
+  }
 </script>
 
 <!-- edit template -->
@@ -35,9 +50,9 @@
     <label for="node-input-protocol">
       <i class="fa fa-tag"></i> Heartbeat Protocol
     </label>
-    <select type="text" id="node-input-protocol">
-      <option>http</option>
-      <option>mqtt</option>
+    <select type="text" id="node-input-protocol" onChange="showDelay()">
+      <option>passive</option>
+      <option>active</option>
     </select>
   </div>
   <div class="form-row">
@@ -46,15 +61,11 @@
     </label>
     <input type="checkbox" id="node-input-onfail" />
   </div>
-  <div class="form-row">
-    <label for="node-input-httpendpoint">
-      <i class="icon-tag"></i>HTTP Endpoint
-    </label>
-    <input
-      type="text"
-      id="node-input-httpendpoint"
-      placeholder="https://google.com"
-    />
+  <div id="activeinput" style="visibility: hidden">
+    <div class="form-row">
+      <label for="node-input-delay"> <i class="icon-tag"></i>Delay (s) </label>
+      <input type="text" id="node-input-delay" placeholder="5" />
+    </div>
   </div>
 </script>
 
@@ -69,25 +80,43 @@
     <dt>frequency</dt>
     <dd>time interval for the heartbeats, in seconds</dd>
     <dt>protocol</dt>
-    <dd>communication protocol, either mqtt and http</dd>
+    <dd>
+      heartbeat protocol, either active or passive. This property defines the
+      way the node will check for a live connection. If active is chosen, this
+      node will check for a connection, within the frequency chosen, to be
+      established at max in a certain delay (in seconds), which must be
+      specified. If passive is chosen, this node will check for a connection to
+      be established within the frequency chosen
+    </dd>
     <dt>onfail</dt>
     <dd>if checked, only sends a message if an error occurs</dd>
-    <dt>httpendpoint</dt>
-    <dd>endpoint for the http protocol</dd>
-    <dd></dd>
+    <dt>delay</dt>
+    <dd>used for "active" protocols</dd>
   </dl>
 
   <h3>Inputs</h3>
   <dl class="message-properties">
-    <p>If MQTT is selected, input must be provided.</p>
+    <p>
+      Depending on the protocol to be tested, a "HTTP in" or "MQTT in" node must
+      be provided.
+    </p>
   </dl>
   <h3>Outputs</h3>
   <dl class="message-properties">
     <p>
-      Error message when an error occured, or a success message, if the user did
-      not select the "Only send msg on fail" checkbox.
+      First output is used for sending a message into "MQTT out"/"HTTP request"
+      nodes in "active" verifications.
+    </p>
+    <p>
+      Error message when an error occured (third output), or a success message
+      (second output), if the user did not select the "Only send msg on fail"
+      checkbox.
     </p>
   </dl>
   <h3>Details</h3>
-  <p>Used for making sure that the connection is active.</p>
+  <p>
+    "Alive" if the heartbeat node receives back the message sent to either a
+    "HTTP request" (in case of the HTTP protocol) or "MQTT out" (MQTT protocol)
+    node, which means a connection was established successfully.
+  </p>
 </script>

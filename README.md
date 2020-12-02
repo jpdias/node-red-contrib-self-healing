@@ -45,7 +45,7 @@ Enable and disable Node-RED flows during runtime (local or remote instances, usi
 
 ### :package: heartbeat
 
-Provides a heartbeat probe for MQTT and HTTP. For HTTP an endpoint must be provided, for MQTT an `MQTT in` node should be connected.
+Provides a heartbeat probe for MQTT and HTTP.
 
 ### :package: kalman-noise-filter
 
