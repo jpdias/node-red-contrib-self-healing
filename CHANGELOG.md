@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 
 - Action Audit node, with unit, property-based and acceptance tests #69
 - Heartbeat node #56
-- Acceptance tests for threshold-check, timing-check, resource-monitor, flow-control #71
+- Acceptance tests for threshold-check, timing-check, resource-monitor, flow-control, balancing #71
 - Network Aware node #34
 
 ### Week of 18/11/2020 - 24/11/2020
