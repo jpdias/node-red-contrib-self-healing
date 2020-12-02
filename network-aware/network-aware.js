@@ -4,6 +4,7 @@ const oui = require("oui");
 const SentryLog = require("../utils/sentry-log.js");
 
 module.exports = function (RED) {
+  const mnfOctet = 8;
   let started = false;
   let firstScanComplete = false;
 
@@ -23,10 +24,10 @@ module.exports = function (RED) {
         .update(obj.ip + obj.mac)
         .digest("hex");
 
-      mnf = oui(obj.mac.substring(0, 8));
+      mnf = oui(obj.mac.substring(0, mnfOctet));
 
       if (mnf != "unknown" && mnf != null) {
-        mnf = oui(obj.mac.substring(0, 8)).split("\n")[0];
+        mnf = oui(obj.mac.substring(0, mnfOctet)).split("\n")[0];
       }
 
       dev = {
