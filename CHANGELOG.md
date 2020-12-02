@@ -9,9 +9,11 @@ All notable changes to this project will be documented in this file.
 #### Added
 
 - Action Audit node, with unit, property-based and acceptance tests #69
+  <<<<<<< HEAD
 - Heartbeat node #56
 - Acceptance tests for threshold-check, timing-check, resource-monitor, flow-control, balancing, replication-voter #71
-- Network Aware node #34
+- # Network Aware node #34
+  > > > > > > > b1602683ec351cd9b2aa5be6d8e3fdd0dcfd4448
 - Added important Sentry entries for the following nodes: Timing check, Action audit, Threshold check, Flow control and Resource monitor.
 
 ### Week of 18/11/2020 - 24/11/2020
