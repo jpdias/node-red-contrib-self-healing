@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 #### Added
 
 - Action Audit node, with unit, property-based and acceptance tests #69
+- Added important Sentry entries for the following nodes: Timing check, Action audit, Threshold check, Flow control and Resource monitor.
 
 ### Week of 18/11/2020 - 24/11/2020
 
