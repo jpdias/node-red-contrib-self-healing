@@ -6,8 +6,8 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config);
     SentryLog.sendMessage("kalman was deployed");
     const filter = new kalmanjs({
-      R: config.r || 0.01,
-      Q: config.q || 3,
+      R: Number.parseFloat(config.r) || 0.01,
+      Q: Number.parseFloat(config.q) || 3,
     });
     this.on("input", function (msg) {
       if (Array.isArray(msg.payload)) {

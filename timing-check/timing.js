@@ -17,12 +17,15 @@ module.exports = function (RED) {
       periodBetweenReadings - intervalMargin * periodBetweenReadings;
 
     let node = this;
+    let currentState = null;
 
     this.on("input", (msg) => {
       const currentTimestamp = Date.now();
       msg.timestamp = currentTimestamp;
 
       addToWindow(msg, slidingWindow, slidingWindowLength);
+
+      let resultState = null;
 
       if (lastTimestamp == null) {
         node.status({
@@ -32,6 +35,8 @@ module.exports = function (RED) {
         });
 
         node.send([msg, null, null]);
+
+        resultState = "Normal";
       } else {
         const intervalPeriod = determineWindowAverage(slidingWindow);
 
@@ -43,6 +48,8 @@ module.exports = function (RED) {
           });
 
           node.send([null, null, msg]);
+
+          resultState = "Too Slow";
         } else if (intervalPeriod < minimumPeriod) {
           node.status({
             fill: "yellow",
@@ -51,6 +58,8 @@ module.exports = function (RED) {
           });
 
           node.send([null, msg, null]);
+
+          resultState = "Too Fast";
         } else {
           node.status({
             fill: "green",
@@ -59,8 +68,16 @@ module.exports = function (RED) {
           });
 
           node.send([msg, null, null]);
+
+          resultState = "Normal";
         }
       }
+
+      if (resultState != currentState) {
+        currentState = resultState;
+        SentryLog.sendMessage("Flow is " + currentState);
+      }
+
       lastTimestamp = currentTimestamp;
     });
   }

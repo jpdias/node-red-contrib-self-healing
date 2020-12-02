@@ -14,15 +14,20 @@ try {
 }
 
 if (Sentry) {
-  Sentry.init({
-    dsn: SENTRY_DSN,
-    tracesSampleRate: 1.0,
-  });
+  try {
+    Sentry.init({
+      dsn: SENTRY_DSN,
+      tracesSampleRate: 1.0,
+    });
+  } catch (e) {
+    Sentry = null;
+  }
 }
 
 class SentryLog {
   static sendMessage(msg) {
     if (Sentry) {
+      console.log(msg);
       Sentry.captureMessage(msg);
     }
   }

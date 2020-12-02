@@ -1,40 +1,41 @@
-/*
-  Docker container to run selenium.
-  Next sprint: Try to streamline this part of the test setup
-
-  docker run --rm -p 9001:4444 -p 9002:5900 -d --shm-size 2g selenium/standalone-firefox-debug
-*/
-
 const { Builder, By, until } = require("selenium-webdriver");
 const { spawn } = require("child_process");
 require("should");
 
-describe("checkpoint node", async function () {
+describe("replication-voter node", async function () {
   this.timeout(0);
   let driver;
   let proc;
   const testPort = "8090";
-  const injectXpath =
-    "//*[text()='Inject']/../preceding-sibling::*[contains(@class, 'red-ui-flow-node-button')]/*[contains(@class, 'red-ui-flow-node-button-button')]";
+  const inject1Xpath =
+    "//*[text()='Inject1']/../preceding-sibling::*[contains(@class, 'red-ui-flow-node-button')]/*[contains(@class, 'red-ui-flow-node-button-button')]";
+  const inject2Xpath =
+    "//*[text()='Inject2']/../preceding-sibling::*[contains(@class, 'red-ui-flow-node-button')]/*[contains(@class, 'red-ui-flow-node-button-button')]";
 
-  it("should be test checkpoint", async function () {
+  it("should be test replication-voter", async function () {
     driver = await new Builder()
       .forBrowser("firefox")
       .usingServer("http://selenium:4444/wd/hub")
       .build();
 
-    const testJson = "test-acceptance/checkpoint.json";
+    const testJson = "test-acceptance/replication-voter.json";
     proc = spawn("node-red", ["-p", testPort, testJson], {
       detached: true,
     });
 
     try {
-      await driver.sleep(5000); //TODO: Switch with elementIsVisible
+      await driver.sleep(2000);
       await driver.get("http://nodered:8090");
 
-      await driver.sleep(2000); //TODO: Switch with elementIsVisible
+      await driver.sleep(2000);
       await driver
-        .wait(until.elementLocated(By.xpath(injectXpath)), 10000)
+        .wait(until.elementLocated(By.xpath(inject2Xpath)), 10000)
+        .click();
+      await driver
+        .wait(until.elementLocated(By.xpath(inject1Xpath)), 10000)
+        .click();
+      await driver
+        .wait(until.elementLocated(By.xpath(inject2Xpath)), 10000)
         .click();
 
       await driver
@@ -55,9 +56,9 @@ describe("checkpoint node", async function () {
         By.css(".red-ui-debug-msg .red-ui-debug-msg-row")
       );
 
-      const num = await firstMsg.getAttribute("textContent");
+      const msg = await firstMsg.getAttribute("textContent");
 
-      num.should.be.equal("1234");
+      msg.should.be.equal("2");
     } finally {
       process.kill(-proc.pid);
       await driver.quit();

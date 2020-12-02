@@ -17,6 +17,10 @@ This work is part of an ongoing PhD thesis in Software Engineering and Internet-
 
 ## Available Nodes
 
+### :package: action-audit
+
+Checks if an action was completed by using sensor acknowledgements.
+
 ### :package: balancing
 
 Balances the distribution of messages through multiple outputs using three different strategies: Round Robin, Weighted Round Robin and Random.
@@ -41,7 +45,7 @@ Enable and disable Node-RED flows during runtime (local or remote instances, usi
 
 ### :package: heartbeat
 
-Provides a heartbeat probe for MQTT and HTTP. For HTTP an endpoint must be provided, for MQTT an `MQTT in` node should be connected.
+Provides a heartbeat probe for MQTT and HTTP.
 
 ### :package: kalman-noise-filter
 
@@ -86,10 +90,6 @@ Checks if an action occurs within a given time frame. This node is not implement
 Checks for timing issues on data inputs. There are 3 outputs that refer to data comming on expected time, too slow or too fast. A frequency in seconds along with a margin (float: 0-1) should be provided.
 
 ## Todo Nodes
-
-### :package: action-audit
-
-Makes sure that a command is sent and received by an sensor/actuator pair.
 
 ### :package: device-registry
 

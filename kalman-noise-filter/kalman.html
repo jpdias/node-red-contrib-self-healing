@@ -3,8 +3,8 @@
     category: "SHEN",
     color: "#74b9ff",
     defaults: {
-      r: { value: 0.01 },
-      q: { value: 3 },
+      r: { value: 0.01, required: true, validate: RED.validators.number() },
+      q: { value: 3, required: true, validate: RED.validators.number() },
     },
     inputs: 1,
     outputs: 1,
