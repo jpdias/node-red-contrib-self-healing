@@ -22,10 +22,9 @@ describe("resource-monitor node", async function () {
     });
 
     try {
-      await driver.sleep(5000); //TODO: Switch with elementIsVisible
+      await driver.sleep(2000);
       await driver.get("http://nodered:8090");
 
-      await driver.sleep(2000); //TODO: Switch with elementIsVisible
       await driver
         .wait(until.elementLocated(By.xpath(injectXpath)), 10000)
         .click();
