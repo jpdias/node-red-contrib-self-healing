@@ -152,9 +152,9 @@
           "description": "Value of the message",
           "type": "object"
         }
-        }
-      },
-      "required": ["payload"]
+      }
+    },
+    "required": ["payload"]
   },
   "kalman-noise-filter": {
     "title": "Kalman noise filter",
