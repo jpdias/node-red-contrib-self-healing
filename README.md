@@ -17,6 +17,10 @@ This work is part of an ongoing PhD thesis in Software Engineering and Internet-
 
 ## Available Nodes
 
+### :package: action-audit
+
+Checks if an action was completed by using sensor acknowledgements.
+
 ### :package: balancing
 
 Balances the distribution of messages through multiple outputs using three different strategies: Round Robin, Weighted Round Robin and Random.
@@ -41,7 +45,7 @@ Enable and disable Node-RED flows during runtime (local or remote instances, usi
 
 ### :package: heartbeat
 
-Provides a heartbeat probe for MQTT and HTTP. For HTTP an endpoint must be provided, for MQTT an `MQTT in` node should be connected.
+Provides a heartbeat probe for MQTT and HTTP.
 
 ### :package: kalman-noise-filter
 

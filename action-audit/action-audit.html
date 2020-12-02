@@ -1,0 +1,89 @@
+<script type="text/javascript">
+  RED.nodes.registerType("action-audit", {
+    category: "SHEN",
+    color: "#74b9ff",
+    defaults: {
+      name: { value: "" },
+      duration: { value: 30 },
+    },
+    inputs: 1,
+    outputs: 3,
+    inputLabels: "InCommand",
+    outputLabels: ["Acknowledged", "Not acknowledged", "Exception"],
+    icon: "status.png",
+    label: function () {
+      return this.name || "action-audit";
+    },
+  });
+</script>
+
+<script type="text/html" data-template-name="action-audit">
+  <div class="form-row">
+    <br />
+    <label for="node-input-name">
+      <i class="fa fa-tag"></i>
+      <span data-i18n="node-red:common.label.name"></span>
+    </label>
+    <input
+      type="text"
+      id="node-input-name"
+      data-i18n="[placeholder]node-red:common.label.name"
+    />
+  </div>
+  <div class="form-row" id="minchangeCtrl">
+    <label for="node-input-duration" style="width:80%;">
+      <i class="icon-tag"></i> Action's max time to be acknowledged (in
+      seconds):
+    </label>
+    <input
+      type="number"
+      id="node-input-duration"
+      placeholder="3600"
+      min="0"
+      step="1"
+    />
+  </div>
+</script>
+
+<script type="text/html" data-help-name="action-audit">
+  <p>A node that checks if an action was completed</p>
+  <h3>Details</h3>
+  <p>
+    The purpose of this node is to confirm an action performed by an actuator,
+    in a given time frame, by the use of acknowledgements provided by sensors
+    that can confirm the occurence of that action. If an action is sent to the
+    node, and an acknowledgement is sent during a given time to live, then the
+    node concludes that the action was successful. Otherwise, an error message
+    is sent.
+  </p>
+  <h3>Properties</h3>
+  <dl class="message-properties">
+    <dt>name<span class="property-type">string</span></dt>
+    <dd>name of node to be displayed in editor</dd>
+
+    <dt>duration<span class="property-type">integer</span></dt>
+    <dd>An action's max duration to be checked on, in seconds</dd>
+  </dl>
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    A message should have exactly one of the following properties:
+
+    <dt>action</dt>
+    <dd>The description of an action or any data for a given action</dd>
+
+    <dt>ack</dt>
+    <dd>
+      An aknowledgement to the action that was sent first and still not
+      acknowledged
+    </dd>
+  </dl>
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <p>
+      If the first queued action is acknowledged, then it's retransmitted
+      through the success output, otherwise it's retransmitted through the error
+      output. In case of an unexpected situation, such as a receiving an ACK
+      with no queued actions, it's sent through a third exception output.
+    </p>
+  </dl>
+</script>

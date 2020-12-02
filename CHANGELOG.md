@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## Sprint 3 (11/11/2020 - 01/12/2020)
+
+### Week of 25/11/2020 - 01/12/2020
+
+#### Added
+
+- Action Audit node, with unit, property-based and acceptance tests #69
+- Heartbeat node #56
+- Acceptance tests for threshold-check, timing-check #71
+- Network Aware node #34
+
+### Week of 18/11/2020 - 24/11/2020
+
+### Week of 11/11/2020 - 17/11/2020
+
 ## Sprint 2 (21/10/2020 - 10/11/2020)
 
 ### Week of 04/11/2020 - 10/11/2020
