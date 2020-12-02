@@ -1,0 +1,89 @@
+[
+  {
+    "id": "a0c8200d.c7227",
+    "type": "timing",
+    "z": "9564b293.03908",
+    "period": "1",
+    "margin": 0.1,
+    "slidingWindowLength": 5,
+    "x": 640,
+    "y": 320,
+    "wires": [["190b66df.455329"], ["6f1d4e6a.de2d08"], ["c81f655a.b35e"]]
+  },
+  {
+    "id": "190b66df.455329",
+    "type": "debug",
+    "z": "9564b293.03908",
+    "name": "Normal",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 880,
+    "y": 240,
+    "wires": []
+  },
+  {
+    "id": "6f1d4e6a.de2d08",
+    "type": "debug",
+    "z": "9564b293.03908",
+    "name": "Too Fast",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 890,
+    "y": 320,
+    "wires": []
+  },
+  {
+    "id": "c81f655a.b35e",
+    "type": "debug",
+    "z": "9564b293.03908",
+    "name": "Too Slow",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 890,
+    "y": 420,
+    "wires": []
+  },
+  {
+    "id": "3c744a4.da98b36",
+    "type": "inject",
+    "z": "9564b293.03908",
+    "name": "Inject",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "Normal flow",
+    "payload": "",
+    "payloadType": "date",
+    "x": 390,
+    "y": 320,
+    "wires": [["a0c8200d.c7227"]]
+  }
+]

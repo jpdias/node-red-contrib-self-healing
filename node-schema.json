@@ -187,6 +187,84 @@
       "required": ["payload"]
     }
   },
+  "network-aware": {
+    "title": "Network aware node",
+    "input": true,
+    "output": [
+      {
+        "description": "All valid devices found in the network",
+        "type": "object",
+        "properties": {
+          "payload": {
+            "description": "Value of the message",
+            "type": "object",
+            "properties": {
+              "id": {
+                "description": "Device's id",
+                "type": "string"
+              },
+              "ip": {
+                "description": "Device's ip",
+                "type": "string"
+              },
+              "name": {
+                "description": "Device's name",
+                "type": "string"
+              },
+              "manufacturer": {
+                "description": "Device's manufacturer",
+                "type": "string"
+              },
+              "timestamp": {
+                "description": "Time of device's reading",
+                "type": "string"
+              }
+            },
+            "required": ["id", "ip", "name", "manufacturer", "timestamp"]
+          },
+          "topic": {
+            "description": "Topic of the message",
+            "type": "string"
+          }
+        },
+        "required": ["payload"]
+      },
+      {
+        "description": "Devices with invalid MAC adress found in the network",
+        "type": "object",
+        "properties": {
+          "payload": {
+            "description": "Value of the message",
+            "type": "object",
+            "properties": {
+              "ip": {
+                "description": "Device's ip",
+                "type": "string"
+              },
+              "name": {
+                "description": "Device's name",
+                "type": "string"
+              },
+              "manufacturer": {
+                "description": "Device's manufacturer",
+                "type": "string"
+              },
+              "timestamp": {
+                "description": "Time of device's reading",
+                "type": "string"
+              }
+            },
+            "required": ["ip", "name", "manufacturer", "timestamp"]
+          },
+          "topic": {
+            "description": "Topic of the message",
+            "type": "string"
+          }
+        },
+        "required": ["payload"]
+      }
+    ]
+  },
   "readings-watcher": {
     "title": "Readings watcher node",
     "input": {
