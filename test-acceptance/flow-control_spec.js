@@ -22,10 +22,10 @@ describe("flow-control node", async function () {
     });
 
     try {
-      await driver.sleep(5000); //TODO: Switch with elementIsVisible
+      await driver.sleep(2500);
       await driver.get("http://nodered:8090");
 
-      await driver.sleep(2000); //TODO: Switch with elementIsVisible
+      await driver.sleep(1500);
       await driver
         .wait(
           until.elementLocated(By.id("red-ui-tab-debug-link-button")),
