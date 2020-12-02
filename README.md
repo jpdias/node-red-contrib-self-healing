@@ -91,10 +91,6 @@ Checks for timing issues on data inputs. There are 3 outputs that refer to data 
 
 ## Todo Nodes
 
-### :package: action-audit
-
-Makes sure that a command is sent and received by an sensor/actuator pair.
-
 ### :package: device-registry
 
 Store a list of the available devices in the network.
