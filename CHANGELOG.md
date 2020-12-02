@@ -6,6 +6,25 @@ All notable changes to this project will be documented in this file.
 
 ### Week of 25/11/2020 - 01/12/2020
 
+#### Increment description
+
+The main functionalities added are:
+
+- Action audit, a node that validates each action issued, making sure each is triggered when needed. After the audit, it then waits for an acknowledgment message, to confirm the occurrence of that action (for example from a sensor that checks the actuator's effect). If the waiting period exceeds a given limit, then an error is triggered. To circumvent node-red's limit of one input per node, actions and acknowledgments should be passed through 'change' nodes, labeling them accordingly (as ACTION and ACK, respectively). Here is a usage example:
+
+![](./samples/action-audit.png)
+![](https://i.imgur.com/jXXwqHU.png)
+
+- Network Aware, a node that scans the network at every determined interval by finding all devices present in the given network using the ARP table. Each device scanned can be valid or not, depending on its MAC address and all device's information is sent afterwards. An example flow and edit controls are:
+
+![](./samples/network-aware.png)
+![](https://i.imgur.com/nTPhXVt.png)
+
+- Heartbeat, a node that helps in making sure that MQTT and HTTP connections are alive, by periodically scanning them and checking their activity. This node uses two distinct methods: a "passive" one, where an inject node must be connected to an MQTT out/HTTP request node and Heartbeat must receive a message from its input node, MQTT/HTTP in at most "frequency" seconds; and an "active" one where the node sends a message directly to an MQTT out/HTTP node that must be received back with less than "delay" seconds.
+
+![](./samples/heartbeat-passive-mqtt.png)
+![](https://i.imgur.com/F2kfIHy.png)
+
 #### Added
 
 - Action Audit node, with unit, property-based and acceptance tests #69
