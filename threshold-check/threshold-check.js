@@ -266,6 +266,9 @@ module.exports = function (RED) {
                   rule.failMsg,
               },
             ]);
+
+            SentryLog.sendMessage("Threshold Check assertion failed");
+
             done();
           } else {
             node.status({
@@ -274,11 +277,13 @@ module.exports = function (RED) {
               text: "ok",
             });
             send([msg, null]);
+            SentryLog.sendMessage("Threshold Check success");
             done();
           }
         }
       } catch (err) {
         node.error(err, msg);
+        SentryLog.sendMessage("Threshold Check exception error");
         done();
       }
     });

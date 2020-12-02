@@ -86,8 +86,10 @@ module.exports = function (RED) {
       const targetUrl = `http://${config.targetHost}:${config.targetPort}/flow/${config.targetFlow}`;
 
       if (typeof msg.payload === "boolean") {
+        SentryLog.sendMessage("Flow successfully changed");
         getSetFlowStatus(targetUrl, node, msg, send, done, config);
       } else {
+        SentryLog.sendMessage("Error on flow change attempt");
         setErrorStatus(
           "Not Boolean Input",
           "Input type is not boolean",
