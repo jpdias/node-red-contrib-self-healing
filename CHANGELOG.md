@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 #### Added
 
 - Action Audit node, with unit, property-based and acceptance tests #69
+- Heartbeat node #56
+- Acceptance tests for threshold-check #71
 
 ### Week of 18/11/2020 - 24/11/2020
 
