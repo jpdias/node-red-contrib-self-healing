@@ -5,7 +5,7 @@ let receivedDevice;
 
 module.exports = function (RED) {
   function registerDevice(device) {
-    //let lastSeen = Date.now();
+    let lastSeen = Date.now();
 
     if (device.Id == null || device.Name == null || device.Ip == null)
       return false;
@@ -14,7 +14,7 @@ module.exports = function (RED) {
     internalDeviceList.set(device.Id, {
       Id: device.Id,
       Ip: device.Ip,
-      //LastSeen: lastSeen,
+      LastSeen: lastSeen,
       Name: device.Name,
       Status: device.Status,
     });
@@ -24,13 +24,14 @@ module.exports = function (RED) {
 
   function unregisterDevice(id) {
     let device = internalDeviceList.get(id);
+    let lastSeen = Date.now();
 
     internalDeviceList.set(device.Id, {
       Id: device.Id,
       Ip: device.Ip,
-      //LastSeen: lastSeen,
+      LastSeen: lastSeen,
       Name: device.Name,
-      Status: device.Status,
+      Status: "off",
     });
   }
 
@@ -43,11 +44,19 @@ module.exports = function (RED) {
     return output;
   }
 
+  function errorDisplay(node, message) {
+    node.status({
+      fill: "red",
+      shape: "dot",
+      text: message,
+    });
+  }
+
   function DeviceRegistry(config) {
     RED.nodes.createNode(this, config);
     SentryLog.sendMessage("device registry was deployed");
 
-    var node = this;
+    let node = this;
 
     internalDeviceList.clear();
 
@@ -68,11 +77,7 @@ module.exports = function (RED) {
               console.log(device);
               send([null, { payload: device }, null]);
             } else {
-              node.status({
-                fill: "red",
-                shape: "dot",
-                text: "Failed to register device",
-              });
+              errorDisplay(node, "Failed to register device");
             }
           } else if (device.Status != "off") {
             if (registerDevice(device)) {
@@ -82,11 +87,7 @@ module.exports = function (RED) {
                 text: "Updated device",
               });
             } else {
-              node.status({
-                fill: "red",
-                shape: "dot",
-                text: "Failed to update device",
-              });
+              errorDisplay(node, "Failed to update device");
             }
           } else {
             unregisterDevice(device.Id);
@@ -103,11 +104,7 @@ module.exports = function (RED) {
 
         send({ payload: output }, null, null);
       } else {
-        node.status({
-          fill: "red",
-          shape: "dot",
-          text: "Incorrect Input",
-        });
+        errorDisplay(node, "Incorrect Input");
       }
     });
   }
