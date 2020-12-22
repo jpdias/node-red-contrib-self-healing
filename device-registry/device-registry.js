@@ -38,7 +38,7 @@ module.exports = function (RED) {
   function mapToJSON() {
     let output = [];
     internalDeviceList.forEach((element) => {
-      output.push(element);
+      if (element.Status == "on") output.push(element);
     });
 
     return output;
