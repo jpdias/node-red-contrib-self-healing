@@ -5,6 +5,12 @@ const SentryLog = require("../utils/sentry-log.js");
 
 module.exports = function (RED) {
   const mnfOctet = 8;
+  const ipNumBits = 32;
+  const netmask32 = Math.pow(2, ipNumBits) - 1;
+  const port8080 = "8080";
+  const port443 = "443";
+  const port80 = "80";
+
   let started = false;
   let firstScanComplete = false;
 
@@ -98,9 +104,9 @@ module.exports = function (RED) {
     const ip = dot2num(baseip[0]);
     const mask = parseInt(baseip[1]);
 
-    const netmask = Math.pow(2, 32) - 1 - (Math.pow(2, 32 - mask) - 1);
+    const netmask = netmask32 - (Math.pow(2, ipNumBits - mask) - 1);
     const min_ip = (ip & netmask) >>> 0;
-    const max_ip = min_ip + Math.pow(2, 32 - mask) - 2; // Excluding broadcast ip address
+    const max_ip = min_ip + Math.pow(2, ipNumBits - mask) - 2; // Excluding broadcast ip address
     console.log(min_ip);
     console.log(max_ip);
 
@@ -109,9 +115,9 @@ module.exports = function (RED) {
 
       console.log(ip_string);
 
-      await ping(ip_string, "8080", newDevList);
-      await ping(ip_string, "443", newDevList);
-      await ping(ip_string, "80", newDevList);
+      await ping(ip_string, port8080, newDevList);
+      await ping(ip_string, port443, newDevList);
+      await ping(ip_string, port80, newDevList);
     }
 
     console.log(newDevList);
