@@ -156,6 +156,25 @@
     },
     "required": ["payload"]
   },
+  "http-aware": {
+    "title": "Http aware node",
+    "input": true,
+    "output": {
+      "description": "All valid IPs found in the network",
+      "type": "object",
+      "properties": {
+        "payload": {
+          "description": "Value of the message",
+          "type": "string"
+        },
+        "topic": {
+          "description": "Topic of the message",
+          "type": "string"
+        }
+      },
+      "required": ["payload"]
+    }
+  },
   "kalman-noise-filter": {
     "title": "Kalman noise filter",
     "input": {
