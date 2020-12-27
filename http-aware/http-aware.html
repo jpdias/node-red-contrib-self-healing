@@ -49,8 +49,8 @@
 
 <script type="text/html" data-help-name="http-aware">
   <p>
-    A node to continuously scan the network to find new or removed devices,
-    using arp tables. Can be combined with the device-registry node.
+    A node to continuously scan the network to find working IPs at ports 8080,
+    443 and 80.
   </p>
   <h3>Properties</h3>
   <dl class="message-properties">
@@ -71,21 +71,9 @@
 
   <h3>Outputs</h3>
   <dl class="message-properties">
-    <p>
-      If a scanned device has a valid MAC address, a message is fowarded to
-      allDevices output containing the device information.
-    </p>
-    <p>
-      Otherwise, it is sent to unknownDevices output but without the device id
-      field.
-    </p>
+    <p>If an IP:port is up, it sends a message.</p>
   </dl>
 
   <h3>Details</h3>
-  <p>
-    Collects information about the devices connected to the network, using arp
-    tables. This information contains the device id (generated using MAC and IP
-    adresses), ip address, name, manufacturer and timestamp of when it was
-    scanned.
-  </p>
+  <p>Scans all the IPs of the given subnetwork and checks if they are up.</p>
 </script>
