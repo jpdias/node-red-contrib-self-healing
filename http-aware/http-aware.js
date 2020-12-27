@@ -4,7 +4,6 @@ const oui = require("oui");
 const SentryLog = require("../utils/sentry-log.js");
 
 module.exports = function (RED) {
-  const mnfOctet = 8;
   const ipNumBits = 32;
   const netmask32 = Math.pow(2, ipNumBits) - 1;
   const port8080 = "8080";
@@ -13,47 +12,6 @@ module.exports = function (RED) {
 
   let started = false;
   let firstScanComplete = false;
-
-  function getDeviceInfo(obj) {
-    let idsha;
-    let mnf = "unknown";
-    let name = "unknown";
-    let dev;
-
-    if (typeof obj.name == "string") {
-      name = obj.name;
-    }
-
-    if (typeof obj.mac == "string") {
-      idsha = crypto
-        .createHash("sha256")
-        .update(obj.ip + obj.mac)
-        .digest("hex");
-
-      mnf = oui(obj.mac.substring(0, mnfOctet));
-
-      if (mnf != "unknown" && mnf != null) {
-        mnf = oui(obj.mac.substring(0, mnfOctet)).split("\n")[0];
-      }
-
-      dev = {
-        id: idsha,
-        ip: obj.ip,
-        name: name,
-        manufacturer: mnf,
-        timestamp: new Date().toISOString(),
-      };
-    } else {
-      dev = {
-        ip: obj.ip,
-        name: name,
-        manufacturer: mnf,
-        timestamp: new Date().toISOString(),
-      };
-    }
-
-    return dev;
-  }
 
   function dot2num(dot) {
     const d = dot.split(".");
@@ -107,20 +65,14 @@ module.exports = function (RED) {
     const netmask = netmask32 - (Math.pow(2, ipNumBits - mask) - 1);
     const min_ip = (ip & netmask) >>> 0;
     const max_ip = min_ip + Math.pow(2, ipNumBits - mask) - 2; // Excluding broadcast ip address
-    console.log(min_ip);
-    console.log(max_ip);
 
     for (let i = min_ip; i <= max_ip; i++) {
       let ip_string = num2dot(i);
-
-      console.log(ip_string);
 
       await ping(ip_string, port8080, newDevList);
       await ping(ip_string, port443, newDevList);
       await ping(ip_string, port80, newDevList);
     }
-
-    console.log(newDevList);
 
     return newDevList;
   }
