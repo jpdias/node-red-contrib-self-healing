@@ -1,6 +1,4 @@
 const net = require("net");
-const crypto = require("crypto");
-const oui = require("oui");
 const SentryLog = require("../utils/sentry-log.js");
 
 module.exports = function (RED) {
@@ -106,11 +104,7 @@ module.exports = function (RED) {
 
   function sendDevices(scannedDevices, send) {
     scannedDevices.forEach((device) => {
-      if (device.id) {
-        send([{ payload: device }, null]);
-      } else {
-        send([null, { payload: device }]);
-      }
+      send([{ payload: device }]);
     });
   }
 
