@@ -32,4 +32,38 @@ describe("redundancy node", function () {
       }
     });
   });
+
+  it("sould become master", function (done) {
+    let flow = [
+      {
+        id: "n1",
+        type: "redundancy-manager",
+        name: "redundancy",
+        wires: [["n2"], [], []],
+      },
+      {
+        id: "n2",
+        type: "helper",
+        name: "is-master",
+      },
+    ];
+
+    helper.load(redundancyNode, flow, function () {
+      let n2 = helper.getNode("n2");
+      let receivedMsgYet = false;
+
+      n2.on("input", (msg) => {
+        try {
+          if (!receivedMsgYet) {
+            receivedMsgYet = true;
+            msg.should.have.property("payload");
+            msg.payload.should.have.property("master", true);
+            done();
+          }
+        } catch (error) {
+          done(error);
+        }
+      });
+    });
+  });
 });
