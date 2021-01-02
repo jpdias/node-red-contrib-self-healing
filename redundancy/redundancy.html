@@ -63,6 +63,52 @@
 </script>
 
 <script type="text/html" data-help-name="redundancy-manager">
-  <p>Some useful help text to introduce the node.</p>
-  <p>Some more information about the node.</p>
+  <p>A node that manages redundant instances of Node-RED (setting a master instance). Works only on the local network (uses n2n communication).</p>
+  <h3>Details</h3>
+  <p>
+    This node can be placed in a given flow, connected to two n2n nodes: one for input
+    and another one for output. The n2n nodes will be used to elect a mater instance of
+    the several redundancy nodes (properly connected to two n2n nodes in the same way).
+    For this, the bully election algorithm will be used, prioritizing the IP address
+    with the largest last octet. Each node will send as output an objet with the property
+    "master" set as true or false, in order to enable or disable certain flows, depending
+    on whether it was elected as master or not.
+  </p>
+  <h3>Setup</h3>
+  <p>
+    In order for the redundancy node to work properly,
+    it must connect to two n2n nodes: one for the input ("n2n")
+    and another for the third output ("ping").
+  </p>
+  <h3>Properties</h3>
+  <dl class="message-properties">
+    <dt>name<span class="property-type">string</span></dt>
+    <dd>name of node to be displayed in editor</dd>
+
+    <dt>frequency<span class="property-type">integer</span></dt>
+    <dd>bully election voting, in seconds</dd>
+
+    <dt>pingInterval<span class="property-type">integer</span></dt>
+    <dd>ping interval to the n2n, in seconds</dd>
+
+    <dt>timeout<span class="property-type">integer</span></dt>
+    <dd>connection timeout, in seconds</dd>
+  </dl>
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <p>An n2n node for a given network interface</p>
+  </dl>
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <p>Equal to the last message sent as input </p>
+
+    <dt>master(bool)</dt>
+    <dd>if the redundancy-manager node is the master instance or not</dd>
+
+    <dt>ips(array)</dt>
+    <dd>an array containing the ip addresses of other deviced with redundancy-manager nodes</dd>
+
+    <dt>ping</dt>
+    <dd>ping for the output n2n node</dd
+  </dl>
 </script>
