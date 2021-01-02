@@ -194,6 +194,10 @@ module.exports = function (RED) {
         }
       }
     });
+
+    node.on("close", function () {
+      clearInterval(node.alive);
+    });
   }
 
   RED.nodes.registerType("redundancy-manager", RedundancyManager);
