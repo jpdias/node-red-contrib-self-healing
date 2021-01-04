@@ -1,10 +1,8 @@
-const SentryLog = require("../utils/sentry-log.js");
 const Queue = require("../utils/queue.js");
 
 module.exports = function (RED) {
   function actionAudit(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("action-audit was deployed");
     let node = this;
 
     config.duration = parseInt(config.duration) || 30;
@@ -42,16 +40,11 @@ module.exports = function (RED) {
 
     node.on("input", function (msg, send, done) {
       if (msg.action !== undefined) {
-        SentryLog.sendMessage("Action audit received an action");
         receiveAction(msg, done);
       } else if (msg.ack !== undefined) {
-        SentryLog.sendMessage("Action audit received an acknowledgement");
         receiveAck(msg, send);
       } else {
         msg.exception = "Msg has neither action or ack field";
-        SentryLog.sendMessage(
-          "Action audit received neither an action nor an acknowledgement"
-        );
         send([null, null, msg]);
       }
 

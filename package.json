@@ -79,10 +79,7 @@
     "sonarqube-scanner": "^2.7.0",
     "selenium-webdriver": "^4.0.0-alpha.7"
   },
-  "optionalDependencies": {
-    "@sentry/node": "^5.27.2",
-    "@sentry/tracing": "^5.27.2"
-  },
+  "optionalDependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
