@@ -304,6 +304,65 @@
       "required": ["payload", "timestamp"]
     }
   },
+  "redundancy-manager": {
+    "title": "Replication voter node",
+    "input": {
+      "type": "mqqt output"
+    },
+    "output": [
+      {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "master": {
+                "description": "If the node if the master instance or not",
+                "type": "boolean"
+              }
+            },
+            "required": ["master"]
+          },
+          "required": ["payload"]
+        }
+      },
+      {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "decription": "List of devices' IP addresses",
+            "type": ["array", "string"]
+          },
+          "required": ["payload"]
+        }
+      },
+      {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "sync": {
+                "description": "Sync type",
+                "type": "string",
+                "value": "ping"
+              },
+              "master": {
+                "description": "If the node if the master instance or not",
+                "type": "boolean"
+              },
+              "hostip": {
+                "description": "IP address of the host node",
+                "type": "string"
+              }
+            },
+            "required": ["sync", "master", "hostip"]
+          },
+          "required": ["payload"]
+        }
+      }
+    ]
+  },
   "replication-voter": {
     "title": "Replication voter node",
     "input": {
