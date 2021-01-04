@@ -137,12 +137,16 @@ module.exports = function (RED) {
       }
     }
 
-    node.on("input", function (msg, _send, _done) {
-      if (typeof msg.payload != "undefined") {
-        const payload = JSON.parse(msg.payload); //TODO: parse exception
-        if (payload.sync != null && payload.sync == "ping") {
+    node.on("input", function (msg, _send, done) {
+      if (typeof msg.payload == "undefined") return;
+
+      try {
+        const payload = JSON.parse(msg.payload);
+        if (payload.sync != null && payload.sync == "ping")
           updateIP(payload.hostip, payload.master);
-        }
+      } catch (_err) {
+        done(new Error("Received message with invalid payload"));
+        return;
       }
     });
 
