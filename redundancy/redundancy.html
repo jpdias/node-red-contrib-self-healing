@@ -54,16 +54,16 @@
 <script type="text/html" data-help-name="redundancy-manager">
   <p>
     A node that manages redundant instances of Node-RED (setting a master
-    instance). Works only on the local network (uses mqqt communication).
+    instance). Works only on the local network (uses mqtt communication).
   </p>
   <h3>Details</h3>
   <p>
     This node can be placed in a given flow, connected to two mqtt nodes: one
     for input and another one for output. The mqtt nodes will be used to elect a
-    mater instance of the several redundancy nodes (properly connected to two
+    master instance of the several redundancy nodes (properly connected to two
     mqtt nodes in the same way). For this, the bully election algorithm will be
     used, prioritizing the IP address with the largest last octet. Each node
-    will send as output an objet with the property "master" set as true or
+    will send as output an object with the property "master" set as true or
     false, in order to enable or disable certain flows, depending on whether it
     was elected as master or not.
   </p>

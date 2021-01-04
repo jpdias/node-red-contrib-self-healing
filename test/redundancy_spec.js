@@ -33,7 +33,7 @@ describe("redundancy node", function () {
     });
   });
 
-  it("sould become master", function (done) {
+  it("should become master", function (done) {
     let flow = [
       {
         id: "n1",

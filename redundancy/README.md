@@ -1,7 +1,7 @@
 ### Objective
 
 A node that manages redundant instances of Node-RED (setting a master instance).
-Works only on the local network (uses mqqt communication).
+Works only on the local network (uses mqtt communication).
 
 ### Details
 
@@ -50,7 +50,7 @@ an mqtt-out.
   <dd>if the redundancy-manager node is the master instance or not</dd>
 
   <dt>ips(array)</dt>
-  <dd>an array containing the ip addresses of other deviced with redundancy-manager nodes</dd>
+  <dd>an array containing the ip addresses of other devices with redundancy-manager nodes</dd>
 
   <dt>ping</dt>
   <dd>ping for the output mqtt-out node</dd>

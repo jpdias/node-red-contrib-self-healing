@@ -307,7 +307,7 @@
   "redundancy-manager": {
     "title": "Replication voter node",
     "input": {
-      "type": "mqqt output"
+      "type": "mqtt output"
     },
     "output": [
       {
@@ -317,7 +317,7 @@
             "type": "object",
             "properties": {
               "master": {
-                "description": "If the node if the master instance or not",
+                "description": "If the node is the master instance or not",
                 "type": "boolean"
               }
             },
@@ -348,7 +348,7 @@
                 "value": "ping"
               },
               "master": {
-                "description": "If the node if the master instance or not",
+                "description": "If the node is the master instance or not",
                 "type": "boolean"
               },
               "hostip": {
