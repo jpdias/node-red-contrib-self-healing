@@ -3,11 +3,6 @@
     category: "SHEN",
     defaults: {
       name: { value: "" },
-      frequency: {
-        value: "30",
-        required: true,
-        validate: RED.validators.number(),
-      },
       timeout: {
         value: "15",
         required: true,
@@ -45,12 +40,6 @@
     />
   </div>
   <div class="form-row">
-    <label for="node-input-frequency"
-      ><i class="fa fa-tag"></i> Voting frequency (min 30s)</label
-    >
-    <input type="number" id="node-input-frequency" placeholder="30" />
-  </div>
-  <div class="form-row">
     <label for="node-input-pingInterval"
       ><i class="fa fa-tag"></i> Ping interval (s)</label
     >
@@ -84,9 +73,6 @@
   <dl class="message-properties">
     <dt>name<span class="property-type">string</span></dt>
     <dd>name of node to be displayed in editor</dd>
-
-    <dt>frequency<span class="property-type">integer</span></dt>
-    <dd>bully election voting, in seconds</dd>
 
     <dt>pingInterval<span class="property-type">integer</span></dt>
     <dd>ping interval to the n2n, in seconds</dd>
