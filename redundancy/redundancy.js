@@ -145,6 +145,7 @@ module.exports = function (RED) {
         if (payload.sync != null && payload.sync == "ping")
           updateIP(payload.hostip, payload.master);
       } catch (_err) {
+        node.status({ fill: "red", shape: "dot", text: "Error on input" });
         done(new Error("Received message with invalid payload"));
         return;
       }
