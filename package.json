@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-self-healing",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "SHEN: Self-healing extensions for Node-RED.",
   "keywords": [
     "node-red",
@@ -24,8 +24,8 @@
     "format-check": "prettier --check --ignore-path .gitignore .",
     "mutate-init": "stryker init",
     "mutate": "stryker run",
-    "sonar-server": "docker run --rm -it --name sonarqube -p 9876:9000 -p 9092:9092 sonarqube",
-    "sonar-scanner": "node sonar-project.js"
+    "selenium-server": "docker-compose up",
+    "selenium-test": "docker exec -it nodered npm run test-accept"
   },
   "node-red": {
     "nodes": {
@@ -43,7 +43,9 @@
       "balancing": "balancing/balancing.js",
       "checkpoint": "checkpoint/checkpoint.js",
       "resource-monitor": "resource-monitor/resource-monitor.js",
-      "device-registry": "device-registry/device-registry.js"
+      "device-registry": "device-registry/device-registry.js",
+      "action-audit": "action-audit/action-audit.js",
+      "http-aware": "http-aware/http-aware.js"
     }
   },
   "main": "node_modules/node-red/red/red.js",
@@ -74,13 +76,9 @@
     "node-red-node-test-helper": "^0.2.5",
     "nyc": "^15.1.0",
     "prettier": "^2.1.2",
-    "sonarqube-scanner": "^2.7.0",
     "selenium-webdriver": "^4.0.0-alpha.7"
   },
-  "optionalDependencies": {
-    "@sentry/node": "^5.27.2",
-    "@sentry/tracing": "^5.27.2"
-  },
+  "optionalDependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"

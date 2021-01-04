@@ -1,5 +1,3 @@
-const SentryLog = require("../utils/sentry-log.js");
-
 module.exports = function (RED) {
   "use strict";
 
@@ -138,7 +136,6 @@ module.exports = function (RED) {
 
   function thresholdCheck(n) {
     RED.nodes.createNode(this, n);
-    SentryLog.sendMessage("threshold-check was deployed");
     this.rules = n.rules || [];
     let node = this;
 
@@ -266,6 +263,7 @@ module.exports = function (RED) {
                   rule.failMsg,
               },
             ]);
+
             done();
           } else {
             node.status({

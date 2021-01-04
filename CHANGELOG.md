@@ -2,6 +2,83 @@
 
 All notable changes to this project will be documented in this file.
 
+## Sprint 4 (02/12/2020 - 04/01/2021)
+
+#### Increment description
+
+The main functionalities added are:
+
+- Redundancy Manager, a node that keeps redundant Node-RED instances informed of each other and elects a master instance based on the ip. These instances run on different machines on the same local network, and the node checks when new instances come online or go offline, and through a bully algorithm selects an instance to be in control. Controls are provided for the ping interval (to check known instances are alive and inform them we are alive) and for the timeout threshold (to decided if an instance went too long without sending a ping).
+
+![](./samples/redundancy-manager.png)
+![](https://i.imgur.com/bwvgr6k.png)
+
+- HTTP Aware, a node to continuously ping all IP adresses, in a network picked by the user, through the most commonly used ports (80, 8080 and 443). An instance of the node goes through all IPs of the network according to the net mask given, and after pinging to each of those IP's for each port through a socket, if the connection is successfully established then the correspondent IP:port is sent through the output. An example flow and edit controls are:
+
+![](./samples/http-aware.png)
+![](https://i.imgur.com/H9ApOeS.png)
+
+### Week of 30/12/2020 - 04/01/2021
+
+#### Added
+
+- Added unit tests and documentation for the Redundancy node #37
+- Added HTTP Aware node #76
+
+#### Removed
+
+- Sentry functionalities and dependencies (handover for the PO)
+- SonarQube functionalities and dependencies (handover for the PO)
+
+### Week of 23/12/2020 - 29/12/2020
+
+No progress because of Christmas
+
+### Week of 16/12/2020 - 22/12/2020
+
+#### Changed
+
+- Refactored the Redundancy node #37
+
+## Sprint 3 (11/11/2020 - 01/12/2020)
+
+#### Increment description
+
+The main functionalities added are:
+
+- Action audit, a node that validates each action issued, making sure each is triggered when needed. After the audit, it then waits for an acknowledgment message, to confirm the occurrence of that action (for example from a sensor that checks the actuator's effect). If the waiting period exceeds a given limit, then an error is triggered. To circumvent node-red's limit of one input per node, actions and acknowledgments should be passed through 'change' nodes, labeling them accordingly (as ACTION and ACK, respectively). Here is a usage example:
+
+![](./samples/action-audit.png)
+![](https://i.imgur.com/jXXwqHU.png)
+
+- Network Aware, a node that scans the network at every determined interval by finding all devices present in the given network using the ARP table. Each device scanned can be valid or not, depending on its MAC address and all device's information is sent afterwards. An example flow and edit controls are:
+
+![](./samples/network-aware.png)
+![](https://i.imgur.com/nTPhXVt.png)
+
+- Heartbeat, a node that helps in making sure that MQTT and HTTP connections are alive, by periodically scanning them and checking their activity. This node uses two distinct methods: a "passive" one, where an inject node must be connected to an MQTT out/HTTP request node and Heartbeat must receive a message from its input node, MQTT/HTTP in at most "frequency" seconds; and an "active" one where the node sends a message directly to an MQTT out/HTTP node that must be received back with less than "delay" seconds.
+
+![](./samples/heartbeat-passive-mqtt.png)
+![](https://i.imgur.com/F2kfIHy.png)
+
+### Week of 25/11/2020 - 01/12/2020
+
+#### Added
+
+- Action Audit node, with unit, property-based and acceptance tests #69
+- Heartbeat node #56
+- Acceptance tests for threshold-check, timing-check, resource-monitor, flow-control, balancing, replication-voter #71
+- Network Aware node #34
+- Added important Sentry entries for the following nodes: Timing check, Action audit, Threshold check, Flow control and Resource monitor.
+
+### Week of 18/11/2020 - 24/11/2020
+
+No progress
+
+### Week of 11/11/2020 - 17/11/2020
+
+No progress
+
 ## Sprint 2 (21/10/2020 - 10/11/2020)
 
 ### Week of 04/11/2020 - 10/11/2020

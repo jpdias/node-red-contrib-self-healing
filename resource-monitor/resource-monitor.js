@@ -1,5 +1,3 @@
-const SentryLog = require("../utils/sentry-log.js");
-
 module.exports = function (RED) {
   function checkInputValidity(value, resource, node, done) {
     if (typeof value != "number" || isNaN(value) || value < 0 || value > 100) {
@@ -88,7 +86,6 @@ module.exports = function (RED) {
 
   function ResourceMonitorNode(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("resource-monitor was deployed");
     const node = this;
     node.on("input", function (msg, send, done) {
       let errMsg = {};
