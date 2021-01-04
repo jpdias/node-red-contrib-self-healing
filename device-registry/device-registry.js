@@ -74,7 +74,6 @@ module.exports = function (RED) {
                 shape: "dot",
                 text: "Registered new device",
               });
-              console.log(device);
               send([null, { payload: device }, null]);
             } else {
               errorDisplay(node, "Failed to register device");
