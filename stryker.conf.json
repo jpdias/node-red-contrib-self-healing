@@ -13,7 +13,8 @@
     "redundancy/*.js",
     "replication-voter/*.js",
     "threshold-check/*.js",
-    "timing-check/*.js"
+    "timing-check/*.js",
+    "http-aware/*.js"
   ],
   "reporters": ["html", "clear-text", "progress"],
   "testRunner": "mocha",

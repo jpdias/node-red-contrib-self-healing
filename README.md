@@ -47,6 +47,10 @@ Enable and disable Node-RED flows during runtime (local or remote instances, usi
 
 Provides a heartbeat probe for MQTT and HTTP.
 
+### :package: http-aware
+
+A node to continuously scan the network to find working IPs at ports 8080, 443 and 80.
+
 ### :package: kalman-noise-filter
 
 Kalman noise filter based on the work of Bulten et al.
