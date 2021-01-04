@@ -24,6 +24,7 @@ The main functionalities added are:
 
 - Added unit tests and documentation for the Redundancy node #37
 - Added HTTP Aware node #76
+- Added unit tests and documentation for the Device Registry node #37
 
 #### Removed
 
@@ -35,6 +36,10 @@ The main functionalities added are:
 No progress because of Christmas
 
 ### Week of 16/12/2020 - 22/12/2020
+
+### Added
+
+- Added Device Registry node #40
 
 #### Changed
 

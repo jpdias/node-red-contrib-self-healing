@@ -1,5 +1,3 @@
-const SentryLog = require("../utils/sentry-log.js");
-
 let internalDeviceList = new Map();
 let receivedDevice;
 
@@ -54,7 +52,6 @@ module.exports = function (RED) {
 
   function DeviceRegistry(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("device registry was deployed");
 
     let node = this;
 

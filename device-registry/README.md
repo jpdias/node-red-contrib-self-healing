@@ -30,4 +30,4 @@ All the devices that are reachable can communicate with this device in order to 
 
 ### Example Flow
 
-![](../samples/flow-control.png)
+![](../samples/device-registry.png)

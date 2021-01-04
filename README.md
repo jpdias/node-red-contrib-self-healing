@@ -93,11 +93,11 @@ Checks if an action occurs within a given time frame. This node is not implement
 
 Checks for timing issues on data inputs. There are 3 outputs that refer to data comming on expected time, too slow or too fast. A frequency in seconds along with a margin (float: 0-1) should be provided.
 
-## Todo Nodes
-
 ### :package: device-registry
 
-Store a list of the available devices in the network.
+All the devices that are reachable can communicate with this device in order to store their information and current state.
+
+## Todo Nodes
 
 ### :package: internal-state
 
