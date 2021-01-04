@@ -1,14 +1,12 @@
 const SentryLog = require("../utils/sentry-log.js");
+const os = require("os");
 
 module.exports = function (RED) {
-  /*get my ip stuff*/
-  const os = require("os");
   function getIp() {
     let ips = [];
-    var interfaces = os.networkInterfaces();
-    for (var i in interfaces) {
-      interfaces[i].forEach(function (details) {
-        details.interface = i;
+    const interfaces = os.networkInterfaces();
+    for (const key in interfaces) {
+      interfaces[key].forEach(function (details) {
         if (!details.internal) {
           ips.push(details.address);
         }
@@ -17,138 +15,143 @@ module.exports = function (RED) {
     return ips[0];
   }
 
-  var master = false;
-  var masterExists = false;
-  var lastAlive = {};
-  var ips = new Set();
-  var thisip = 0;
+  // Find ip with highest last octect and return it
+  function getMajor(ips) {
+    if (ips.size == 0) return { ip: "", major: 0 };
 
-  //last octect
-  function getMajor(res) {
-    return Array.from(res).reduce(function (a, b) {
-      return Math.max(parseInt(a.split(".")[3]), parseInt(b.split(".")[3]));
-    }, 0);
-  }
-
-  //Bully Algorithm
-  function setMaster(send, node) {
-    if (masterExists) {
-      return;
-    }
-
+    let highestIP = "";
     let major = 0;
 
-    if (ips.size > 0) {
-      major = getMajor(ips);
-    }
-
-    if (ips.size == 0 && !master) {
-      master = true;
-      masterExists = true;
-      node.status({ fill: "green", shape: "dot", text: "I'm Master" });
-    } else if (major <= thisip && !master) {
-      master = true;
-      masterExists = true;
-      node.status({ fill: "green", shape: "dot", text: "I'm Master" });
-    } else {
-      master = false;
-      node.status({ fill: "yellow", shape: "dot", text: "Master is" });
-    }
-
-    send([
-      { payload: { master: master } },
-      { payload: Array.from(ips) },
-      { payload: { sync: "ping", master: master } },
-    ]);
-  }
-
-  function aliveBeat(timeout, send, node) {
-    for (let [key, value] of Object.entries(lastAlive)) {
-      //console.log(`${key}: ${JSON.stringity(value)}`);
-      if (Date.now() - value.last >= timeout) {
-        if (value.isMaster) {
-          console.log("hey");
-          masterExists = false;
-          setMaster(send, node);
-        }
-        ips.delete(key.replace("-", "."));
-        delete lastAlive[key];
+    for (let ip of ips) {
+      const newMajor = parseInt(ip.split(".")[3]);
+      if (major < newMajor) {
+        major = newMajor;
+        highestIP = ip;
       }
     }
 
-    send([
-      { payload: { master: master } },
-      { payload: Array.from(ips) },
-      { payload: { sync: "ping", master: master } },
+    return { ip: highestIP, major: major };
+  }
+
+  //Bully Algorithm
+  function voteMaster(node) {
+    if (node.ips.size == 0 && !node.masterIsMe) {
+      node.masterIsMe = true;
+      node.status({ fill: "green", shape: "dot", text: "I'm Master" });
+      node.send([
+        { payload: { master: node.masterIsMe } },
+        { payload: Array.from(node.ips) },
+        { payload: { sync: "ping", master: node.masterIsMe, hostip: node.ip } },
+      ]);
+      return;
+    }
+
+    const highest = getMajor(node.ips);
+
+    if (highest.major <= node.lastOctect) {
+      node.masterIsMe = true;
+      node.status({ fill: "green", shape: "dot", text: "I'm Master" });
+    } else {
+      node.masterIsMe = false;
+      node.status({
+        fill: "yellow",
+        shape: "dot",
+        text: "Master is " + highest.ip,
+      });
+    }
+
+    node.send([
+      { payload: { master: node.masterIsMe } },
+      { payload: Array.from(node.ips) },
+      { payload: { sync: "ping", master: node.masterIsMe, hostip: node.ip } },
     ]);
+  }
+
+  function aliveCheck(timeout, node) {
+    if (node.ips.size == 0 && !node.masterIsMe) {
+      voteMaster(node);
+      return;
+    }
+
+    for (let [key, value] of Object.entries(node.lastAlive)) {
+      if (Date.now() - value.last >= timeout) {
+        const lostMaster = value.isMaster;
+
+        node.ips.delete(key);
+        delete node.lastAlive[key];
+
+        if (lostMaster) {
+          voteMaster(node);
+        }
+      }
+    }
+
+    node.send([
+      { payload: { master: node.masterIsMe } },
+      { payload: Array.from(node.ips) },
+      { payload: { sync: "ping", master: node.masterIsMe, hostip: node.ip } },
+    ]);
+  }
+
+  function init(node, config) {
+    node.ip = getIp();
+    node.lastOctect = parseInt(node.ip.split(".")[3]);
+    node.masterIsMe = false;
+    node.ips = new Set();
+    node.lastAlive = {};
+
+    node.send([
+      null,
+      null,
+      { payload: { sync: "ping", master: node.masterIsMe, hostip: node.ip } },
+    ]);
+
+    node.alive = setInterval(
+      aliveCheck,
+      parseInt(config.pingInterval) * 1000,
+      parseInt(config.timeout) * 1000,
+      node
+    );
+
+    node.status({ fill: "yellow", shape: "dot", text: "Sync in Progress" });
   }
 
   function RedundancyManager(config) {
     RED.nodes.createNode(this, config);
     SentryLog.sendMessage("redundancy was deployed");
 
-    var node = this;
-    let voting = "undefined";
-    let alive = "undefined";
-    let init = false;
+    let node = this;
+    init(node, config);
 
-    node.emit("input", { payload: "internal-sync" });
+    function updateIP(ip, isMaster) {
+      if (node.ip === ip) return;
 
-    node.status({ fill: "yellow", shape: "dot", text: "Sync in Progress" });
+      node.lastAlive[ip] = {
+        last: Date.now(),
+        isMaster: isMaster,
+      };
 
-    node.on("input", function (msg, send, _done) {
-      //update ip list
-      if (typeof msg.hostip != "undefined") {
-        lastAlive[msg.hostip.replace(".", "-")] = {
-          last: Date.now(),
-          isMaster: msg.payload.master,
-        };
-        ips.add(msg.hostip);
+      if (!node.ips.has(ip)) {
+        node.ips.add(ip);
+        voteMaster(node);
       }
+    }
 
-      if (voting == "undefined" && alive == "undefined" && !init) {
-        thisip = parseInt(getIp().split(".")[3]);
+    node.on("input", function (msg, _send, done) {
+      if (typeof msg.payload == "undefined") return;
 
-        master = false;
-        masterExists = false;
-        lastAlive = {};
-        ips = new Set();
-        thisip = 0;
-
-        send([null, null, { payload: { sync: "ping", master: master } }]);
-        voting = setInterval(
-          setMaster,
-          parseInt(config.frequency) * 1000,
-          send,
-          node
-        );
-        alive = setInterval(
-          aliveBeat,
-          parseInt(config.pingInterval) * 1000,
-          parseInt(config.timeout) * 1000,
-          send,
-          node
-        );
-        init = true;
+      try {
+        const payload = JSON.parse(msg.payload);
+        if (payload.sync != null && payload.sync == "ping")
+          updateIP(payload.hostip, payload.master);
+      } catch (_err) {
+        done(new Error("Received message with invalid payload"));
+        return;
       }
+    });
 
-      if (msg.payload.master && !master) {
-        master = false;
-        masterExists = true;
-        node.status({
-          fill: "yellow",
-          shape: "dot",
-          text: "Master is " + msg.hostip,
-        });
-      } else if (msg.payload.master && master && getMajor(ips) > thisip) {
-        node.status({
-          fill: "yellow",
-          shape: "dot",
-          text: "Master is " + msg.hostip,
-        });
-        master = false;
-        masterExists = true;
-      }
+    node.on("close", function () {
+      clearInterval(node.alive);
     });
   }
 
