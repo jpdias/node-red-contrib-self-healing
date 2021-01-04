@@ -103,12 +103,6 @@ Store a list of the available devices in the network.
 
 Stores the internal state of all flows, making it available to different Node-RED instances.
 
-## Known Issues
-
-- ~~Lack of description on how to configure nodes.~~
-- ~~No standardization on inputs and outputs.~~
-- ~~Lack of proper unit testing. Some edge cases still break the _node's_ functionality.~~
-
 ## How to Use
 
 - Installing Node-RED (Official Docs): [https://nodered.org/docs/getting-started/](https://nodered.org/docs/getting-started/)
@@ -117,7 +111,6 @@ Stores the internal state of all flows, making it available to different Node-RE
 
 - Clone or download this repository.
 - In your node-red user directory, typically ~/.node-red (in Windows something like `C:\Users\<my_name>\.node_red`), run: `npm install <path_to_downloaded_folder>/node-red-contrib-self-healing`
-  - Note: this will come with [Sentry](https://sentry.io/) support, providing some app telemetry. In order to disable it, add the `--no-optional` flag. Since it's an optional dependency, Sentry won't be installed.
 - Start (or restart) Node-RED.
 - Nodes should be available under the SHEN tab of the _node palette_.
 
@@ -128,7 +121,6 @@ Stores the internal state of all flows, making it available to different Node-RE
 - Mutation tests: `npm run mutate`
 - Property based tests: `npm run test-pbt`
 - Acceptance tests: `npm run test-acceptance`
-- Static analysis with sonarqube (requires docker): `npm run sonar-server` then `npm run sonar-scanner <path-to-node-js-file>`
 
 ### Helper documentation
 

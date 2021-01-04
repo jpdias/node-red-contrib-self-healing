@@ -25,6 +25,11 @@ The main functionalities added are:
 - Added unit tests and documentation for the Redundancy node #37
 - Added HTTP Aware node #76
 
+#### Removed
+
+- Sentry functionalities and dependencies (handover for the PO)
+- SonarQube functionalities and dependencies (handover for the PO)
+
 ### Week of 23/12/2020 - 29/12/2020
 
 No progress because of Christmas

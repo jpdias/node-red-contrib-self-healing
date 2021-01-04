@@ -1,5 +1,3 @@
-const SentryLog = require("../utils/sentry-log.js");
-
 module.exports = function (RED) {
   let history = [];
   let compensatedCounter = 0;
@@ -158,7 +156,6 @@ module.exports = function (RED) {
 
   function Compensate(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("compensate was deployed");
     const node = this;
     const strategy = config.strategy;
     const messageTimeout = config.timeout;

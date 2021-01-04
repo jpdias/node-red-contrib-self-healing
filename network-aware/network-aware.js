@@ -1,7 +1,6 @@
 const find = require("local-devices");
 const crypto = require("crypto");
 const oui = require("oui");
-const SentryLog = require("../utils/sentry-log.js");
 
 module.exports = function (RED) {
   const mnfOctet = 8;
@@ -95,7 +94,6 @@ module.exports = function (RED) {
 
   function NetworkAware(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("network-aware was deployed");
     const node = this;
 
     node.on("input", function (msg, send, done) {

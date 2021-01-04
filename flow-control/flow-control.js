@@ -1,5 +1,4 @@
 const request = require("request");
-const SentryLog = require("../utils/sentry-log.js");
 
 module.exports = function (RED) {
   function setErrorStatus(errMsg, error, node, send, done) {
@@ -80,16 +79,13 @@ module.exports = function (RED) {
 
   function FlowControl(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("flow-control was deployed");
     const node = this;
     node.on("input", function (msg, send, done) {
       const targetUrl = `http://${config.targetHost}:${config.targetPort}/flow/${config.targetFlow}`;
 
       if (typeof msg.payload === "boolean") {
-        SentryLog.sendMessage("Flow successfully changed");
         getSetFlowStatus(targetUrl, node, msg, send, done, config);
       } else {
-        SentryLog.sendMessage("Error on flow change attempt");
         setErrorStatus(
           "Not Boolean Input",
           "Input type is not boolean",

@@ -1,4 +1,3 @@
-const SentryLog = require("../utils/sentry-log.js");
 const os = require("os");
 
 module.exports = function (RED) {
@@ -118,7 +117,6 @@ module.exports = function (RED) {
 
   function RedundancyManager(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("redundancy was deployed");
 
     let node = this;
     init(node, config);

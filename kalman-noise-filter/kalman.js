@@ -1,10 +1,8 @@
 const kalmanjs = require("kalmanjs");
-const SentryLog = require("../utils/sentry-log.js");
 
 module.exports = function (RED) {
   function KalmanNoiseFilter(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("kalman was deployed");
     const filter = new kalmanjs({
       R: Number.parseFloat(config.r) || 0.01,
       Q: Number.parseFloat(config.q) || 3,
