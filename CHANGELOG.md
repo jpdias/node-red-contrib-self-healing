@@ -13,7 +13,7 @@ The main functionalities added are:
 ![](./samples/redundancy-manager.png)
 ![](https://i.imgur.com/bwvgr6k.png)
 
-- HTTP Aware, a node to continuously ping all IP adresses, in a network picked by the user, through the most commonly used ports (80, 8080 and 443) and get all working IP:port set. An example flow and edit controls are:
+- HTTP Aware, a node to continuously ping all IP adresses, in a network picked by the user, through the most commonly used ports (80, 8080 and 443). An instance of the node goes through all IPs of the network according to the net mask given, and after pinging to each of those IP's for each port through a socket, if the connection is successfully established then the correspondent IP:port is sent through the output. An example flow and edit controls are:
 
 ![](./samples/http-aware.png)
 ![](https://i.imgur.com/H9ApOeS.png)
