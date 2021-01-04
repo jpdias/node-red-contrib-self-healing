@@ -1,0 +1,79 @@
+[
+  {
+    "id": "c395ceb0.007bb",
+    "type": "tab",
+    "label": "Network Aware",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "b46ef88a.b99e78",
+    "type": "network-aware",
+    "z": "c395ceb0.007bb",
+    "name": "",
+    "baseip": "192.168.1.1/24",
+    "scanInterval": "300",
+    "x": 600,
+    "y": 164,
+    "wires": [["28cc4ded.ab3332"], ["caab653a.5ed6c8"]]
+  },
+  {
+    "id": "18b16ecb.8d8311",
+    "type": "inject",
+    "z": "c395ceb0.007bb",
+    "name": "Inject",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 370,
+    "y": 164,
+    "wires": [["b46ef88a.b99e78"]]
+  },
+  {
+    "id": "28cc4ded.ab3332",
+    "type": "debug",
+    "z": "c395ceb0.007bb",
+    "name": "Current Devices",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 840,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "caab653a.5ed6c8",
+    "type": "debug",
+    "z": "c395ceb0.007bb",
+    "name": "Unknown Devices",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 850,
+    "y": 220,
+    "wires": []
+  }
+]

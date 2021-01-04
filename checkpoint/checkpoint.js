@@ -58,6 +58,9 @@ module.exports = function (RED) {
       setPersistentContext("timestamp", getTime());
 
       send([msg]);
+
+      SentryLog.sendMessage("Received new checkpoint message");
+
       done();
     });
 
@@ -67,6 +70,8 @@ module.exports = function (RED) {
       if (timestamp === undefined || getTime() < timestamp + config.ttl) {
         setPersistentContext("timestamp", getTime());
         node.send([lastMsg]);
+
+        SentryLog.sendMessage("Checkpoint was restarted");
       }
     });
 
@@ -74,6 +79,8 @@ module.exports = function (RED) {
       node.context().set("active", undefined, "file");
       node.context().set("lastMsg", undefined, "file");
       node.context().set("timestamp", undefined, "file");
+
+      SentryLog.sendMessage("Checkpoint was reset");
     });
   }
 

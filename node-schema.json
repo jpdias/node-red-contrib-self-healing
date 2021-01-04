@@ -8,6 +8,36 @@
     "input": true,
     "output": true
   },
+  "action-audit": {
+    "title": "Action audit node",
+    "input": {
+      "type": "object",
+      "properties": {
+        "action_or_ack": {
+          "description": "Description of an issued action or ack",
+          "type": "any",
+          "enum": ["action", "ack"]
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "description": "Description of the acknowledged action",
+          "type": "any"
+        },
+        "error": {
+          "description": "An error in case of timeout during acknowledgement",
+          "type": "String"
+        },
+        "exception": {
+          "description": "Exception message",
+          "type": "String"
+        }
+      }
+    }
+  },
   "balancing": {
     "title": "Balancing node",
     "input": true,
@@ -120,26 +150,11 @@
       "properties": {
         "payload": {
           "description": "Value of the message",
-          "type": "object",
-          "properties": {
-            "status": {
-              "description": "Connection status",
-              "type": "integer"
-            },
-            "statusMessage": {
-              "description": "Description of the connection status",
-              "type": "string"
-            }
-          },
-          "required": ["status", "statusMessage"]
-        },
-        "timestamp": {
-          "description": "Time of when the message was sent",
-          "type": "string"
+          "type": "object"
         }
-      },
-      "required": ["payload", "timestamp"]
-    }
+      }
+    },
+    "required": ["payload"]
   },
   "kalman-noise-filter": {
     "title": "Kalman noise filter",
@@ -171,6 +186,84 @@
       },
       "required": ["payload"]
     }
+  },
+  "network-aware": {
+    "title": "Network aware node",
+    "input": true,
+    "output": [
+      {
+        "description": "All valid devices found in the network",
+        "type": "object",
+        "properties": {
+          "payload": {
+            "description": "Value of the message",
+            "type": "object",
+            "properties": {
+              "id": {
+                "description": "Device's id",
+                "type": "string"
+              },
+              "ip": {
+                "description": "Device's ip",
+                "type": "string"
+              },
+              "name": {
+                "description": "Device's name",
+                "type": "string"
+              },
+              "manufacturer": {
+                "description": "Device's manufacturer",
+                "type": "string"
+              },
+              "timestamp": {
+                "description": "Time of device's reading",
+                "type": "string"
+              }
+            },
+            "required": ["id", "ip", "name", "manufacturer", "timestamp"]
+          },
+          "topic": {
+            "description": "Topic of the message",
+            "type": "string"
+          }
+        },
+        "required": ["payload"]
+      },
+      {
+        "description": "Devices with invalid MAC adress found in the network",
+        "type": "object",
+        "properties": {
+          "payload": {
+            "description": "Value of the message",
+            "type": "object",
+            "properties": {
+              "ip": {
+                "description": "Device's ip",
+                "type": "string"
+              },
+              "name": {
+                "description": "Device's name",
+                "type": "string"
+              },
+              "manufacturer": {
+                "description": "Device's manufacturer",
+                "type": "string"
+              },
+              "timestamp": {
+                "description": "Time of device's reading",
+                "type": "string"
+              }
+            },
+            "required": ["ip", "name", "manufacturer", "timestamp"]
+          },
+          "topic": {
+            "description": "Topic of the message",
+            "type": "string"
+          }
+        },
+        "required": ["payload"]
+      }
+    ]
   },
   "readings-watcher": {
     "title": "Readings watcher node",

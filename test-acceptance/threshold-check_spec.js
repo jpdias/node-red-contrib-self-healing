@@ -1,40 +1,32 @@
-/*
-  Docker container to run selenium.
-  Next sprint: Try to streamline this part of the test setup
-
-  docker run --rm -p 9001:4444 -p 9002:5900 -d --shm-size 2g selenium/standalone-firefox-debug
-*/
-
 const { Builder, By, until } = require("selenium-webdriver");
 const { spawn } = require("child_process");
 require("should");
 
-describe("checkpoint node", async function () {
+describe("threshold-check node", async function () {
   this.timeout(0);
   let driver;
   let proc;
   const testPort = "8090";
-  const injectXpath =
-    "//*[text()='Inject']/../preceding-sibling::*[contains(@class, 'red-ui-flow-node-button')]/*[contains(@class, 'red-ui-flow-node-button-button')]";
+  const errorXpath =
+    "//*[text()='reading value']/../preceding-sibling::*[contains(@class, 'red-ui-flow-node-button')]/*[contains(@class, 'red-ui-flow-node-button-button')]";
 
-  it("should be test checkpoint", async function () {
+  it("should be test threshold-check", async function () {
     driver = await new Builder()
       .forBrowser("firefox")
       .usingServer("http://selenium:4444/wd/hub")
       .build();
 
-    const testJson = "test-acceptance/checkpoint.json";
+    const testJson = "test-acceptance/threshold-check.json";
     proc = spawn("node-red", ["-p", testPort, testJson], {
       detached: true,
     });
 
     try {
-      await driver.sleep(5000); //TODO: Switch with elementIsVisible
+      await driver.sleep(1500);
       await driver.get("http://nodered:8090");
 
-      await driver.sleep(2000); //TODO: Switch with elementIsVisible
       await driver
-        .wait(until.elementLocated(By.xpath(injectXpath)), 10000)
+        .wait(until.elementLocated(By.xpath(errorXpath)), 10000)
         .click();
 
       await driver
@@ -51,13 +43,19 @@ describe("checkpoint node", async function () {
         10000
       );
 
-      let firstMsg = await debugPanel.findElement(
+      let firstMsgContent = await debugPanel.findElement(
         By.css(".red-ui-debug-msg .red-ui-debug-msg-row")
       );
 
-      const num = await firstMsg.getAttribute("textContent");
+      let firstMsgName = await debugPanel.findElement(
+        By.css(".red-ui-debug-msg .red-ui-debug-msg-name")
+      );
 
-      num.should.be.equal("1234");
+      const msgText = await firstMsgContent.getAttribute("textContent");
+      msgText.should.be.equal("10");
+
+      const nodeName = await firstMsgName.getAttribute("textContent");
+      nodeName.should.be.equal("node: error actuator");
     } finally {
       process.kill(-proc.pid);
       await driver.quit();

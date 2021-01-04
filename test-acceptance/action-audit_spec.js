@@ -1,29 +1,24 @@
-/*
-  Docker container to run selenium.
-  Next sprint: Try to streamline this part of the test setup
-
-  docker run --rm -p 9001:4444 -p 9002:5900 -d --shm-size 2g selenium/standalone-firefox-debug
-*/
-
 const { Builder, By, until } = require("selenium-webdriver");
 const { spawn } = require("child_process");
 require("should");
 
-describe("checkpoint node", async function () {
+describe("action-audit node", async function () {
   this.timeout(0);
   let driver;
   let proc;
   const testPort = "8090";
-  const injectXpath =
-    "//*[text()='Inject']/../preceding-sibling::*[contains(@class, 'red-ui-flow-node-button')]/*[contains(@class, 'red-ui-flow-node-button-button')]";
+  const actuatorXpath =
+    "//*[text()='actuator']/../preceding-sibling::*[contains(@class, 'red-ui-flow-node-button')]/*[contains(@class, 'red-ui-flow-node-button-button')]";
+  const sensorXpath =
+    "//*[text()='sensor']/../preceding-sibling::*[contains(@class, 'red-ui-flow-node-button')]/*[contains(@class, 'red-ui-flow-node-button-button')]";
 
-  it("should be test checkpoint", async function () {
+  it("should be test action-audit", async function () {
     driver = await new Builder()
       .forBrowser("firefox")
       .usingServer("http://selenium:4444/wd/hub")
       .build();
 
-    const testJson = "test-acceptance/checkpoint.json";
+    const testJson = "test-acceptance/action-audit.json";
     proc = spawn("node-red", ["-p", testPort, testJson], {
       detached: true,
     });
@@ -34,7 +29,10 @@ describe("checkpoint node", async function () {
 
       await driver.sleep(2000); //TODO: Switch with elementIsVisible
       await driver
-        .wait(until.elementLocated(By.xpath(injectXpath)), 10000)
+        .wait(until.elementLocated(By.xpath(actuatorXpath)), 10000)
+        .click();
+      await driver
+        .wait(until.elementLocated(By.xpath(sensorXpath)), 10000)
         .click();
 
       await driver
@@ -55,9 +53,11 @@ describe("checkpoint node", async function () {
         By.css(".red-ui-debug-msg .red-ui-debug-msg-row")
       );
 
-      const num = await firstMsg.getAttribute("textContent");
+      const msgText = await firstMsg.getAttribute("textContent");
+      const msg = eval("(" + msgText + ")");
 
-      num.should.be.equal("1234");
+      msg.should.have.property("action", "Turn light on");
+      msg.should.have.property("payload", "hello");
     } finally {
       process.kill(-proc.pid);
       await driver.quit();

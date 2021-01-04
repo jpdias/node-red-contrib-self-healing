@@ -9,7 +9,7 @@ const { Builder, By, until } = require("selenium-webdriver");
 const { spawn } = require("child_process");
 require("should");
 
-describe("checkpoint node", async function () {
+describe("balancing node", async function () {
   this.timeout(0);
   let driver;
   let proc;
@@ -23,19 +23,20 @@ describe("checkpoint node", async function () {
       .usingServer("http://selenium:4444/wd/hub")
       .build();
 
-    const testJson = "test-acceptance/checkpoint.json";
+    const testJson = "test-acceptance/balancing.json";
     proc = spawn("node-red", ["-p", testPort, testJson], {
       detached: true,
     });
 
     try {
-      await driver.sleep(5000); //TODO: Switch with elementIsVisible
+      await driver.sleep(5000);
       await driver.get("http://nodered:8090");
 
-      await driver.sleep(2000); //TODO: Switch with elementIsVisible
-      await driver
-        .wait(until.elementLocated(By.xpath(injectXpath)), 10000)
-        .click();
+      await driver.sleep(2000);
+      let button = await driver.wait(
+        until.elementLocated(By.xpath(injectXpath)),
+        10000
+      );
 
       await driver
         .wait(
@@ -44,6 +45,9 @@ describe("checkpoint node", async function () {
         )
         .click();
 
+      button.click();
+      button.click();
+
       let debugPanel = await driver.wait(
         until.elementLocated(
           By.className("red-ui-debug-content red-ui-debug-content-list")
@@ -51,13 +55,16 @@ describe("checkpoint node", async function () {
         10000
       );
 
-      let firstMsg = await debugPanel.findElement(
-        By.css(".red-ui-debug-msg .red-ui-debug-msg-row")
+      let messageArray = await debugPanel.findElements(
+        By.css(".red-ui-debug-msg-name")
       );
 
-      const num = await firstMsg.getAttribute("textContent");
+      await driver.sleep(100);
+      let debug1 = await messageArray[0].getAttribute("textContent");
+      let debug2 = await messageArray[1].getAttribute("textContent");
 
-      num.should.be.equal("1234");
+      debug1.should.be.equal("node: Debug1");
+      debug2.should.be.equal("node: Debug2");
     } finally {
       process.kill(-proc.pid);
       await driver.quit();

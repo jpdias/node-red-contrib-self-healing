@@ -1,0 +1,94 @@
+[
+  {
+    "id": "f0d23a40.81ed6",
+    "type": "tab",
+    "label": "Balancing",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "4fb4a926.8364",
+    "type": "debug",
+    "z": "f0d23a40.81ed6",
+    "name": "",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "false",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 680,
+    "y": 320,
+    "wires": []
+  },
+  {
+    "id": "d69e5902.d242b8",
+    "type": "balancing",
+    "z": "f0d23a40.81ed6",
+    "name": "Balancer",
+    "outputs": 3,
+    "algorithm": "1",
+    "weights": "1.1.1",
+    "x": 390,
+    "y": 320,
+    "wires": [["d6a39b87.16c2f8"], ["4fb4a926.8364"], ["7aa6459c.6cb334"]]
+  },
+  {
+    "id": "d6a39b87.16c2f8",
+    "type": "debug",
+    "z": "f0d23a40.81ed6",
+    "name": "",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "false",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 682.11669921875,
+    "y": 262.1166687011719,
+    "wires": []
+  },
+  {
+    "id": "7aa6459c.6cb334",
+    "type": "debug",
+    "z": "f0d23a40.81ed6",
+    "name": "",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "false",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 677.11669921875,
+    "y": 386.1166687011719,
+    "wires": []
+  },
+  {
+    "id": "e7ac0e52.31f9b",
+    "type": "inject",
+    "z": "f0d23a40.81ed6",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 210,
+    "y": 320,
+    "wires": [["d69e5902.d242b8"]]
+  }
+]

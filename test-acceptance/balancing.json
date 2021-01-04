@@ -1,0 +1,80 @@
+[
+  {
+    "id": "f0d23a40.81ed6",
+    "type": "tab",
+    "label": "Flow 1",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "64c12104.ce9de",
+    "type": "balancing",
+    "z": "f0d23a40.81ed6",
+    "name": "Balancing",
+    "outputs": 2,
+    "algorithm": "1",
+    "weights": "1.1.1",
+    "x": 410,
+    "y": 300,
+    "wires": [["d82ebd45.4a23"], ["b3591473.b317f8"]]
+  },
+  {
+    "id": "79b722d5.5baadc",
+    "type": "inject",
+    "z": "f0d23a40.81ed6",
+    "name": "Inject",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 190,
+    "y": 300,
+    "wires": [["64c12104.ce9de"]]
+  },
+  {
+    "id": "d82ebd45.4a23",
+    "type": "debug",
+    "z": "f0d23a40.81ed6",
+    "name": "Debug1",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 610,
+    "y": 240,
+    "wires": []
+  },
+  {
+    "id": "b3591473.b317f8",
+    "type": "debug",
+    "z": "f0d23a40.81ed6",
+    "name": "Debug2",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 630,
+    "y": 360,
+    "wires": []
+  }
+]
