@@ -18,6 +18,11 @@ The main functionalities added are:
 ![](./samples/http-aware.png)
 ![](https://i.imgur.com/H9ApOeS.png)
 
+- Device Registry, a node that keeps track of all the online devices and their information. The input should be an array containing the information of the devices to register/update. An example flow and edit controls are:
+
+![](./samples/device-registry.png)
+![](https://i.imgur.com/4YM0YKt.png)
+
 ### Week of 30/12/2020 - 04/01/2021
 
 #### Added
