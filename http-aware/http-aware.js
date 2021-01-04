@@ -1,5 +1,4 @@
 const net = require("net");
-const SentryLog = require("../utils/sentry-log.js");
 
 module.exports = function (RED) {
   const ipNumBits = 32;
@@ -62,7 +61,7 @@ module.exports = function (RED) {
 
     const netmask = netmask32 - (Math.pow(2, ipNumBits - mask) - 1);
     const min_ip = (ip & netmask) >>> 0;
-    const max_ip = min_ip + Math.pow(2, ipNumBits - mask) - 2; // Excluding broadcast ip address
+    const max_ip = min_ip + Math.pow(2, ipNumBits - mask) - 1;
 
     for (let i = min_ip; i <= max_ip; i++) {
       let ip_string = num2dot(i);
@@ -110,7 +109,6 @@ module.exports = function (RED) {
 
   function HttpAware(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("http-aware was deployed");
     const node = this;
 
     node.on("input", function (msg, send, done) {
