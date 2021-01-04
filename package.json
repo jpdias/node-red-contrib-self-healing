@@ -24,8 +24,6 @@
     "format-check": "prettier --check --ignore-path .gitignore .",
     "mutate-init": "stryker init",
     "mutate": "stryker run",
-    "sonar-server": "docker run --rm -it --name sonarqube -p 9876:9000 -p 9092:9092 sonarqube",
-    "sonar-scanner": "node sonar-project.js",
     "selenium-server": "docker-compose up",
     "selenium-test": "docker exec -it nodered npm run test-accept"
   },
@@ -76,7 +74,6 @@
     "node-red-node-test-helper": "^0.2.5",
     "nyc": "^15.1.0",
     "prettier": "^2.1.2",
-    "sonarqube-scanner": "^2.7.0",
     "selenium-webdriver": "^4.0.0-alpha.7"
   },
   "optionalDependencies": {},
