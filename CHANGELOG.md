@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## Sprint 4 (02/12/2020 - 04/01/2021)
+
+### Week of 16/12/2020 - 22/12/2020
+
+#### Increment description
+
+The main functionalities added are:
+
+- Redundancy Manager, a node that keeps redundant Node-RED instances informed of each other and elects a master instance based on the ip. These instances run on different machines on the same local network, and the node checks when new instances come online or go offline, and through a bully algorithm selects an instance to be in control. Controls are provided for the ping interval (to check known instances are alive and inform them we are alive) and for the timeout threshold (to decided if an instance went too long without sending a ping).
+
+![](./samples/redundancy-manager.png)
+![](https://i.imgur.com/bwvgr6k.png)
+
 ## Sprint 3 (11/11/2020 - 01/12/2020)
 
 ### Week of 25/11/2020 - 01/12/2020
