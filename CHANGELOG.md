@@ -4,8 +4,6 @@ All notable changes to this project will be documented in this file.
 
 ## Sprint 4 (02/12/2020 - 04/01/2021)
 
-### Week of 16/12/2020 - 22/12/2020
-
 #### Increment description
 
 The main functionalities added are:
@@ -15,9 +13,23 @@ The main functionalities added are:
 ![](./samples/redundancy-manager.png)
 ![](https://i.imgur.com/bwvgr6k.png)
 
-## Sprint 3 (11/11/2020 - 01/12/2020)
+### Week of 30/12/2020 - 04/01/2021
 
-### Week of 25/11/2020 - 01/12/2020
+#### Added
+
+- Added unit tests and documentation for the Redundancy node #37
+
+### Week of 23/12/2020 - 29/12/2020
+
+No progress because of Christmas
+
+### Week of 16/12/2020 - 22/12/2020
+
+#### Changed
+
+- Refactored the Redundancy node #37
+
+## Sprint 3 (11/11/2020 - 01/12/2020)
 
 #### Increment description
 
@@ -38,6 +50,8 @@ The main functionalities added are:
 ![](./samples/heartbeat-passive-mqtt.png)
 ![](https://i.imgur.com/F2kfIHy.png)
 
+### Week of 25/11/2020 - 01/12/2020
+
 #### Added
 
 - Action Audit node, with unit, property-based and acceptance tests #69
@@ -48,7 +62,11 @@ The main functionalities added are:
 
 ### Week of 18/11/2020 - 24/11/2020
 
+No progress
+
 ### Week of 11/11/2020 - 17/11/2020
+
+No progress
 
 ## Sprint 2 (21/10/2020 - 10/11/2020)
 
