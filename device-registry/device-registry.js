@@ -62,8 +62,6 @@ module.exports = function (RED) {
 
       if (Array.isArray(receivedDevice)) {
         receivedDevice.forEach((device) => {
-          //3 casos: não estar no registo, estar no registo e Status=on/null, estar no registo e Status=off
-
           if (!internalDeviceList.has(device.Id)) {
             if (registerDevice(device)) {
               node.status({
