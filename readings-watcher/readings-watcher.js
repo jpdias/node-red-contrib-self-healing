@@ -1,10 +1,8 @@
 let BoundedStack = require("../utils/bounded-stack.js");
-const SentryLog = require("../utils/sentry-log.js");
 
 module.exports = function (RED) {
   function readingsWatcher(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("readings-watcher was deployed");
     let node = this;
 
     /*

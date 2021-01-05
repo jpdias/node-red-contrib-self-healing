@@ -1,9 +1,6 @@
-const SentryLog = require("../utils/sentry-log.js");
-
 module.exports = function (RED) {
   function Heartbeat(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("heartbeat was deployed");
     let node = this;
 
     this.interval = null;

@@ -47,6 +47,10 @@ Enable and disable Node-RED flows during runtime (local or remote instances, usi
 
 Provides a heartbeat probe for MQTT and HTTP.
 
+### :package: http-aware
+
+A node to continuously scan the network to find working IPs at ports 8080, 443 and 80.
+
 ### :package: kalman-noise-filter
 
 Kalman noise filter based on the work of Bulten et al.
@@ -89,21 +93,15 @@ Checks if an action occurs within a given time frame. This node is not implement
 
 Checks for timing issues on data inputs. There are 3 outputs that refer to data comming on expected time, too slow or too fast. A frequency in seconds along with a margin (float: 0-1) should be provided.
 
-## Todo Nodes
-
 ### :package: device-registry
 
-Store a list of the available devices in the network.
+All the devices that are reachable can communicate with this device in order to store their information and current state.
+
+## Todo Nodes
 
 ### :package: internal-state
 
 Stores the internal state of all flows, making it available to different Node-RED instances.
-
-## Known Issues
-
-- ~~Lack of description on how to configure nodes.~~
-- ~~No standardization on inputs and outputs.~~
-- ~~Lack of proper unit testing. Some edge cases still break the _node's_ functionality.~~
 
 ## How to Use
 
@@ -113,7 +111,6 @@ Stores the internal state of all flows, making it available to different Node-RE
 
 - Clone or download this repository.
 - In your node-red user directory, typically ~/.node-red (in Windows something like `C:\Users\<my_name>\.node_red`), run: `npm install <path_to_downloaded_folder>/node-red-contrib-self-healing`
-  - Note: this will come with [Sentry](https://sentry.io/) support, providing some app telemetry. In order to disable it, add the `--no-optional` flag. Since it's an optional dependency, Sentry won't be installed.
 - Start (or restart) Node-RED.
 - Nodes should be available under the SHEN tab of the _node palette_.
 
@@ -124,7 +121,6 @@ Stores the internal state of all flows, making it available to different Node-RE
 - Mutation tests: `npm run mutate`
 - Property based tests: `npm run test-pbt`
 - Acceptance tests: `npm run test-acceptance`
-- Static analysis with sonarqube (requires docker): `npm run sonar-server` then `npm run sonar-scanner <path-to-node-js-file>`
 
 ### Helper documentation
 
