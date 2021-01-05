@@ -1,0 +1,83 @@
+<script type="text/javascript">
+  RED.nodes.registerType("device-registry", {
+    category: "SHEN",
+    defaults: {
+      name: { value: "" },
+    },
+    icon: "status.png",
+    color: "#74b9ff",
+    inputs: 1,
+    outputs: 3,
+    align: "left",
+    inputLabels: "deviceList",
+    outputLabels: ["allCurrentDevices", "registeredNewDevice", "removedDevice"],
+    label: function () {
+      return this.name || "Device Registry";
+    },
+  });
+</script>
+
+<script type="text/html" data-template-name="device-registry">
+  <div class="form-row">
+    <label for="node-input-name"
+      ><i class="fa fa-tag"></i>
+      <span data-i18n="node-red:common.label.name"></span
+    ></label>
+    <input
+      type="text"
+      id="node-input-name"
+      data-i18n="[placeholder]node-red:common.label.name"
+    />
+  </div>
+</script>
+
+<script type="text/html" data-help-name="device-registry">
+  <p>
+    A node that keeps track of all the devices that are (and have been) online
+  </p>
+
+  <h3>Properties</h3>
+  <dl class="message-properties">
+    <dt>
+      name
+      <span class="property-type">string</span>
+    </dt>
+    <dd>name of node to be displayed in editor.</dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <p>
+      Device List: The input should be a list containing the information of the
+      devices to register/update.
+      Device information format:
+      <ul>
+          <li>Id</li>
+          <li>Ip</li>
+          <li>Name</li>
+          <li>Status (<i>optional</i>)</li>
+        </ul>
+    </p>
+  </dl>
+
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <p>
+      Device list: This output shows the list containing all of the registered
+      devices and their information.
+    </p>
+    <p>
+      Registered new device: This output shows the information of a newly
+      registered device.
+    </p>
+    <p>
+      Removed device: This output shows the information of a device that was
+      recently removed from the system.
+    </p>
+  </dl>
+
+  <h3>Details</h3>
+  <p>
+    This node registers and keeps a updated list of all the available devices.
+  </p>
+</script>

@@ -1,5 +1,3 @@
-const SentryLog = require("../utils/sentry-log.js");
-
 module.exports = function (RED) {
   function checkInputValidity(value, resource, node, done) {
     if (typeof value != "number" || isNaN(value) || value < 0 || value > 100) {
@@ -8,12 +6,6 @@ module.exports = function (RED) {
         shape: "dot",
         text: "Unexpected Input",
       });
-
-      SentryLog.sendMessage(
-        "Error: Value received for " +
-          resource +
-          " must be a number between 0 and 100"
-      );
 
       done(
         "Error: Value received for " +
@@ -29,8 +21,6 @@ module.exports = function (RED) {
     if (receivedValue <= maxValue) {
       return true;
     } else {
-      SentryLog.sendMessage(resource + " value is too high");
-
       errMsg[resource] = "too high";
       return false;
     }
@@ -40,8 +30,6 @@ module.exports = function (RED) {
     if (receivedValue >= minValue) {
       return true;
     } else {
-      SentryLog.sendMessage(resource + " value is too low");
-
       errMsg[resource] = "too low";
       return false;
     }
@@ -98,7 +86,6 @@ module.exports = function (RED) {
 
   function ResourceMonitorNode(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("resource-monitor was deployed");
     const node = this;
     node.on("input", function (msg, send, done) {
       let errMsg = {};
@@ -111,8 +98,6 @@ module.exports = function (RED) {
           text: "Nothing to monitor",
         });
 
-        SentryLog.sendMessage("There is nothing to monitor");
-
         done();
         return;
       }
@@ -123,10 +108,6 @@ module.exports = function (RED) {
           shape: "dot",
           text: "Unexpected Input",
         });
-
-        SentryLog.sendMessage(
-          "Error: Input must be a JSON object with resources usage."
-        );
 
         done("Error: Input must be a JSON object with resources usage.");
         return;

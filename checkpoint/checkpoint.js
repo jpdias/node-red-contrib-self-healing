@@ -1,5 +1,3 @@
-const SentryLog = require("../utils/sentry-log.js");
-
 /**
  * 
  * In order for the checkpoint node to work properly,
@@ -21,7 +19,6 @@ const SentryLog = require("../utils/sentry-log.js");
 module.exports = function (RED) {
   function checkpoint(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("checkpoint was deployed");
     let node = this;
     config.ttl = parseInt(config.ttl) || 3600;
 
@@ -59,8 +56,6 @@ module.exports = function (RED) {
 
       send([msg]);
 
-      SentryLog.sendMessage("Received new checkpoint message");
-
       done();
     });
 
@@ -70,8 +65,6 @@ module.exports = function (RED) {
       if (timestamp === undefined || getTime() < timestamp + config.ttl) {
         setPersistentContext("timestamp", getTime());
         node.send([lastMsg]);
-
-        SentryLog.sendMessage("Checkpoint was restarted");
       }
     });
 
@@ -79,8 +72,6 @@ module.exports = function (RED) {
       node.context().set("active", undefined, "file");
       node.context().set("lastMsg", undefined, "file");
       node.context().set("timestamp", undefined, "file");
-
-      SentryLog.sendMessage("Checkpoint was reset");
     });
   }
 

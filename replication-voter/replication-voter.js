@@ -1,5 +1,3 @@
-const SentryLog = require("../utils/sentry-log.js");
-
 module.exports = function (RED) {
   function mode(values, margin) {
     let checked = [];
@@ -145,7 +143,6 @@ module.exports = function (RED) {
 
   function ReplicationVoter(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("replication-voter was deployed");
     let node = this;
     let allValues = [];
 

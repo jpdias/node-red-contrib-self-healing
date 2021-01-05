@@ -1,0 +1,62 @@
+[
+  {
+    "id": "42b63934.c4db9",
+    "type": "tab",
+    "label": "Http Aware",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "23dc0249.61aaee",
+    "type": "http-aware",
+    "z": "42b63934.c4db9",
+    "name": "",
+    "baseip": "127.0.0.1/24",
+    "scanInterval": 300,
+    "x": 650,
+    "y": 360,
+    "wires": [["82877c80.23555"]]
+  },
+  {
+    "id": "d2dd79de.f73cf",
+    "type": "inject",
+    "z": "42b63934.c4db9",
+    "name": "input",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 390,
+    "y": 360,
+    "wires": [["23dc0249.61aaee"]]
+  },
+  {
+    "id": "82877c80.23555",
+    "type": "debug",
+    "z": "42b63934.c4db9",
+    "name": "All devices",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 930,
+    "y": 360,
+    "wires": []
+  }
+]

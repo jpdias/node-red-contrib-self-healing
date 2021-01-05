@@ -2,9 +2,55 @@
 
 All notable changes to this project will be documented in this file.
 
-## Sprint 3 (11/11/2020 - 01/12/2020)
+## Sprint 4 (02/12/2020 - 04/01/2021)
 
-### Week of 25/11/2020 - 01/12/2020
+#### Increment description
+
+The main functionalities added are:
+
+- Redundancy Manager, a node that keeps redundant Node-RED instances informed of each other and elects a master instance based on the ip. These instances run on different machines on the same local network, and the node checks when new instances come online or go offline, and through a bully algorithm selects an instance to be in control. Controls are provided for the ping interval (to check known instances are alive and inform them we are alive) and for the timeout threshold (to decided if an instance went too long without sending a ping).
+
+![](./samples/redundancy-manager.png)
+![](https://i.imgur.com/bwvgr6k.png)
+
+- HTTP Aware, a node to continuously ping all IP adresses, in a network picked by the user, through the most commonly used ports (80, 8080 and 443). An instance of the node goes through all IPs of the network according to the net mask given, and after pinging to each of those IP's for each port through a socket, if the connection is successfully established then the correspondent IP:port is sent through the output. An example flow and edit controls are:
+
+![](./samples/http-aware.png)
+![](https://i.imgur.com/H9ApOeS.png)
+
+- Device Registry, a node that keeps track of all the online devices and their information. The input should be an array containing the information of the devices to register/update. An example flow and edit controls are:
+
+![](./samples/device-registry.png)
+![](https://i.imgur.com/4YM0YKt.png)
+
+### Week of 30/12/2020 - 04/01/2021
+
+#### Added
+
+- Added unit tests and documentation for the Redundancy node #37
+- Added HTTP Aware node #76
+- Added unit tests and documentation for the Device Registry node #37
+
+#### Removed
+
+- Sentry functionalities and dependencies (handover for the PO)
+- SonarQube functionalities and dependencies (handover for the PO)
+
+### Week of 23/12/2020 - 29/12/2020
+
+No progress because of Christmas
+
+### Week of 16/12/2020 - 22/12/2020
+
+### Added
+
+- Added Device Registry node #40
+
+#### Changed
+
+- Refactored the Redundancy node #37
+
+## Sprint 3 (11/11/2020 - 01/12/2020)
 
 #### Increment description
 
@@ -25,6 +71,8 @@ The main functionalities added are:
 ![](./samples/heartbeat-passive-mqtt.png)
 ![](https://i.imgur.com/F2kfIHy.png)
 
+### Week of 25/11/2020 - 01/12/2020
+
 #### Added
 
 - Action Audit node, with unit, property-based and acceptance tests #69
@@ -35,7 +83,11 @@ The main functionalities added are:
 
 ### Week of 18/11/2020 - 24/11/2020
 
+No progress
+
 ### Week of 11/11/2020 - 17/11/2020
+
+No progress
 
 ## Sprint 2 (21/10/2020 - 10/11/2020)
 

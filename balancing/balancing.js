@@ -1,9 +1,6 @@
-const SentryLog = require("../utils/sentry-log.js");
-
 module.exports = function (RED) {
   function Balancing(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("balancing was deployed");
     let node = this;
 
     let numberOutputs = config.outputs;

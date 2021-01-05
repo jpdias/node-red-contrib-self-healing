@@ -1,9 +1,6 @@
-const SentryLog = require("../utils/sentry-log.js");
-
 module.exports = function (RED) {
   function Timing(config) {
     RED.nodes.createNode(this, config);
-    SentryLog.sendMessage("timing was deployed");
 
     let lastTimestamp = null;
     const periodBetweenReadings = config.period * 1000; //seconds to milliseconds
@@ -75,7 +72,6 @@ module.exports = function (RED) {
 
       if (resultState != currentState) {
         currentState = resultState;
-        SentryLog.sendMessage("Flow is " + currentState);
       }
 
       lastTimestamp = currentTimestamp;
