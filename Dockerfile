@@ -21,6 +21,7 @@ COPY --chown=node-red heartbeat selfhealing/heartbeat
 COPY --chown=node-red utils selfhealing/utils
 COPY --chown=node-red resource-monitor selfhealing/resource-monitor
 COPY --chown=node-red timing-check selfhealing/timing-check
+COPY --chown=node-red device-registry selfhealing/device-registry
 COPY --chown=node-red action-audit selfhealing/action-audit
 COPY --chown=node-red http-aware selfhealing/http-aware
 

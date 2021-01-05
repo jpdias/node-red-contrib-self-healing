@@ -18,12 +18,18 @@ The main functionalities added are:
 ![](./samples/http-aware.png)
 ![](https://i.imgur.com/H9ApOeS.png)
 
+- Device Registry, a node that keeps track of all the online devices and their information. The input should be an array containing the information of the devices to register/update. An example flow and edit controls are:
+
+![](./samples/device-registry.png)
+![](https://i.imgur.com/4YM0YKt.png)
+
 ### Week of 30/12/2020 - 04/01/2021
 
 #### Added
 
 - Added unit tests and documentation for the Redundancy node #37
 - Added HTTP Aware node #76
+- Added unit tests and documentation for the Device Registry node #37
 
 #### Removed
 
@@ -35,6 +41,10 @@ The main functionalities added are:
 No progress because of Christmas
 
 ### Week of 16/12/2020 - 22/12/2020
+
+### Added
+
+- Added Device Registry node #40
 
 #### Changed
 

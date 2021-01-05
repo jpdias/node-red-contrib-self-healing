@@ -541,5 +541,10 @@
     "title": "Timing check node",
     "input": true,
     "output": true
+  },
+  "device-registry": {
+    "title": "Device Registry node",
+    "input": true,
+    "output": true
   }
 }

@@ -43,6 +43,7 @@
       "balancing": "balancing/balancing.js",
       "checkpoint": "checkpoint/checkpoint.js",
       "resource-monitor": "resource-monitor/resource-monitor.js",
+      "device-registry": "device-registry/device-registry.js",
       "action-audit": "action-audit/action-audit.js",
       "http-aware": "http-aware/http-aware.js"
     }
