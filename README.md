@@ -143,7 +143,7 @@ If you find this code useful in your research, please consider citing:
         isbn="978-3-030-50426-7"
     }
 
-> A Pattern-Language for Self-Healing Internet-of-Things Systems
+> A Pattern-Language for Self-Healing Internet-of-Things Systems (EuroPLoP'20)
 
     @inproceedings{DiasEuroplop2020,
         title        = {A Pattern-Language for Self-Healing Internet-of-Things Systems},
