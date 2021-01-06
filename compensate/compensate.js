@@ -1,7 +1,4 @@
 module.exports = function (RED) {
-  let history = [];
-  let compensatedCounter = 0;
-  let scheduler;
   let confidenceFormula;
 
   function confidenceLevel(_compensatedCounter, _history) {
@@ -13,7 +10,7 @@ module.exports = function (RED) {
     } catch (e) {
       return NaN;
     }
-    //(1 / compensatedCounter) >= 1 ? 1 : (1 / compensatedCounter);
+    //(1 / _compensatedCounter) >= 1 ? 1 : (1 / _compensatedCounter);
   }
 
   const mode = (myArray) =>
@@ -26,7 +23,7 @@ module.exports = function (RED) {
       null
     );
 
-  function modeCompensate(node, mode, history, send, done) {
+  function modeCompensate(node, mode, history, compensatedCounter, send, done) {
     node.status({
       fill: "yellow",
       shape: "dot",
@@ -44,7 +41,7 @@ module.exports = function (RED) {
     done();
   }
 
-  function lastCompensate(node, history, send, done) {
+  function lastCompensate(node, history, compensatedCounter, send, done) {
     node.status({
       fill: "yellow",
       shape: "dot",
@@ -61,7 +58,7 @@ module.exports = function (RED) {
     done();
   }
 
-  function minCompensate(history, node, send, done) {
+  function minCompensate(node, history, compensatedCounter, send, done) {
     let min = history.reduce((prev, curr) => {
       return Math.min(prev, curr);
     });
@@ -80,7 +77,7 @@ module.exports = function (RED) {
     done();
   }
 
-  function maxCompensate(history, node, send, done) {
+  function maxCompensate(node, history, compensatedCounter, send, done) {
     let max = history.reduce((prev, curr) => {
       return Math.max(prev, curr);
     });
@@ -99,7 +96,7 @@ module.exports = function (RED) {
     done();
   }
 
-  function meanCompensate(history, node, send, done) {
+  function meanCompensate(node, history, compensatedCounter, send, done) {
     /*
         Moving Average (MA) Model (since hist only contains the "histSize" values)
         */
@@ -123,24 +120,38 @@ module.exports = function (RED) {
     done();
   }
 
-  function sendMessage(node, send, done, strategy) {
+  function sendMessage(
+    node,
+    history,
+    compensatedCounter,
+    send,
+    done,
+    strategy
+  ) {
     if (history.length > 0) {
-      compensatedCounter++;
+      compensatedCounter.count += 1;
       switch (strategy) {
         case "mean":
-          meanCompensate(history, node, send, done);
+          meanCompensate(node, history, compensatedCounter.count, send, done);
           break;
         case "max":
-          maxCompensate(history, node, send, done);
+          maxCompensate(node, history, compensatedCounter.count, send, done);
           break;
         case "min":
-          minCompensate(history, node, send, done);
+          minCompensate(node, history, compensatedCounter.count, send, done);
           break;
         case "last":
-          lastCompensate(node, history, send, done);
+          lastCompensate(node, history, compensatedCounter.count, send, done);
           break;
         case "mode":
-          modeCompensate(node, mode, history, send, done);
+          modeCompensate(
+            node,
+            mode,
+            history,
+            compensatedCounter.count,
+            send,
+            done
+          );
           break;
         default:
           break;
@@ -161,10 +172,13 @@ module.exports = function (RED) {
     const messageTimeout = config.timeout;
     const msghistory = config.msghistory;
     confidenceFormula = config.confidenceFormula;
-    compensatedCounter = 0;
-    history = [];
+    let compensatedCounter = { count: 0 };
+    let history = [];
+    let scheduler;
 
-    clearInterval(scheduler);
+    if (scheduler) {
+      clearInterval(scheduler);
+    }
 
     node.on("input", function (msg, send, done) {
       if (!scheduler && typeof msg.payload === "number") {
@@ -172,6 +186,8 @@ module.exports = function (RED) {
           sendMessage,
           parseFloat(messageTimeout) * 1000,
           node,
+          history,
+          compensatedCounter,
           send,
           done,
           strategy
@@ -187,14 +203,14 @@ module.exports = function (RED) {
         history.push(msg.payload);
 
         node.status({ fill: "green", shape: "dot", text: "Ok" });
-        compensatedCounter == 0
-          ? (compensatedCounter = 0)
-          : compensatedCounter--;
+        compensatedCounter.count == 0
+          ? (compensatedCounter.count = 0)
+          : (compensatedCounter.count -= 1);
 
         send([
           {
             payload: msg.payload,
-            confidenceValue: confidenceLevel(compensatedCounter, history),
+            confidenceValue: confidenceLevel(compensatedCounter.count, history),
             timestamp: Date.now().toString(),
           },
         ]);
@@ -202,6 +218,8 @@ module.exports = function (RED) {
           sendMessage,
           parseFloat(messageTimeout) * 1000,
           node,
+          history,
+          compensatedCounter,
           send,
           done,
           strategy

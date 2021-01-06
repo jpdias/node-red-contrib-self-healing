@@ -16,41 +16,41 @@ This work is part of an ongoing PhD thesis in Software Engineering and Internet-
 
 ## Available Nodes
 
-### :package: action-audit
+### action-audit
 
 Checks if an action was completed by using sensor acknowledgements.
 
-### :package: balancing
+### balancing
 
 Balances the distribution of messages through multiple outputs using three different strategies: Round Robin, Weighted Round Robin and Random.
 
-### :package: checkpoint
+### checkpoint
 
 Acts between a node sending a message to another, storing the last one in local context and resending it after restarts, if it's within a specified time to live.
 
-### :package: compensate
+### compensate
 
 Compensate missing values (detected by disruptions on the periodicity of incoming mesages) with a pre-defined strategy (e.g. average of the last 10 readings, last value or maximum value of the last 10 readings).
 
 It can also provide a "confidence" level on the compensated values. Confidence metric results from an `eval` of a valid JS expression. Both compensated values counter (`compensatedCounter`) and history values (`history`) can be used. Example: `(1 / compensatedCounter) >= 1 ? 1 : (1 / compensatedCounter)`.
 
-### :package: debounce
+### debounce
 
 Delay a command (message) in order to meet the actuator response capacity (e.g. avoid overload). Similar to [rate-limit-messages](https://cookbook.nodered.org/basic/rate-limit-messages), but with different strategies.
 
-### :package: flow-control
+### flow-control
 
 Enable and disable Node-RED flows during runtime (local or remote instances, using the available REST API).
 
-### :package: heartbeat
+### heartbeat
 
 Provides a heartbeat probe for MQTT and HTTP.
 
-### :package: http-aware
+### http-aware
 
 A node to continuously scan the network to find working IPs at ports 8080, 443 and 80.
 
-### :package: kalman-noise-filter
+### kalman-noise-filter
 
 Kalman noise filter based on the work of Bulten et al.
 
@@ -60,45 +60,45 @@ Kalman noise filter based on the work of Bulten et al.
 
 > W. Bulten, A. C. V. Rossum and W. F. G. Haselager, **Human SLAM, Indoor Localisation of Devices and Users,** 2016 IEEE First International Conference on Internet-of-Things Design and Implementation (IoTDI), Berlin, 2016, pp. 211-222, doi: 10.1109/IoTDI.2015.19.
 
-### :package: network-aware
+### network-aware
 
 Continuosly scan the network to find new or removed devices. Can be combined with a `device-registry`.
 
-### :package: redundancy
+### redundancy
 
 Manage redundant instances of Node-RED (setting a master instance). Works only on the local network (uses [n2n](https://flows.nodered.org/node/node-red-contrib-n2n) communication).
 
-### :package: readings-watcher
+### readings-watcher
 
 Drop values if they are in or out of a given threshold (e.g. two close temperature readings).
 
-### :package: replication-voter
+### replication-voter
 
 Picks a value (e.g. sensor reading) from an array values based on a pre-defined majority.
 
-### :package: resource-monitor
+### resource-monitor
 
 Monitors system resources, ranging from battery levels to resources usage.
 
-### :package: threshold-check
+### threshold-check
 
 Checks for reading (value) sanity (e.g. checks if the reading is between the sensor possible output values).
 
-### :package: timeout
+### timeout
 
 Checks if an action occurs within a given time frame. This node is not implemented by this package, given that some implementations can already be found in Node-RED's contribution library, such as: [node-red-contrib-timeout](https://flows.nodered.org/node/node-red-contrib-timeout) and [node-red-contrib-mytimeout](https://flows.nodered.org/node/node-red-contrib-mytimeout).
 
-### :package: timing-check
+### timing-check
 
 Checks for timing issues on data inputs. There are 3 outputs that refer to data comming on expected time, too slow or too fast. A frequency in seconds along with a margin (float: 0-1) should be provided.
 
-### :package: device-registry
+### device-registry
 
 All the devices that are reachable can communicate with this device in order to store their information and current state.
 
-## Todo Nodes
+## To-do Nodes
 
-### :package: internal-state
+### internal-state
 
 Stores the internal state of all flows, making it available to different Node-RED instances.
 
@@ -114,6 +114,8 @@ Stores the internal state of all flows, making it available to different Node-RE
 - Nodes should be available under the SHEN tab of the _node palette_.
 
 ### Running tests
+
+- First run: `npm install`
 
 - Unit tests for every node: `npm run test`
 - Unit tests with coverage: `npm run test-coverage`
