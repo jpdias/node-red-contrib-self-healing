@@ -5,11 +5,10 @@
 ## node-red-contrib-self-healing
 
 [![DOI](https://zenodo.org/badge/doi/10.1007/978-3-030-50426-7_27.svg)](http://dx.doi.org/10.1007/978-3-030-50426-7_27)
+[![DOI](https://zenodo.org/badge/doi/10.1145/3361149.3361165.svg)](http://dx.doi.org/10.1145/3361149.3361165)
 [![npm version badge](https://img.shields.io/npm/v/node-red-contrib-self-healing.svg)](https://www.npmjs.org/package/node-red-contrib-self-healing)
 [![downloads badge](https://img.shields.io/npm/dm/node-red-contrib-self-healing.svg)](https://www.npmjs.com/package/node-red-contrib-self-healing)
 [![license: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-### **! Under Active Development ! **
 
 A collection of nodes for making Node-RED more resilient by adding self-healing capabilities. This project is at an early development stage.
 
@@ -130,6 +129,8 @@ Stores the internal state of all flows, making it available to different Node-RE
 
 If you find this code useful in your research, please consider citing:
 
+> Visual Self-healing Modelling for Reliable Internet-of-Things Systems (ICCS 2020)
+
     @inproceedings{DiasICCS2020,
         author="Dias, Joao Pedro and Lima, Bruno and Faria, Joao Pascoal and Restivo, Andre and Ferreira, Hugo Sereno",
         editor="Krzhizhanovskaya, Valeria V. and Zavodszky, Gabor and Lees, Michael H. and Dongarra, Jack J. and Sloot, Peter M. A. and Brissos, Sergio and Teixeira, Joao",
@@ -140,4 +141,19 @@ If you find this code useful in your research, please consider citing:
         address="Cham",
         pages="357--370",
         isbn="978-3-030-50426-7"
+    }
+
+> A Pattern-Language for Self-Healing Internet-of-Things Systems
+
+    @inproceedings{DiasEuroplop2020,
+        title        = {A Pattern-Language for Self-Healing Internet-of-Things Systems},
+        author       = {Dias, Jo\~{a}o Pedro and Sousa, Tiago Boldt and Restivo, André and Ferreira, Hugo Sereno},
+        year         = 2020,
+        booktitle    = {Proceedings of the 25th European Conference on Pattern Languages of Programs},
+        location     = {Irsee, Germany},
+        publisher    = {Association for Computing Machinery},
+        address      = {New York, NY, USA},
+        series       = {EuroPLop ’20},
+        doi          = {10.1145/3361149.3361165},
+        numpages     = 8
     }
