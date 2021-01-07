@@ -107,7 +107,7 @@ describe("compensate node", function () {
         timeout: 0.05,
         strategy: "max",
         confidenceFormula:
-          "(1 / compensatedCounter) >= 1 ? 1 : (1 / compensatedCounter)",
+          "(1 / _compensatedCounter) >= 1 ? 1 : (1 / _compensatedCounter)",
         wires: [["n2"]],
       },
       { id: "n2", type: "helper" },
