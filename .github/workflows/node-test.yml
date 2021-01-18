@@ -1,4 +1,4 @@
-name: Node.js Testing
+name: Test and Update NPM
 
 on:
   push:
