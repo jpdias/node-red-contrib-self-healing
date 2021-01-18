@@ -12,15 +12,17 @@
 
 A collection of nodes for making Node-RED more resilient by adding self-healing capabilities. This project is at an early development stage.
 
-This work is part of an ongoing PhD thesis in Software Engineering and Internet-of-Things at the Faculty of Engineering, University of Porto (FEUP). Work supervised by Prof. [Hugo Sereno Ferreia](http://hugosereno.eu/) and Prof. [João Pascoal Faria](https://sigarra.up.pt/feup/en/FUNC_GERAL.FORMVIEW?P_CODIGO=210006). With collaboration of Prof. [André Restivo](https://web.fe.up.pt/~arestivo/page/).
+This work is part of an ongoing PhD thesis in Software Engineering and Internet-of-Things at the Faculty of Engineering, University of Porto (FEUP). Work supervised by Prof. [Hugo Sereno Ferreia](http://hugosereno.eu/) and Prof. [João Pascoal Faria](https://sigarra.up.pt/feup/en/FUNC_GERAL.FORMVIEW?P_CODIGO=210006). With collaboration of Prof. [André Restivo](https://web.fe.up.pt/~arestivo/page/). 
+
+Each node has a README.md in its folder with further information.
 
 ## Available Nodes
 
-### action-audit
+### [action-audit](action-audit)
 
 Checks if an action was completed by using sensor acknowledgements.
 
-### balancing
+### [balancing](balancing)
 
 Balances the distribution of messages through multiple outputs using three different strategies: Round Robin, Weighted Round Robin and Random.
 
@@ -31,8 +33,6 @@ Acts between a node sending a message to another, storing the last one in local 
 ### compensate
 
 Compensate missing values (detected by disruptions on the periodicity of incoming mesages) with a pre-defined strategy (e.g. average of the last 10 readings, last value or maximum value of the last 10 readings).
-
-It can also provide a "confidence" level on the compensated values. Confidence metric results from an `eval` of a valid JS expression. Both compensated values counter (`compensatedCounter`) and history values (`history`) can be used. Example: `(1 / compensatedCounter) >= 1 ? 1 : (1 / compensatedCounter)`.
 
 ### debounce
 
