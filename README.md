@@ -26,63 +26,63 @@ Checks if an action was completed by using sensor acknowledgements.
 
 Balances the distribution of messages through multiple outputs using three different strategies: Round Robin, Weighted Round Robin and Random.
 
-### checkpoint
+### [checkpoint](checkpoint)
 
 Acts between a node sending a message to another, storing the last one in local context and resending it after restarts, if it's within a specified time to live.
 
-### compensate
+### [compensate](compensate)
 
 Compensate missing values (detected by disruptions on the periodicity of incoming mesages) with a pre-defined strategy (e.g. average of the last 10 readings, last value or maximum value of the last 10 readings).
 
-### debounce
+### [debounce](debounce)
 
 Delay a command (message) in order to meet the actuator response capacity (e.g. avoid overload). Similar to [rate-limit-messages](https://cookbook.nodered.org/basic/rate-limit-messages), but with different strategies.
 
-### flow-control
+### [flow-control](flow-control)
 
 Enable and disable Node-RED flows during runtime (local or remote instances, using the available REST API).
 
-### heartbeat
+### [heartbeat](heartbeat)
 
 Provides a heartbeat probe for MQTT and HTTP.
 
-### http-aware
+### [http-aware](http-aware)
 
 A node to continuously scan the network to find working IPs at ports 8080, 443 and 80.
 
-### kalman-noise-filter
+### [kalman-noise-filter](kalman-noise-filter)
 
 Kalman noise filter.
 
-### network-aware
+### [network-aware](network-aware)
 
 Continuosly scan the network to find new or removed devices. Can be combined with a `device-registry`.
 
-### redundancy
+### [redundancy](redundancy)
 
 Manage redundant instances of Node-RED (setting a master instance). Works only on the local network (uses [n2n](https://flows.nodered.org/node/node-red-contrib-n2n) communication).
 
-### readings-watcher
+### [readings-watcher](readings-watcher)
 
 Drop values if they are in or out of a given threshold (e.g. two close temperature readings).
 
-### replication-voter
+### [replication-voter](replication-voter)
 
 Picks a value (e.g. sensor reading) from an array values based on a pre-defined majority.
 
-### resource-monitor
+### [resource-monitor](resource-monitor)
 
 Monitors system resources, ranging from battery levels to resources usage.
 
-### threshold-check
+### [threshold-check](threshold-check)
 
 Checks for reading (value) sanity (e.g. checks if the reading is between the sensor possible output values).
 
-### timing-check
+### [timing-check](timing-check)
 
 Checks for timing issues on data inputs. There are 3 outputs that refer to data comming on expected time, too slow or too fast. A frequency in seconds along with a margin (float: 0-1) should be provided.
 
-### device-registry
+### [device-registry](device-registry)
 
 All the devices that are reachable can communicate with this device in order to store their information and current state.
 
