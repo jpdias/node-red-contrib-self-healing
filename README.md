@@ -52,13 +52,7 @@ A node to continuously scan the network to find working IPs at ports 8080, 443 a
 
 ### kalman-noise-filter
 
-Kalman noise filter based on the work of Bulten et al.
-
-> R models the process noise and describes how noisy our system internally is. Or, in other words, how much noise can we expect from the system itself? Our system is constant we can set this to a (very) low value. Q resembles the measurement noise; how much noise is caused by our measurements? As we expect that our measurements will contain most of the noise, it makes sense to set this parameter to a high number (especially in comparison to the process noise).
-
-> In real life scenario's you usually make an estimate of R and Q based on measurements or domain knowledge. For this example we assume we know the noise levels.
-
-> W. Bulten, A. C. V. Rossum and W. F. G. Haselager, **Human SLAM, Indoor Localisation of Devices and Users,** 2016 IEEE First International Conference on Internet-of-Things Design and Implementation (IoTDI), Berlin, 2016, pp. 211-222, doi: 10.1109/IoTDI.2015.19.
+Kalman noise filter.
 
 ### network-aware
 
@@ -83,10 +77,6 @@ Monitors system resources, ranging from battery levels to resources usage.
 ### threshold-check
 
 Checks for reading (value) sanity (e.g. checks if the reading is between the sensor possible output values).
-
-### timeout
-
-Checks if an action occurs within a given time frame. This node is not implemented by this package, given that some implementations can already be found in Node-RED's contribution library, such as: [node-red-contrib-timeout](https://flows.nodered.org/node/node-red-contrib-timeout) and [node-red-contrib-mytimeout](https://flows.nodered.org/node/node-red-contrib-mytimeout).
 
 ### timing-check
 
