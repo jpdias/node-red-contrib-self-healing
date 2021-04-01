@@ -59,7 +59,7 @@
     "kalmanjs": "^1.1.0",
     "local-devices": "git+https://github.com/Miosame/local-devices.git",
     "network-list": "^1.1.5",
-    "node-red": "^1.2.7",
+    "node-red": "^1.2.9",
     "os": "^0.1.1",
     "oui": "^11.0.50",
     "request": "^2.88.2"
