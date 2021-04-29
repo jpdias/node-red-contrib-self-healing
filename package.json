@@ -57,7 +57,7 @@
     "child_process": "^1.0.2",
     "dotenv": "^8.2.0",
     "kalmanjs": "^1.1.0",
-    "local-devices": "git+https://github.com/Miosame/local-devices.git",
+    "local-devices": "^3.1.0",
     "network-list": "^1.1.5",
     "node-red": "^1.2.9",
     "os": "^0.1.1",
