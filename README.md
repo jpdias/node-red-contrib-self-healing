@@ -10,83 +10,83 @@
 [![downloads badge](https://img.shields.io/npm/dm/node-red-contrib-self-healing.svg)](https://www.npmjs.com/package/node-red-contrib-self-healing)
 [![license: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A collection of nodes for making Node-RED more resilient by adding self-healing capabilities. This project is at an early development stage.
+A collection of nodes for making Node-RED more resilient by adding self-healing capabilities. This project is at an early development stage and its usage in production environments is not recommended.
 
-This work is part of an ongoing PhD thesis in Software Engineering and Internet-of-Things at the Faculty of Engineering, University of Porto (FEUP). Work supervised by Prof. [Hugo Sereno Ferreia](http://hugosereno.eu/) and Prof. [João Pascoal Faria](https://sigarra.up.pt/feup/en/FUNC_GERAL.FORMVIEW?P_CODIGO=210006). With collaboration of Prof. [André Restivo](https://web.fe.up.pt/~arestivo/page/).
+This work is part of an ongoing PhD thesis in Software Engineering and Internet-of-Things at the Faculty of Engineering, University of Porto (FEUP). Work supervised by Prof. [Hugo Sereno Ferreia](http://hugosereno.eu/) and Prof. [João Pascoal Faria](https://sigarra.up.pt/feup/en/FUNC_GERAL.FORMVIEW?P_CODIGO=210006). With collaboration of Prof. [André Restivo](https://web.fe.up.pt/~arestivo/).
 
-Each node has a README.md in its folder with further information.
+Each node has a README.md in its folder with further information about it.
 
 ## Available Nodes
 
-### [action-audit](action-audit)
+### [action-audit](https://github.com/jpdias/node-red-contrib-self-healing/action-audit)
 
 Checks if an action was completed by using sensor acknowledgements.
 
-### [balancing](balancing)
+### [balancing](https://github.com/jpdias/node-red-contrib-self-healing/balancing)
 
 Balances the distribution of messages through multiple outputs using three different strategies: Round Robin, Weighted Round Robin and Random.
 
-### [checkpoint](checkpoint)
+### [checkpoint](https://github.com/jpdias/node-red-contrib-self-healing/checkpoint)
 
 Acts between a node sending a message to another, storing the last one in local context and resending it after restarts, if it's within a specified time to live.
 
-### [compensate](compensate)
+### [compensate](https://github.com/jpdias/node-red-contrib-self-healing/compensate)
 
 Compensate missing values (detected by disruptions on the periodicity of incoming mesages) with a pre-defined strategy (e.g. average of the last 10 readings, last value or maximum value of the last 10 readings).
 
-### [debounce](debounce)
+### [debounce](https://github.com/jpdias/node-red-contrib-self-healing/debounce)
 
 Delay a command (message) in order to meet the actuator response capacity (e.g. avoid overload). Similar to [rate-limit-messages](https://cookbook.nodered.org/basic/rate-limit-messages), but with different strategies.
 
-### [flow-control](flow-control)
+### [flow-control](https://github.com/jpdias/node-red-contrib-self-healing/flow-control)
 
 Enable and disable Node-RED flows during runtime (local or remote instances, using the available REST API).
 
-### [heartbeat](heartbeat)
+### [heartbeat](https://github.com/jpdias/node-red-contrib-self-healing/heartbeat)
 
 Provides a heartbeat probe for MQTT and HTTP.
 
-### [http-aware](http-aware)
+### [http-aware](https://github.com/jpdias/node-red-contrib-self-healing/http-aware)
 
 A node to continuously scan the network to find working IPs at ports 8080, 443 and 80.
 
-### [kalman-noise-filter](kalman-noise-filter)
+### [kalman-filter](https://github.com/jpdias/node-red-contrib-self-healing/kalman-noise-filter)
 
 Kalman noise filter.
 
-### [network-aware](network-aware)
+### [network-aware](https://github.com/jpdias/node-red-contrib-self-healing/network-aware)
 
 Continuosly scan the network to find new or removed devices. Can be combined with a `device-registry`.
 
-### [redundancy](redundancy)
+### [redundancy](https://github.com/jpdias/node-red-contrib-self-healing/redundancy)
 
 Manage redundant instances of Node-RED (setting a master instance). Works only on the local network (uses [n2n](https://flows.nodered.org/node/node-red-contrib-n2n) communication).
 
-### [readings-watcher](readings-watcher)
+### [readings-watcher](https://github.com/jpdias/node-red-contrib-self-healing/readings-watcher)
 
 Drop values if they are in or out of a given threshold (e.g. two close temperature readings).
 
-### [replication-voter](replication-voter)
+### [replication-voter](https://github.com/jpdias/node-red-contrib-self-healing/replication-voter)
 
 Picks a value (e.g. sensor reading) from an array values based on a pre-defined majority.
 
-### [resource-monitor](resource-monitor)
+### [resource-monitor](https://github.com/jpdias/node-red-contrib-self-healing/resource-monitor)
 
 Monitors system resources, ranging from battery levels to resources usage.
 
-### [threshold-check](threshold-check)
+### [threshold-check](https://github.com/jpdias/node-red-contrib-self-healing/threshold-check)
 
 Checks for reading (value) sanity (e.g. checks if the reading is between the sensor possible output values).
 
-### [timing-check](timing-check)
+### [timing-check](https://github.com/jpdias/node-red-contrib-self-healing/timing-check)
 
 Checks for timing issues on data inputs. There are 3 outputs that refer to data comming on expected time, too slow or too fast. A frequency in seconds along with a margin (float: 0-1) should be provided.
 
-### [device-registry](device-registry)
+### [device-registry](https://github.com/jpdias/node-red-contrib-self-healing/device-registry)
 
 All the devices that are reachable can communicate with this device in order to store their information and current state.
 
-## To-do Nodes
+## To be implemented
 
 ### internal-state
 
