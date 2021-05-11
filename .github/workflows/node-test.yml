@@ -41,6 +41,7 @@ jobs:
   npm-publish:
     name: npm-publish
     runs-on: ubuntu-latest
+    continue-on-error: true #if not a new version, ignore step error
     steps:
       - name: Checkout repository
         uses: actions/checkout@master
