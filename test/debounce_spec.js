@@ -173,4 +173,69 @@ describe("debounce-test Node", function () {
       }
     });
   });
+
+  it("It should send all the delayed messages until cancel, then restart", function (done) {
+    let testFlow = setupFlow("allByOrder", 1, 0);
+
+    helper.load(debounceTest, testFlow, function () {
+      let debounce = helper.getNode("node1");
+      let pass = helper.getNode("node2");
+      let delay = helper.getNode("node3");
+
+      let passMsgCounter = 0;
+      let delayMsgCounter = 0;
+
+      let passSpy = sinon.spy();
+      let delaySpy = sinon.spy();
+
+      let cancelIndex = 5; // corresponds to msg.payload == 6
+      let shouldDiscardCancel = [2, 3, 4, 5, 6, 7, 8, 9];
+      let expectedAllByOrderAfterCancel = [1, 50, 7, 8, 9, 10];
+
+      const cancelMsg = {
+        payload: 50,
+        cancel: "cancel",
+      };
+
+      pass.on("input", function (msg) {
+        passSpy();
+        try {
+          msg.payload.should.equal(
+            expectedAllByOrderAfterCancel[passMsgCounter++]
+          );
+        } catch (err) {
+          done(err);
+        }
+      });
+
+      delay.on("input", function (msg) {
+        delaySpy();
+        try {
+          msg.payload.should.equal(shouldDiscardCancel[delayMsgCounter++]);
+        } catch (err) {
+          done(err);
+        }
+      });
+
+      for (let i = 0; i < expectedAllByOrder.length - 1; i++) {
+        debounce.receive({ payload: expectedAllByOrder[i] });
+        if (i === cancelIndex) {
+          debounce.receive(cancelMsg);
+        }
+      }
+      clock.tick(9090);
+      debounce.receive({
+        payload: expectedAllByOrder[expectedAllByOrder.length - 1],
+      });
+      clock.tick(10);
+
+      try {
+        passSpy.callCount.should.be.equal(expectedAllByOrderAfterCancel.length);
+        delaySpy.callCount.should.be.equal(shouldDiscardCancel.length);
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+  });
 });

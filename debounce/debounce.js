@@ -38,6 +38,16 @@ module.exports = function (RED) {
     };
     node.on("input", function (msg, send, done) {
       const newMsgTimestamp = new Date().getTime();
+
+      //input message contains a cancel order
+      //clear current state and schedulers
+      if (Object.prototype.hasOwnProperty.call(msg, "cancel")) {
+        resetSchedule();
+        allActions = [];
+        this.lastMsgTimestamp = null;
+        delete msg.cancel;
+      }
+
       // first message
       if (this.lastMsgTimestamp == null) {
         node.status({
