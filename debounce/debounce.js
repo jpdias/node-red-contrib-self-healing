@@ -56,7 +56,9 @@ module.exports = function (RED) {
           text: "First",
         });
         this.lastMsgTimestamp = newMsgTimestamp; // add latest sent message timestamp
-        node.send([msg, null]);
+        if (Object.prototype.hasOwnProperty.call(msg, "payload")) {
+          node.send([msg, null]);
+        }
         done();
         return;
       }
