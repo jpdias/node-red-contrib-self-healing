@@ -18,71 +18,71 @@ Each node has a README.md in its folder with further information about it.
 
 ## Available Nodes
 
-### [action-audit](https://github.com/jpdias/node-red-contrib-self-healing/action-audit)
+### [action-audit](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/action-audit)
 
 Checks if an action was completed by using sensor acknowledgements.
 
-### [balancing](https://github.com/jpdias/node-red-contrib-self-healing/balancing)
+### [balancing](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/balancing)
 
 Balances the distribution of messages through multiple outputs using three different strategies: Round Robin, Weighted Round Robin and Random.
 
-### [checkpoint](https://github.com/jpdias/node-red-contrib-self-healing/checkpoint)
+### [checkpoint](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/checkpoint)
 
 Acts between a node sending a message to another, storing the last one in local context and resending it after restarts, if it's within a specified time to live.
 
-### [compensate](https://github.com/jpdias/node-red-contrib-self-healing/compensate)
+### [compensate](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/compensate)
 
 Compensate missing values (detected by disruptions on the periodicity of incoming mesages) with a pre-defined strategy (e.g. average of the last 10 readings, last value or maximum value of the last 10 readings).
 
-### [debounce](https://github.com/jpdias/node-red-contrib-self-healing/debounce)
+### [debounce](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/debounce)
 
 Delay a command (message) in order to meet the actuator response capacity (e.g. avoid overload). Similar to [rate-limit-messages](https://cookbook.nodered.org/basic/rate-limit-messages), but with different strategies.
 
-### [flow-control](https://github.com/jpdias/node-red-contrib-self-healing/flow-control)
+### [flow-control](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/flow-control)
 
 Enable and disable Node-RED flows during runtime (local or remote instances, using the available REST API).
 
-### [heartbeat](https://github.com/jpdias/node-red-contrib-self-healing/heartbeat)
+### [heartbeat](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/heartbeat)
 
 Provides a heartbeat probe for MQTT and HTTP.
 
-### [http-aware](https://github.com/jpdias/node-red-contrib-self-healing/http-aware)
+### [http-aware](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/http-aware)
 
 A node to continuously scan the network to find working IPs at ports 8080, 443 and 80.
 
-### [kalman-filter](https://github.com/jpdias/node-red-contrib-self-healing/kalman-noise-filter)
+### [kalman-filter](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/kalman-noise-filter)
 
 Kalman noise filter.
 
-### [network-aware](https://github.com/jpdias/node-red-contrib-self-healing/network-aware)
+### [network-aware](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/network-aware)
 
 Continuosly scan the network to find new or removed devices. Can be combined with a `device-registry`.
 
-### [redundancy](https://github.com/jpdias/node-red-contrib-self-healing/redundancy)
+### [redundancy](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/redundancy)
 
 Manage redundant instances of Node-RED (setting a master instance). Works only on the local network (uses [n2n](https://flows.nodered.org/node/node-red-contrib-n2n) communication).
 
-### [readings-watcher](https://github.com/jpdias/node-red-contrib-self-healing/readings-watcher)
+### [readings-watcher](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/readings-watcher)
 
 Drop values if they are in or out of a given threshold (e.g. two close temperature readings).
 
-### [replication-voter](https://github.com/jpdias/node-red-contrib-self-healing/replication-voter)
+### [replication-voter](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/replication-voter)
 
 Picks a value (e.g. sensor reading) from an array values based on a pre-defined majority.
 
-### [resource-monitor](https://github.com/jpdias/node-red-contrib-self-healing/resource-monitor)
+### [resource-monitor](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/resource-monitor)
 
 Monitors system resources, ranging from battery levels to resources usage.
 
-### [threshold-check](https://github.com/jpdias/node-red-contrib-self-healing/threshold-check)
+### [threshold-check](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/threshold-check)
 
 Checks for reading (value) sanity (e.g. checks if the reading is between the sensor possible output values).
 
-### [timing-check](https://github.com/jpdias/node-red-contrib-self-healing/timing-check)
+### [timing-check](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/timing-check)
 
 Checks for timing issues on data inputs. There are 3 outputs that refer to data comming on expected time, too slow or too fast. A frequency in seconds along with a margin (float: 0-1) should be provided.
 
-### [device-registry](https://github.com/jpdias/node-red-contrib-self-healing/device-registry)
+### [device-registry](https://github.com/jpdias/node-red-contrib-self-healing/tree/master/device-registry)
 
 All the devices that are reachable can communicate with this device in order to store their information and current state.
 
