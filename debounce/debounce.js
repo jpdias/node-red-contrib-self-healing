@@ -55,8 +55,9 @@ module.exports = function (RED) {
           shape: "dot",
           text: "First",
         });
-        this.lastMsgTimestamp = newMsgTimestamp; // add latest sent message timestamp
         if (Object.prototype.hasOwnProperty.call(msg, "payload")) {
+          //only consider msg if it has a payload
+          this.lastMsgTimestamp = newMsgTimestamp; // add latest sent message timestamp
           node.send([msg, null]);
         }
         done();
