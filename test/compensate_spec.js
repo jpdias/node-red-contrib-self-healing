@@ -106,6 +106,13 @@ describe("compensate node", function () {
         if (messageCounter == messageSequence.length + 1) {
           try {
             msg.payload.should.equal(expected);
+          } catch (error) {
+            done(error);
+          }
+        }
+        if (messageCounter == messageSequence.length + 2) {
+          try {
+            msg.payload.should.equal(expected);
             done();
           } catch (error) {
             done(error);
@@ -117,10 +124,11 @@ describe("compensate node", function () {
         n1.receive({ payload: element });
       });
       n1.receive({ trigger: "anything" });
+      n1.receive({ trigger: "anything" });
     });
   }
 
-  it("should compensate missing value with the maximum previous value, on trigger", function (done) {
+  it("should compensate missing value with the maximum previous value, on trigger (2x)", function (done) {
     testPassiveNode("max", 10.6, done);
   });
 
