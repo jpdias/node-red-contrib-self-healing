@@ -48,6 +48,7 @@ describe("compensate node", function () {
         msghistory: 6,
         timeout: 0.01,
         strategy: strategy,
+        isActive: true,
         confidenceFormula: "",
         wires: [["n2"]],
       },
@@ -61,7 +62,7 @@ describe("compensate node", function () {
 
       n2.on("input", function (msg, _send, _done) {
         messageCounter++;
-        if (messageCounter == 7) {
+        if (messageCounter == messageSequence.length + 1) {
           try {
             msg.payload.should.equal(expectedResult);
             done();
@@ -76,6 +77,52 @@ describe("compensate node", function () {
       });
     });
   }
+
+  function testPassiveNode(strategy, expected, done) {
+    let messageSequence = [10.1, 10.3, 10.5, 10.5, 10.4, 10.6];
+
+    let flow = [
+      {
+        id: "n1",
+        type: "sensor-compensate",
+        name: "compensate",
+        msghistory: 6,
+        timeout: 0.01,
+        strategy: "max",
+        isActive: false,
+        confidenceFormula: "",
+        wires: [["n2"]],
+      },
+      { id: "n2", type: "helper" },
+    ];
+
+    helper.load(compensateNode, flow, function () {
+      let n1 = helper.getNode("n1");
+      let n2 = helper.getNode("n2");
+      let messageCounter = 0;
+
+      n2.on("input", function (msg, _send, _done) {
+        messageCounter++;
+        if (messageCounter == messageSequence.length + 1) {
+          try {
+            msg.payload.should.equal(expected);
+            done();
+          } catch (error) {
+            done(error);
+          }
+        }
+      });
+
+      messageSequence.forEach((element) => {
+        n1.receive({ payload: element });
+      });
+      n1.receive({ trigger: "anything" });
+    });
+  }
+
+  it("should compensate missing value with the maximum previous value, on trigger", function (done) {
+    testPassiveNode("max", 10.6, done);
+  });
 
   it("should compensate missing value with the maximum previous value", function (done) {
     testNode("max", 10.6, done);
@@ -105,6 +152,7 @@ describe("compensate node", function () {
         name: "compensate",
         msghistory: 1,
         timeout: 0.05,
+        isActive: true,
         strategy: "max",
         confidenceFormula:
           "(1 / _compensatedCounter) >= 1 ? 1 : (1 / _compensatedCounter)",

@@ -12,10 +12,12 @@ This node is used to prevent the disruption of the message flow by compensating 
   - number of previous messages that the node uses in order to calculate the missing value.
 - timeout: number (s)
   - time before a message is considered missing
-- strategy:
+- strategy: <min, max, last, mode, mean>
   - strategy the node will use to calculate the missing value.
 - confidence formula
   - formula that provides a confidence level on the compensated values.
+- Is Active?
+  - Defines behaviour of compensate node as active or passive. If its disabled (unchecked) the compensate node will only trigger a compensated value if it recieves a message with the "trigger" key.</dd>
 
 ### confidence formula
 
