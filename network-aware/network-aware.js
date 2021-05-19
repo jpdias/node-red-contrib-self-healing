@@ -1,4 +1,4 @@
-const find = require("local-devices");
+const arpping = require("arpping");
 const crypto = require("crypto");
 const oui = require("oui");
 
@@ -10,11 +10,11 @@ module.exports = function (RED) {
   function getDeviceInfo(obj) {
     let idsha;
     let mnf = "unknown";
-    let name = "unknown";
+    let type = "unknown";
     let dev;
 
-    if (typeof obj.name == "string") {
-      name = obj.name;
+    if (typeof obj.type == "string") {
+      type = obj.type;
     }
 
     if (typeof obj.mac == "string") {
@@ -32,14 +32,14 @@ module.exports = function (RED) {
       dev = {
         id: idsha,
         ip: obj.ip,
-        name: name,
+        name: type,
         manufacturer: mnf,
         timestamp: new Date().toISOString(),
       };
     } else {
       dev = {
         ip: obj.ip,
-        name: name,
+        name: type,
         manufacturer: mnf,
         timestamp: new Date().toISOString(),
       };
@@ -51,11 +51,12 @@ module.exports = function (RED) {
   function devScan(config, done, node, send) {
     node.status({ fill: "blue", shape: "dot", text: "Scanning..." });
 
-    find(config.baseip)
-      .then((devicesScan) => {
+    arpping
+      .discover()
+      .then((hosts) => {
         let newDevList = new Array();
 
-        devicesScan.forEach((obj) => {
+        hosts.forEach((obj) => {
           const dev = getDeviceInfo(obj);
           newDevList.push(dev);
         });
