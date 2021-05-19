@@ -84,6 +84,11 @@
   <h3>Inputs</h3>
   <dl class="message-properties">
     <p>Any type of message</p>
+    <p>
+      <b>Note</b>: If the input message has an cancel field, the current
+      debounce state is reset (clear all messages and reset all timers),
+      considering the input message as the first message.
+    </p>
   </dl>
   <h3>Outputs</h3>
   <dl class="message-properties">

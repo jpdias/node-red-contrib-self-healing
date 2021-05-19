@@ -25,6 +25,8 @@ This node can be used to delay a command (message) in order to meet the actuator
   <p>Any type of message</p>
 </dl>
 
+**Note**: If the input message has an cancel field, the current debounce state is reset (clear all messages and reset all timers), considering the input message as the first message.
+
 ## Outputs
 
 <dl>

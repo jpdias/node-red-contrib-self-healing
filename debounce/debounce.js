@@ -38,6 +38,16 @@ module.exports = function (RED) {
     };
     node.on("input", function (msg, send, done) {
       const newMsgTimestamp = new Date().getTime();
+
+      //input message contains a cancel order
+      //clear current state and schedulers
+      if (Object.prototype.hasOwnProperty.call(msg, "cancel")) {
+        resetSchedule();
+        allActions = [];
+        this.lastMsgTimestamp = null;
+        delete msg.cancel;
+      }
+
       // first message
       if (this.lastMsgTimestamp == null) {
         node.status({
@@ -45,8 +55,11 @@ module.exports = function (RED) {
           shape: "dot",
           text: "First",
         });
-        this.lastMsgTimestamp = newMsgTimestamp; // add latest sent message timestamp
-        node.send([msg, null]);
+        if (Object.prototype.hasOwnProperty.call(msg, "payload")) {
+          //only consider msg if it has a payload
+          this.lastMsgTimestamp = newMsgTimestamp; // add latest sent message timestamp
+          node.send([msg, null]);
+        }
         done();
         return;
       }
