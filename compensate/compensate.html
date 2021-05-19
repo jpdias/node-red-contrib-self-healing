@@ -15,6 +15,7 @@
       },
       strategy: { value: "last", required: true },
       confidenceFormula: { value: "", required: false },
+      isActive: { value: true, required: true },
     },
     inputs: 1,
     outputs: 1,
@@ -77,6 +78,10 @@
       placeholder="compensatedCounter"
     />
   </div>
+  <div class="form-row">
+    <label for="node-input-isActive"> Is Active? </label>
+    <input type="checkbox" id="node-input-isActive" checked="true" />
+  </div>
 </script>
 
 <script type="text/html" data-help-name="sensor-compensate">
@@ -89,22 +94,31 @@
       <span class="property-type">string</span>
     </dt>
     <dd>name of node to be displayed in editor.</dd>
-    <dt>message history</dt>
+    <dt>
+      message history
+      <span class="property-type">number</span>
+    </dt>
     <dd>
       number of previous messages that the node uses in order to calculate the
       missing value.
     </dd>
-    <dt>timeout</dt>
+    <dt>timeout<span class="property-type">number</span></dt>
     <dd>time before a message is considered missing</dd>
     <dt>strategy</dt>
     <dd>strategy the node will use to calculate the missing value.</dd>
     <dt>confidence formula</dt>
     <dd>formula that provides a confidence level on the compensated values.</dd>
+    <dt>Is Active?</dt>
+    <dd>
+      Defines behaviour of compensate node as active or passive. If its disabled
+      (unchecked) the compensate node will only trigger a compensated value if
+      it recieves a message with the "trigger" key.
+    </dd>
   </dl>
 
   <h3>Inputs</h3>
   <dl class="message-properties">
-    <p>Any input provided that the message payload is a number</p>
+    <p>Any input in which the payload is a number</p>
   </dl>
   <h3>Outputs</h3>
   <dl class="message-properties">

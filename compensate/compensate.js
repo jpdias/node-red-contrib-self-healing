@@ -165,12 +165,127 @@ module.exports = function (RED) {
     }
   }
 
+  function activeBehaviour(
+    scheduler,
+    msg,
+    sendMessage,
+    messageTimeout,
+    node,
+    history,
+    compensatedCounter,
+    send,
+    done,
+    strategy,
+    msghistory,
+    confidenceLevel
+  ) {
+    if (!scheduler && typeof msg.payload === "number") {
+      scheduler = setInterval(
+        sendMessage,
+        parseFloat(messageTimeout) * 1000,
+        node,
+        history,
+        compensatedCounter,
+        send,
+        done,
+        strategy
+      );
+    }
+
+    clearInterval(scheduler);
+
+    if (typeof msg.payload === "number") {
+      if (history.length >= msghistory) {
+        history.shift();
+      }
+      history.push(msg.payload);
+
+      node.status({ fill: "green", shape: "dot", text: "Ok" });
+      compensatedCounter.count == 0
+        ? (compensatedCounter.count = 0)
+        : (compensatedCounter.count -= 1);
+
+      send([
+        {
+          payload: msg.payload,
+          confidenceValue: confidenceLevel(compensatedCounter.count, history),
+          timestamp: Date.now().toString(),
+        },
+      ]);
+      scheduler = setInterval(
+        sendMessage,
+        parseFloat(messageTimeout) * 1000,
+        node,
+        history,
+        compensatedCounter,
+        send,
+        done,
+        strategy
+      );
+      done();
+    } else {
+      node.status({
+        fill: "red",
+        shape: "dot",
+        text: "Payload Not a Number",
+      });
+    }
+    return scheduler;
+  }
+
+  function passiveBehaviour(
+    msg,
+    sendMessage,
+    messageTimeout,
+    node,
+    history,
+    compensatedCounter,
+    send,
+    done,
+    strategy,
+    msghistory,
+    confidenceLevel
+  ) {
+    if (
+      Object.prototype.hasOwnProperty.call(msg, "payload") &&
+      typeof msg.payload === "number"
+    ) {
+      if (history.length >= msghistory) {
+        history.shift();
+      }
+      history.push(msg.payload);
+
+      node.status({ fill: "green", shape: "dot", text: "Ok" });
+      compensatedCounter.count == 0
+        ? (compensatedCounter.count = 0)
+        : (compensatedCounter.count -= 1);
+
+      send([
+        {
+          payload: msg.payload,
+          confidenceValue: confidenceLevel(compensatedCounter.count, history),
+          timestamp: Date.now().toString(),
+        },
+      ]);
+      done();
+    } else if (Object.prototype.hasOwnProperty.call(msg, "trigger")) {
+      sendMessage(node, history, compensatedCounter, send, done, strategy);
+    } else {
+      node.status({
+        fill: "red",
+        shape: "dot",
+        text: "Error on input (passive)",
+      });
+    }
+  }
+
   function Compensate(config) {
     RED.nodes.createNode(this, config);
     const node = this;
     const strategy = config.strategy;
     const messageTimeout = config.timeout;
     const msghistory = config.msghistory;
+    const isActive = config.isActive;
     confidenceFormula = config.confidenceFormula;
     let compensatedCounter = { count: 0 };
     let history = [];
@@ -181,56 +296,39 @@ module.exports = function (RED) {
     }
 
     node.on("input", function (msg, send, done) {
-      if (!scheduler && typeof msg.payload === "number") {
-        scheduler = setInterval(
+      if (isActive) {
+        scheduler = activeBehaviour(
+          scheduler,
+          msg,
           sendMessage,
-          parseFloat(messageTimeout) * 1000,
+          messageTimeout,
           node,
           history,
           compensatedCounter,
           send,
           done,
-          strategy
+          strategy,
+          msghistory,
+          confidenceLevel
         );
-      }
-
-      clearInterval(scheduler);
-
-      if (typeof msg.payload === "number") {
-        if (history.length >= msghistory) {
-          history.shift();
-        }
-        history.push(msg.payload);
-
-        node.status({ fill: "green", shape: "dot", text: "Ok" });
-        compensatedCounter.count == 0
-          ? (compensatedCounter.count = 0)
-          : (compensatedCounter.count -= 1);
-
-        send([
-          {
-            payload: msg.payload,
-            confidenceValue: confidenceLevel(compensatedCounter.count, history),
-            timestamp: Date.now().toString(),
-          },
-        ]);
-        scheduler = setInterval(
-          sendMessage,
-          parseFloat(messageTimeout) * 1000,
-          node,
-          history,
-          compensatedCounter,
-          send,
-          done,
-          strategy
-        );
-        done();
+        return;
       } else {
-        node.status({
-          fill: "red",
-          shape: "dot",
-          text: "Payload Not a Number",
-        });
+        if (scheduler) {
+          clearInterval(scheduler);
+        }
+        passiveBehaviour(
+          msg,
+          sendMessage,
+          messageTimeout,
+          node,
+          history,
+          compensatedCounter,
+          send,
+          done,
+          strategy,
+          msghistory,
+          confidenceLevel
+        );
       }
     });
 
