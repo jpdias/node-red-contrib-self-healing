@@ -37,7 +37,7 @@ module.exports = function (RED) {
 
     if (majority) {
       if (config.valueType === "string" || config.valueType === "boolean") {
-        if (values === "true" || values[0] === "false") {
+        if (values === "true" || values === "false") {
           return values === "true";
         }
         return values;
@@ -131,7 +131,7 @@ module.exports = function (RED) {
       });
       let mostFreq = Object.keys(counts).reduce(function (a, b) {
         return counts[a] > counts[b] ? a : b;
-      });
+      }); //side-effect: bools -> string
       if (counts[mostFreq] >= config.majority) {
         msg.payload = msgToSend(mostFreq, true, config);
         sendOut(node, msg, done, true);
