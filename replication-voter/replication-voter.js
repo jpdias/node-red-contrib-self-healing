@@ -148,11 +148,28 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config);
     let node = this;
     let allValues = [];
+    let timeout = "undefined";
+
+    function resetTimeout() {
+      clearTimeout(timeout);
+      timeout = "undefined";
+    }
+
+    function timeoutFunction(allValues, config, node, done) {
+      node.status({
+        fill: "yellow",
+        shape: "dot",
+        text: "Timeout",
+      });
+      findMajorityInArray(allValues, config, node, done);
+      resetTimeout();
+    }
 
     node.on("input", function (msg, send, done) {
       //if input is an array
       if (Array.isArray(msg.payload) && msg.payload.length > 0) {
-        findMajorityInArray(msg, config, node, done);
+        findMajorityInArray(msg.payload, config, node, done);
+        allValues = []; //safeguard when mixing values and arrays
       }
 
       //if input is a value
@@ -164,8 +181,18 @@ module.exports = function (RED) {
         if (allSameTypeInArray(allValues, typeof msg.payload)) {
           allValues.push(msg.payload);
           if (allValues.length >= config.countInputs) {
-            findMajorityInArray(msg, config, node, done);
+            resetTimeout();
+            findMajorityInArray(allValues, config, node, done);
             allValues = [];
+          } else if (config.timeout > 0 && timeout == "undefined") {
+            timeout = setTimeout(
+              timeoutFunction,
+              config.timeout * 1000,
+              allValues,
+              config,
+              node,
+              done
+            );
           }
         } else {
           setErrorStatus(node, done);
