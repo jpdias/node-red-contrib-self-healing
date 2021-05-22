@@ -215,6 +215,23 @@ describe("replication-voter node", function () {
     );
   });
 
+  it("should pass when there is a majority boolean in the array", function (done) {
+    let sendPayload = [true, true, true, false];
+
+    basicTest(
+      "boolean",
+      2,
+      4,
+      0,
+      "mean",
+      "array",
+      sendPayload,
+      true,
+      false,
+      done
+    );
+  });
+
   it("should fail when there is no majority string in the array", function (done) {
     let sendPayload = ["hello", "world", "ldso"];
 
@@ -227,6 +244,23 @@ describe("replication-voter node", function () {
       "array",
       sendPayload,
       null,
+      true,
+      done
+    );
+  });
+
+  it("should fail when there is no majority boolean in the array", function (done) {
+    let sendPayload = [true, false, true, false];
+
+    basicTest(
+      "boolean",
+      3,
+      4,
+      0,
+      "mean",
+      "array",
+      sendPayload,
+      false,
       true,
       done
     );
