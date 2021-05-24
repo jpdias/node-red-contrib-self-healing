@@ -1,23 +1,25 @@
 module.exports = function (RED) {
-  function arrayWithoutElementAtIndex(arr, index) {
-    return arr.filter(function (value, arrIndex) {
-      return index !== arrIndex;
-    });
+  function countOccurrences(arr, val, margin) {
+    return arr.reduce(function (a, v) {
+      return val + margin >= v && v >= val - margin ? a + 1 : a;
+    }, 0);
   }
 
   function majorityCheck(values, margin, majorityCount) {
-    for (let i = 0; i < values.length; i++) {
-      let count = 1;
-      arrayWithoutElementAtIndex(values, i).forEach((rElement) => {
-        if (values[i] + margin >= rElement && rElement >= values[i] - margin) {
-          count++;
-        }
-      });
-      if (count >= majorityCount) {
-        return values[i];
-      }
+    let counts = {};
+    values.forEach(function (x) {
+      counts[x] = counts[x] || 0;
+      counts[x] = countOccurrences(values, x, margin);
+    });
+    let mostFreq = Object.keys(counts).reduce(function (a, b) {
+      return counts[a] > counts[b] ? a : b;
+    });
+
+    if (counts[mostFreq] >= majorityCount) {
+      return Number(mostFreq);
+    } else {
+      return null;
     }
-    return null;
   }
 
   function mean(values) {
@@ -33,7 +35,7 @@ module.exports = function (RED) {
   }
 
   function msgToSend(values, majority, config) {
-    if (values.length == 0) return null;
+    if (values.length === 0) return null;
 
     if (majority) {
       if (config.valueType === "string" || config.valueType === "boolean") {
@@ -97,17 +99,18 @@ module.exports = function (RED) {
     }, true);
   }
 
-  function findMajorityInArray(msg, config, node, done) {
-    if (allSameTypeInArray(msg.payload, "number")) {
+  function findMajorityInArray(allValues, config, node, done, timeout) {
+    let msg = { timeout: timeout };
+    if (allSameTypeInArray(allValues, "number")) {
       //array of numbers
       let majorityVal = majorityCheck(
-        msg.payload,
+        allValues,
         config.margin,
         config.majority
       );
       if (majorityVal) {
         // majority
-        let valuesToConsider = msg.payload.filter(function (value) {
+        let valuesToConsider = allValues.filter(function (value) {
           return (
             majorityVal + config.margin >= value &&
             value >= majorityVal - config.margin
@@ -117,16 +120,16 @@ module.exports = function (RED) {
         sendOut(node, msg, done, true);
       } else {
         //no majority
-        msg.payload = msgToSend(msg.payload, false, config);
+        msg.payload = msgToSend(allValues, false, config);
         sendOut(node, msg, done, false);
       }
     } else if (
-      allSameTypeInArray(msg.payload, "string") ||
-      allSameTypeInArray(msg.payload, "boolean")
+      allSameTypeInArray(allValues, "string") ||
+      allSameTypeInArray(allValues, "boolean")
     ) {
       //array of strings or booleans
       let counts = {};
-      msg.payload.forEach(function (x) {
+      allValues.forEach(function (x) {
         counts[x] = (counts[x] || 0) + 1;
       });
       let mostFreq = Object.keys(counts).reduce(function (a, b) {
@@ -136,7 +139,7 @@ module.exports = function (RED) {
         msg.payload = msgToSend(mostFreq, true, config);
         sendOut(node, msg, done, true);
       } else {
-        msg.payload = msgToSend([mostFreq], false, config);
+        msg.payload = msgToSend(allValues, false, config);
         sendOut(node, msg, done, false);
       }
     } else {
@@ -161,14 +164,14 @@ module.exports = function (RED) {
         shape: "dot",
         text: "Timeout",
       });
-      findMajorityInArray(allValues, config, node, done);
+      findMajorityInArray(allValues, config, node, done, true);
       resetTimeout();
     }
 
     node.on("input", function (msg, send, done) {
       //if input is an array
       if (Array.isArray(msg.payload) && msg.payload.length > 0) {
-        findMajorityInArray(msg.payload, config, node, done);
+        findMajorityInArray(msg.payload, config, node, done, false);
         allValues = []; //safeguard when mixing values and arrays
       }
 
@@ -182,7 +185,7 @@ module.exports = function (RED) {
           allValues.push(msg.payload);
           if (allValues.length >= config.countInputs) {
             resetTimeout();
-            findMajorityInArray(allValues, config, node, done);
+            findMajorityInArray(allValues, config, node, done, false);
             allValues = [];
           } else if (config.timeout > 0 && timeout == "undefined") {
             timeout = setTimeout(

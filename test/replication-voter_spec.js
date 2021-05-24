@@ -1,5 +1,6 @@
-let helper = require("node-red-node-test-helper");
-let replicationVoterNode = require("../replication-voter/replication-voter.js");
+const helper = require("node-red-node-test-helper");
+const replicationVoterNode = require("../replication-voter/replication-voter.js");
+const sinon = require("sinon");
 
 helper.init(require.resolve("node-red"));
 
@@ -13,37 +14,15 @@ describe("replication-voter node", function () {
     helper.stopServer(done);
   });
 
-  it("should be loaded", function (done) {
-    let testFlow = [
-      {
-        id: "node1",
-        type: "replication-voter",
-        name: "replication-voter",
-      },
-    ];
+  let clock;
 
-    helper.load(replicationVoterNode, testFlow, function () {
-      let testNode = helper.getNode("node1");
-      try {
-        testNode.should.have.property("name", "replication-voter");
-        done();
-      } catch (error) {
-        done(error);
-      }
-    });
-  });
-
-  function basicTest(
+  function setupFlow(
     valueType,
     majorityValue,
     countInputs,
     margin,
     result,
-    inputType,
-    sendPayload,
-    majority,
-    shouldFail,
-    done
+    timeout
   ) {
     let testFlow = [
       {
@@ -55,6 +34,7 @@ describe("replication-voter node", function () {
         countInputs: countInputs,
         margin: margin,
         result: result,
+        timeout: timeout,
         wires: [["n2"], ["n3"]],
       },
       {
@@ -68,304 +48,200 @@ describe("replication-voter node", function () {
         name: "error-output-from-test-node",
       },
     ];
+    return testFlow;
+  }
+
+  it("should be loaded", function (done) {
+    let testFlow = setupFlow("number", 2, 0, 0, "mean", 0);
 
     helper.load(replicationVoterNode, testFlow, function () {
-      let error = {
-        exist: false,
-        description: "",
-      };
-
-      let errorNode = helper.getNode("n3");
-      errorNode.on("input", () => {
-        if (shouldFail != true) {
-          error.exist = true;
-          error.description = "Error node received input when it shouldn't";
-        }
-      });
-
-      let successNode = helper.getNode("n2");
-      successNode.on("input", (msg) => {
-        if (shouldFail == true) {
-          error.exist = true;
-          error.description = "Success node received input when it shouldn't";
-        } else {
-          if (majority != msg.payload) {
-            error.exist = true;
-            error.description = "The majority isn't right";
-          }
-        }
-      });
-
       let testNode = helper.getNode("n1");
+      try {
+        testNode.should.have.property("name", "replication-voter");
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+  });
 
-      if (inputType == "number" || inputType == "string") {
-        let i;
+  function testMajorityInput(inputArray, testFlow, expectedResult, done) {
+    helper.load(replicationVoterNode, testFlow, function () {
+      let replicationNode = helper.getNode("n1");
+      let successNode = helper.getNode("n2");
+      let errorNode = helper.getNode("n3");
 
-        for (i = 0; i < sendPayload.length; i++) {
-          testNode.receive({ payload: sendPayload[i] });
+      const ok = sinon.spy();
+      const fail = sinon.spy();
+
+      successNode.on("input", ok);
+      errorNode.on("input", fail);
+
+      successNode.on("input", function (msg) {
+        ok();
+        try {
+          msg.payload.should.equal(expectedResult);
+          done();
+        } catch (err) {
+          done(err);
         }
-      } else if (inputType == "array") {
-        testNode.receive({ payload: sendPayload });
+      });
+
+      errorNode.on("input", function (msg) {
+        fail();
+        done(msg.payload);
+      });
+
+      for (let i = 0; i < inputArray.length; i++) {
+        replicationNode.receive({ payload: inputArray[i] });
       }
 
-      setTimeout(() => {
-        if (error.exist) {
-          done(error.description);
-        } else {
-          done();
-        }
-      }, 200);
+      sinon.assert.calledOnce(ok);
+      sinon.assert.notCalled(fail);
     });
   }
 
-  it("should pass when there is a majority number in the inputs", function (done) {
-    let sendPayload = [1, 2, 2, 3];
+  function testNoMajorityInput(inputArray, testFlow, expectedResult, done) {
+    helper.load(replicationVoterNode, testFlow, function () {
+      let replicationNode = helper.getNode("n1");
+      let successNode = helper.getNode("n2");
+      let errorNode = helper.getNode("n3");
 
-    basicTest("number", 2, 4, 0, "mean", "number", sendPayload, 2, false, done);
+      const ok = sinon.spy();
+      const fail = sinon.spy();
+
+      successNode.on("input", ok);
+      errorNode.on("input", fail);
+
+      successNode.on("input", function (msg) {
+        ok();
+        done(msg);
+      });
+
+      errorNode.on("input", function (msg) {
+        fail();
+        try {
+          JSON.stringify(msg.payload).should.equal(
+            JSON.stringify(expectedResult)
+          );
+          done();
+        } catch (err) {
+          done(err);
+        }
+      });
+
+      for (let i = 0; i < inputArray.length; i++) {
+        replicationNode.receive({ payload: inputArray[i] });
+      }
+      sinon.assert.notCalled(ok);
+      sinon.assert.calledOnce(fail);
+    });
+  }
+
+  function testTimeoutMajorityInput(
+    inputArray,
+    testFlow,
+    expectedResult,
+    done
+  ) {
+    helper.load(replicationVoterNode, testFlow, function () {
+      clock = sinon.useFakeTimers();
+      let replicationNode = helper.getNode("n1");
+      let successNode = helper.getNode("n2");
+      let errorNode = helper.getNode("n3");
+
+      const ok = sinon.spy();
+      const fail = sinon.spy();
+
+      successNode.on("input", ok);
+      errorNode.on("input", fail);
+
+      successNode.on("input", function (msg) {
+        ok();
+        try {
+          msg.payload.should.equal(expectedResult);
+          msg.timeout.should.equal(true);
+          clock.restore();
+          done();
+        } catch (err) {
+          clock.restore();
+          done(err);
+        }
+      });
+
+      errorNode.on("input", function (msg) {
+        fail();
+        clock.restore();
+        done(msg.payload);
+      });
+
+      for (let i = 0; i < inputArray.length; i++) {
+        replicationNode.receive({ payload: inputArray[i] });
+        clock.tick(450);
+      }
+      clock.tick(100);
+      sinon.assert.notCalled(ok);
+      sinon.assert.calledOnce(fail);
+    });
+  }
+
+  it("should pass when there is a majority number (int) in the inputs", function (done) {
+    let payload = [1, 3, 3, 10];
+    let testFlow = setupFlow("number", 2, payload.length, 0, "mean", 0);
+    testMajorityInput(payload, testFlow, 3, done);
   });
 
-  it("should fail when there is no majority number in the inputs", function (done) {
-    let sendPayload = [1, 2, 3];
-
-    basicTest(
-      "number",
-      2,
-      3,
-      0,
-      "mean",
-      "number",
-      sendPayload,
-      null,
-      true,
-      done
-    );
+  it("should pass when there is a majority number (float/mean) in the inputs", function (done) {
+    let payload = [1, 1.1, 0.9, 3.5, 10.0];
+    let testFlow = setupFlow("number", 3, payload.length, 0.1, "mean", 0);
+    testMajorityInput(payload, testFlow, 1, done);
   });
 
-  it("should pass when there is a majority number in the array", function (done) {
-    let sendPayload = [1, 2, 2, 3];
-
-    basicTest("number", 2, 4, 0, "mean", "array", sendPayload, 2, false, done);
+  it("should pass when there is a majority number (float/max) in the inputs", function (done) {
+    let payload = [1, 1.1, 0.9, 3.5, 10.0];
+    let testFlow = setupFlow("number", 3, payload.length, 0.1, "highest", 0);
+    testMajorityInput(payload, testFlow, 1.1, done);
   });
 
-  it("should fail when there is no majority number in the array", function (done) {
-    let sendPayload = [1, 2, 3];
+  it("should pass when there is a majority number (float/min) in the inputs", function (done) {
+    let payload = [1, 1.1, 0.9, 3.5, 10.0];
+    let testFlow = setupFlow("number", 3, payload.length, 0.1, "lowest", 0);
+    testMajorityInput(payload, testFlow, 0.9, done);
+  });
 
-    basicTest(
-      "number",
-      2,
-      3,
-      0,
-      "mean",
-      "array",
-      sendPayload,
-      null,
-      true,
-      done
-    );
+  it("should pass when returns the bigger majority in the inputs", function (done) {
+    let payload = [1, 1.1, 0.9, 3.5, 10.0, 9.9, 10.1, 9.9, 10.1];
+    let testFlow = setupFlow("number", 3, payload.length, 0.1, "mean", 0);
+    testMajorityInput(payload, testFlow, 10.0, done);
   });
 
   it("should pass when there is a majority string in the inputs", function (done) {
-    let sendPayload = ["world", "hello", "hello", "ldso"];
+    let payload = ["hello", "world", "world", "test"];
+    let testFlow = setupFlow("string", 2, payload.length, 0, "mean", 0);
+    testMajorityInput(payload, testFlow, "world", done);
+  });
 
-    basicTest(
-      "string",
-      2,
-      4,
-      0,
-      "mean",
-      "string",
-      sendPayload,
-      "hello",
-      false,
-      done
-    );
+  it("should pass when there is a majority boolean in the inputs", function (done) {
+    let payload = [true, true, false, true, false];
+    let testFlow = setupFlow("boolean", 3, payload.length, 0, "mean", 0);
+    testMajorityInput(payload, testFlow, true, done);
   });
 
   it("should fail when there is no majority string in the inputs", function (done) {
-    let sendPayload = ["hello", "world", "ldso"];
-
-    basicTest(
-      "string",
-      2,
-      3,
-      0,
-      "mean",
-      "string",
-      sendPayload,
-      null,
-      true,
-      done
-    );
+    let payload = ["hello", "world1", "world2", "test"];
+    let testFlow = setupFlow("string", 2, payload.length, 0, "mean", 0);
+    testNoMajorityInput(payload, testFlow, payload, done);
   });
 
-  it("should pass when there is a majority string in the array", function (done) {
-    let sendPayload = ["hello", "world", "world", "ldso"];
-
-    basicTest(
-      "string",
-      2,
-      4,
-      0,
-      "mean",
-      "array",
-      sendPayload,
-      "world",
-      false,
-      done
-    );
+  it("should fail when there is no majority number in the inputs", function (done) {
+    let payload = [1, 2, 3, 4, 5, 6, 7];
+    let testFlow = setupFlow("number", 2, payload.length, 0.2, "mean", 0);
+    testNoMajorityInput(payload, testFlow, payload, done);
   });
 
-  it("should pass when there is a majority boolean in the array", function (done) {
-    let sendPayload = [true, true, true, false];
-
-    basicTest(
-      "boolean",
-      2,
-      4,
-      0,
-      "mean",
-      "array",
-      sendPayload,
-      true,
-      false,
-      done
-    );
-  });
-
-  it("should fail when there is no majority string in the array", function (done) {
-    let sendPayload = ["hello", "world", "ldso"];
-
-    basicTest(
-      "string",
-      2,
-      3,
-      0,
-      "mean",
-      "array",
-      sendPayload,
-      null,
-      true,
-      done
-    );
-  });
-
-  it("should fail when there is no majority boolean in the array", function (done) {
-    let sendPayload = [true, false, true, false];
-
-    basicTest(
-      "boolean",
-      3,
-      4,
-      0,
-      "mean",
-      "array",
-      sendPayload,
-      false,
-      true,
-      done
-    );
-  });
-
-  it("should pass when the value type is number and the inputs are numbers and strings", function (done) {
-    let sendPayload = [1, "hello", 2, 2, "world", 3];
-
-    basicTest("number", 2, 4, 0, "mean", "array", sendPayload, 2, false, done);
-  });
-
-  it("should pass when the value type is string and the inputs are numbers and strings", function (done) {
-    let sendPayload = [1, "hello", 2, 2, "world", "world", 3];
-
-    basicTest("string", 2, 4, 0, "mean", "array", sendPayload, 2, false, done);
-  });
-
-  it("should pass when there is a high margin that makes the majority happen", function (done) {
-    let sendPayload = [1, 1, 2, 2];
-
-    basicTest(
-      "number",
-      3,
-      4,
-      70,
-      "mean",
-      "number",
-      sendPayload,
-      1.5,
-      false,
-      done
-    );
-  });
-
-  it("should fail when there is a low margin that doesn't make the majority happen", function (done) {
-    let sendPayload = [1, 1, 2, 2];
-
-    basicTest(
-      "number",
-      3,
-      4,
-      40,
-      "mean",
-      "number",
-      sendPayload,
-      null,
-      true,
-      done
-    );
-  });
-
-  it("should pass when the result type is the mean value and the majority is the mean value", function (done) {
-    let sendPayload = [1, 1, 2, 2];
-
-    basicTest(
-      "number",
-      3,
-      4,
-      70,
-      "mean",
-      "number",
-      sendPayload,
-      1.5,
-      false,
-      done
-    );
-  });
-
-  it("should pass when the result type is the highest value and the majority is the highest value", function (done) {
-    let sendPayload = [1, 1, 2, 2];
-
-    basicTest(
-      "number",
-      3,
-      4,
-      70,
-      "highest",
-      "number",
-      sendPayload,
-      2,
-      false,
-      done
-    );
-  });
-
-  it("should pass when the result type is the lowest value and the majority is the lowest value", function (done) {
-    let sendPayload = [1, 1, 2, 2];
-
-    basicTest(
-      "number",
-      3,
-      4,
-      70,
-      "lowest",
-      "number",
-      sendPayload,
-      1,
-      false,
-      done
-    );
-  });
-
-  it("should pass when the biggest of two possible majorities is considered the majority", function (done) {
-    let sendPayload = [1, 2, 2, 3, 3, 3];
-
-    basicTest("number", 2, 6, 0, "mean", "number", sendPayload, 3, false, done);
+  it("should pass when there is majority number in the inputs with timeout", function (done) {
+    let payload = [1, 1, 2, 3];
+    let testFlow = setupFlow("number", 2, 5, 0.2, "mean", 1);
+    testTimeoutMajorityInput(payload, testFlow, 1, done);
   });
 });
