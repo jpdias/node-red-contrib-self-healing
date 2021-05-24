@@ -149,10 +149,16 @@
       <span class="property-type">number | string</span>
     </dt>
     <dd>if there is a majority, then the output is the majority value</dd>
+    <dd>if not, the output corresponds to the list of considered values</dd>
+    <dt>
+      timeout
+      <span class="property-type">boolean</span>
+    </dt>
     <dd>
-      if not, the output is equal to the first input or the result type of the
-      interval with the most inputs, if there is a margin
+      if output was triggered due to a timeout (not enought values in time
+      window), it will be <it>true</it>
     </dd>
+    <dd>if not, the value is <it>false</it></dd>
   </dl>
   <h3>Details</h3>
   <p>
