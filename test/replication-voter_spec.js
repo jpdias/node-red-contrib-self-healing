@@ -101,6 +101,40 @@ describe("replication-voter node", function () {
     });
   }
 
+  function testMajorityArrayInput(inputArray, testFlow, expectedResult, done) {
+    helper.load(replicationVoterNode, testFlow, function () {
+      let replicationNode = helper.getNode("n1");
+      let successNode = helper.getNode("n2");
+      let errorNode = helper.getNode("n3");
+
+      const ok = sinon.spy();
+      const fail = sinon.spy();
+
+      successNode.on("input", ok);
+      errorNode.on("input", fail);
+
+      successNode.on("input", function (msg) {
+        ok();
+        try {
+          msg.payload.should.equal(expectedResult);
+          done();
+        } catch (err) {
+          done(err);
+        }
+      });
+
+      errorNode.on("input", function (msg) {
+        fail();
+        done(msg.payload);
+      });
+
+      replicationNode.receive({ payload: inputArray });
+
+      sinon.assert.calledOnce(ok);
+      sinon.assert.notCalled(fail);
+    });
+  }
+
   function testNoMajorityInput(inputArray, testFlow, expectedResult, done) {
     helper.load(replicationVoterNode, testFlow, function () {
       let replicationNode = helper.getNode("n1");
@@ -189,6 +223,12 @@ describe("replication-voter node", function () {
     let payload = [1, 3, 3, 10];
     let testFlow = setupFlow("number", 2, payload.length, 0, "mean", 0);
     testMajorityInput(payload, testFlow, 3, done);
+  });
+
+  it("should pass when there is a majority number (int) in the array input", function (done) {
+    let payload = [1, 3, 3, 10];
+    let testFlow = setupFlow("number", 2, payload.length, 0, "mean", 0);
+    testMajorityArrayInput(payload, testFlow, 3, done);
   });
 
   it("should pass when there is a majority number (float/mean) in the inputs", function (done) {
