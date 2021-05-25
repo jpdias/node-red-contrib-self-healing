@@ -6,12 +6,11 @@ module.exports = function (RED) {
   }
 
   function majorityCheck(values, margin, majorityCount) {
-    let counts = {};
-    values.forEach(function (x) {
-      counts[x] = counts[x] || 0;
-      counts[x] = countOccurrences(values, x, margin);
+    const counts = {};
+    values.forEach(function (val) {
+      counts[val] = countOccurrences(values, val, margin);
     });
-    let mostFreq = Object.keys(counts).reduce(function (a, b) {
+    const mostFreq = Object.keys(counts).reduce(function (a, b) {
       return counts[a] > counts[b] ? a : b;
     });
 
@@ -38,10 +37,12 @@ module.exports = function (RED) {
     if (values.length === 0) return null;
 
     if (majority) {
-      if (config.valueType === "string" || config.valueType === "boolean") {
+      if (config.valueType === "boolean") {
         if (values === "true" || values === "false") {
           return values === "true";
         }
+        return null;
+      } else if (config.valueType === "string") {
         return values;
       } else if (config.valueType === "number") {
         if (config.result === "mean") return mean(values);
@@ -103,14 +104,14 @@ module.exports = function (RED) {
     let msg = { timeout: timeout };
     if (allSameTypeInArray(allValues, "number")) {
       //array of numbers
-      let majorityVal = majorityCheck(
+      const majorityVal = majorityCheck(
         allValues,
         config.margin,
         config.majority
       );
       if (majorityVal) {
         // majority
-        let valuesToConsider = allValues.filter(function (value) {
+        const valuesToConsider = allValues.filter(function (value) {
           return (
             majorityVal + config.margin >= value &&
             value >= majorityVal - config.margin
@@ -128,11 +129,11 @@ module.exports = function (RED) {
       allSameTypeInArray(allValues, "boolean")
     ) {
       //array of strings or booleans
-      let counts = {};
-      allValues.forEach(function (x) {
+      const counts = {};
+      for (const x of allValues) {
         counts[x] = (counts[x] || 0) + 1;
-      });
-      let mostFreq = Object.keys(counts).reduce(function (a, b) {
+      }
+      const mostFreq = Object.keys(counts).reduce(function (a, b) {
         return counts[a] > counts[b] ? a : b;
       }); //side-effect: bools -> string
       if (counts[mostFreq] >= config.majority) {
@@ -164,29 +165,28 @@ module.exports = function (RED) {
         shape: "dot",
         text: "Timeout",
       });
-      findMajorityInArray(allValues, config, node, done, true);
       resetTimeout();
+      let valuesToConsider = allValues;
+      allValues = [];
+      findMajorityInArray(valuesToConsider, config, node, done, true);
     }
 
     node.on("input", function (msg, send, done) {
       //if input is an array
       if (Array.isArray(msg.payload) && msg.payload.length > 0) {
-        findMajorityInArray(msg.payload, config, node, done, false);
         allValues = []; //safeguard when mixing values and arrays
+        findMajorityInArray(msg.payload, config, node, done, false);
       }
 
       //if input is a value
-      if (
-        typeof msg.payload == "string" ||
-        typeof msg.payload == "number" ||
-        typeof msg.payload == "boolean"
-      ) {
+      if (["string", "number", "boolean"].includes(typeof msg.payload)) {
         if (allSameTypeInArray(allValues, typeof msg.payload)) {
           allValues.push(msg.payload);
           if (allValues.length >= config.countInputs) {
             resetTimeout();
-            findMajorityInArray(allValues, config, node, done, false);
+            let valuesToConsider = allValues;
             allValues = [];
+            findMajorityInArray(valuesToConsider, config, node, done, false);
           } else if (config.timeout > 0 && timeout == "undefined") {
             timeout = setTimeout(
               timeoutFunction,
