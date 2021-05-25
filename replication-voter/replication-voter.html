@@ -8,18 +8,27 @@
       valueType: {
         value: "number",
         required: true,
+        validate: RED.validators.regex(/\b(number|boolean|string)\b/),
       },
       majority: {
         value: "2",
         required: true,
+        validate: RED.validators.number(),
       },
       countInputs: {
         value: "2",
         required: false,
+        validate: RED.validators.number(),
       },
       margin: {
-        value: null,
+        value: 0,
         required: false,
+        validate: RED.validators.number(),
+      },
+      timeout: {
+        value: 0,
+        required: false,
+        validate: RED.validators.number(),
       },
       result: {
         value: "mean",
@@ -32,7 +41,7 @@
     outputs: 2,
     align: "left",
     inputLabels: "JSONArray",
-    outputLabels: ["majority", "no-majority(fault)"],
+    outputLabels: ["majority", "no-majority"],
     label: function () {
       return this.name || "replication-voter";
     },
@@ -58,6 +67,7 @@
     <select type="text" id="node-input-valueType">
       <option value="number" selected>Number</option>
       <option value="string">String</option>
+      <option value="string">Boolean</option>
     </select>
   </div>
   <div class="form-row">
@@ -81,9 +91,15 @@
     <input type="number" id="node-input-margin" placeholder="0" />
   </div>
   <div class="form-row">
+    <label for="node-input-timeout"
+      ><i class="fa fa-tag"></i> Timeout (s) (if equal to 0 no timeout is
+      configured)</label
+    >
+    <input type="number" id="node-input-timeout" placeholder="0" />
+  </div>
+  <div class="form-row">
     <label for="node-input-result"
-      ><i class="fa fa-tag"></i> Result type (only appliable when there is a
-      margin)</label
+      ><i class="fa fa-tag"></i> Result type (only appliable if number)</label
     >
     <select type="text" id="node-input-result">
       <option value="mean" selected>Mean value</option>
@@ -133,10 +149,16 @@
       <span class="property-type">number | string</span>
     </dt>
     <dd>if there is a majority, then the output is the majority value</dd>
+    <dd>if not, the output corresponds to the list of considered values</dd>
+    <dt>
+      timeout
+      <span class="property-type">boolean</span>
+    </dt>
     <dd>
-      if not, the output is equal to the first input or the result type of the
-      interval with the most inputs, if there is a margin
+      if output was triggered due to a timeout (not enought values in time
+      window), it will be <it>true</it>
     </dd>
+    <dd>if not, the value is <it>false</it></dd>
   </dl>
   <h3>Details</h3>
   <p>

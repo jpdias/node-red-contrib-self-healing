@@ -1,101 +1,57 @@
 module.exports = function (RED) {
-  function mode(values, margin) {
-    let checked = [];
-    let modeValues = [];
+  function countOccurrences(arr, val, margin) {
+    return arr.reduce(function (a, v) {
+      return val + margin >= v && v >= val - margin ? a + 1 : a;
+    }, 0);
+  }
 
-    let i;
+  function majorityCheck(values, margin, majorityCount) {
+    const counts = {};
+    values.forEach(function (val) {
+      counts[val] = countOccurrences(values, val, margin);
+    });
+    const mostFreq = Object.keys(counts).reduce(function (a, b) {
+      return counts[a] > counts[b] ? a : b;
+    });
 
-    for (i = 0; i < values.length; i++) {
-      if (checked.includes(values[i])) continue;
-
-      checked[checked.length] = values[i];
-
-      let currentValues = [];
-      let j;
-
-      if (margin != null) j = 0;
-      else {
-        currentValues[0] = values[i];
-        j = i + 1;
-      }
-
-      for (; j < values.length; j++) {
-        if (
-          margin != null &&
-          values[j] >= values[i] * (1 - margin) &&
-          values[j] <= values[i] * (1 + margin)
-        )
-          currentValues[currentValues.length] = values[j];
-        else if (values[j] === values[i])
-          currentValues[currentValues.length] = values[j];
-      }
-
-      if (currentValues.length > modeValues.length) {
-        modeValues = currentValues;
-      }
+    if (counts[mostFreq] >= majorityCount) {
+      return Number(mostFreq);
+    } else {
+      return null;
     }
-
-    return modeValues;
   }
 
   function mean(values) {
-    let total = 0;
-    let i;
-
-    for (i = 0; i < values.length; i++) {
-      total = total + values[i];
-    }
-
-    return total / values.length;
+    return values.reduce((a, b) => a + b) / values.length;
   }
 
   function max(values) {
-    let maxValue = values[0];
-    let i;
-
-    for (i = 1; i < values.length; i++) {
-      if (values[i] > maxValue) maxValue = values[i];
-    }
-
-    return maxValue;
+    return Math.max.apply(null, values);
   }
 
   function min(values) {
-    let minValue = values[0];
-    let i;
-
-    for (i = 1; i < values.length; i++) {
-      if (values[i] < minValue) minValue = values[i];
-    }
-
-    return minValue;
+    return Math.min.apply(null, values);
   }
 
-  function msgToSend(values, config) {
-    if (values.length == 0) return null;
+  function msgToSend(values, majority, config) {
+    if (values.length === 0) return null;
 
-    if (
-      config.margin == null ||
-      config.margin == 0 ||
-      config.valueType === "string"
-    )
-      return values[0];
-
-    if (config.result === "mean") return mean(values);
-
-    if (config.result === "highest") return max(values);
-
-    if (config.result === "lowest") return min(values);
-
-    return null;
-  }
-
-  function createSameTypeArray(arr, type) {
-    let newArr = [];
-    let i;
-
-    for (i = 0; i < arr.length; i++) {
-      if (typeof arr[i] === type) newArr[newArr.length] = arr[i];
+    if (majority) {
+      if (config.valueType === "boolean") {
+        if (values === "true" || values === "false") {
+          return values === "true";
+        }
+        return null;
+      } else if (config.valueType === "string") {
+        return values;
+      } else if (config.valueType === "number") {
+        if (config.result === "mean") return mean(values);
+        else if (config.result === "highest") return max(values);
+        else if (config.result === "lowest") return min(values);
+        else return values[0];
+      }
+    } else {
+      return values;
     }
   }
 
@@ -117,9 +73,7 @@ module.exports = function (RED) {
       shape: "dot",
       text: "No Majority",
     });
-
     node.send([null, msg]);
-
     done();
   }
 
@@ -129,7 +83,6 @@ module.exports = function (RED) {
       shape: "dot",
       text: "Error: Unexpected Input",
     });
-
     done();
   }
 
@@ -141,65 +94,112 @@ module.exports = function (RED) {
     }
   }
 
+  function allSameTypeInArray(arr, valueType) {
+    return arr.reduce(function (result, val) {
+      return result && typeof val === valueType;
+    }, true);
+  }
+
+  function findMajorityInArray(allValues, config, node, done, timeout) {
+    let msg = { timeout: timeout };
+    if (allSameTypeInArray(allValues, "number")) {
+      //array of numbers
+      const majorityVal = majorityCheck(
+        allValues,
+        config.margin,
+        config.majority
+      );
+      if (majorityVal) {
+        // majority
+        const valuesToConsider = allValues.filter(function (value) {
+          return (
+            majorityVal + config.margin >= value &&
+            value >= majorityVal - config.margin
+          );
+        });
+        msg.payload = msgToSend(valuesToConsider, true, config);
+        sendOut(node, msg, done, true);
+      } else {
+        //no majority
+        msg.payload = msgToSend(allValues, false, config);
+        sendOut(node, msg, done, false);
+      }
+    } else if (
+      allSameTypeInArray(allValues, "string") ||
+      allSameTypeInArray(allValues, "boolean")
+    ) {
+      //array of strings or booleans
+      const counts = {};
+      for (const x of allValues) {
+        counts[x] = (counts[x] || 0) + 1;
+      }
+      const mostFreq = Object.keys(counts).reduce(function (a, b) {
+        return counts[a] > counts[b] ? a : b;
+      }); //side-effect: bools -> string
+      if (counts[mostFreq] >= config.majority) {
+        msg.payload = msgToSend(mostFreq, true, config);
+        sendOut(node, msg, done, true);
+      } else {
+        msg.payload = msgToSend(allValues, false, config);
+        sendOut(node, msg, done, false);
+      }
+    } else {
+      setErrorStatus(node, done);
+    }
+  }
+
   function ReplicationVoter(config) {
     RED.nodes.createNode(this, config);
     let node = this;
     let allValues = [];
+    let timeout = "undefined";
+
+    function resetTimeout() {
+      clearTimeout(timeout);
+      timeout = "undefined";
+    }
+
+    function timeoutFunction(allValues, config, node, done) {
+      node.status({
+        fill: "yellow",
+        shape: "dot",
+        text: "Timeout",
+      });
+      resetTimeout();
+      let valuesToConsider = allValues;
+      allValues = [];
+      findMajorityInArray(valuesToConsider, config, node, done, true);
+    }
 
     node.on("input", function (msg, send, done) {
-      if (msg.payload.constructor === Array) {
-        let sameTypeArray = createSameTypeArray(msg.payload, config.valueType);
+      //if input is an array
+      if (Array.isArray(msg.payload) && msg.payload.length > 0) {
+        allValues = []; //safeguard when mixing values and arrays
+        findMajorityInArray(msg.payload, config, node, done, false);
+      }
 
-        let modeValues;
-
-        if (config.valueType === "number" && config.margin != null)
-          modeValues = mode(sameTypeArray, config.margin / 100);
-        else modeValues = mode(sameTypeArray, null);
-
-        msg.payload = msgToSend(modeValues, config);
-
-        allValues = [];
-
-        sendOut(
-          node,
-          msg,
-          done,
-          modeValues.length >= parseInt(config.majority)
-        );
-      } else if (
-        (msg.payload.constructor === Number ||
-          msg.payload.constructor === String) &&
-        typeof config.countInputs != "undefined"
-      ) {
-        if (typeof msg.payload === config.valueType)
+      //if input is a value
+      if (["string", "number", "boolean"].includes(typeof msg.payload)) {
+        if (allSameTypeInArray(allValues, typeof msg.payload)) {
           allValues.push(msg.payload);
-
-        if (allValues.length == config.countInputs) {
-          let modeValues;
-
-          if (
-            config.valueType === "number" &&
-            config.margin != null &&
-            config.margin != 0
-          )
-            modeValues = mode(allValues, config.margin / 100);
-          else modeValues = mode(allValues, null);
-
-          msg.payload = msgToSend(modeValues, config);
-
-          allValues = [];
-
-          sendOut(
-            node,
-            msg,
-            done,
-            modeValues.length >= parseInt(config.majority)
-          );
+          if (allValues.length >= config.countInputs) {
+            resetTimeout();
+            let valuesToConsider = allValues;
+            allValues = [];
+            findMajorityInArray(valuesToConsider, config, node, done, false);
+          } else if (config.timeout > 0 && timeout == "undefined") {
+            timeout = setTimeout(
+              timeoutFunction,
+              config.timeout * 1000,
+              allValues,
+              config,
+              node,
+              done
+            );
+          }
+        } else {
+          setErrorStatus(node, done);
         }
-      } else {
-        allValues = [];
-
-        setErrorStatus(node, done);
       }
     });
   }
