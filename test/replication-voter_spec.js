@@ -279,8 +279,8 @@ describe("replication-voter node", function () {
     testMajorityArrayInput(payload, testFlow, 26, done);
   });
 
-  it("should fail when there are undefineds in the inputs", function (done) {
-    let payload = [undefined, 31, undefined];
+  it("should fail when there are undefineds/nulls in the input array", function (done) {
+    let payload = [undefined, 31, undefined, null];
     let testFlow = setupFlow("number", 2, payload.length, 50, "mean", 0);
     testNoMajorityArrayInput(payload, testFlow, [31], done);
   });
