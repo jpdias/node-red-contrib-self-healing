@@ -77,10 +77,12 @@ module.exports = function (RED) {
       }
     });
 
-    node.on("close", function () {
+    node.on("close", function (done) {
       clearInterval(this.interval);
       node.interval = null;
       node.timeout = null;
+      node.status({});
+      done();
     });
   }
 

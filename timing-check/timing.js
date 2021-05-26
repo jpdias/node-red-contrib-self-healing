@@ -1,11 +1,36 @@
 module.exports = function (RED) {
+  function addToWindow(msg, slidingWindow, slidingWindowLength) {
+    if (slidingWindow.length == slidingWindowLength) {
+      slidingWindow.shift();
+    }
+
+    slidingWindow.push(msg);
+  }
+
+  function determineWindowAverage(slidingWindow) {
+    let sum = 0;
+
+    for (let i = 1; i < slidingWindow.length; i++) {
+      const intervalPeriod =
+        slidingWindow[i].timestamp - slidingWindow[i - 1].timestamp;
+
+      sum += intervalPeriod;
+    }
+
+    return sum / (slidingWindow.length - 1);
+  }
+
   function Timing(config) {
     RED.nodes.createNode(this, config);
+    const node = this;
 
-    let lastTimestamp = null;
     const periodBetweenReadings = config.period * 1000; //seconds to milliseconds
     let intervalMargin = config.margin;
+
+    let lastTimestamp = null;
     let slidingWindow = [];
+    let currentState = null;
+
     const slidingWindowLength = config.slidingWindowLength;
 
     const maximumPeriod =
@@ -13,10 +38,7 @@ module.exports = function (RED) {
     const minimumPeriod =
       periodBetweenReadings - intervalMargin * periodBetweenReadings;
 
-    let node = this;
-    let currentState = null;
-
-    this.on("input", (msg) => {
+    node.on("input", (msg) => {
       const currentTimestamp = Date.now();
       msg.timestamp = currentTimestamp;
 
@@ -76,28 +98,14 @@ module.exports = function (RED) {
 
       lastTimestamp = currentTimestamp;
     });
+    node.on("close", function (done) {
+      lastTimestamp = null;
+      slidingWindow = [];
+      currentState = null;
+      node.status({});
+      done();
+    });
   }
 
   RED.nodes.registerType("timing", Timing);
 };
-
-function addToWindow(msg, slidingWindow, slidingWindowLength) {
-  if (slidingWindow.length == slidingWindowLength) {
-    slidingWindow.shift();
-  }
-
-  slidingWindow.push(msg);
-}
-
-function determineWindowAverage(slidingWindow) {
-  let sum = 0;
-
-  for (let i = 1; i < slidingWindow.length; i++) {
-    const intervalPeriod =
-      slidingWindow[i].timestamp - slidingWindow[i - 1].timestamp;
-
-    sum += intervalPeriod;
-  }
-
-  return sum / (slidingWindow.length - 1);
-}

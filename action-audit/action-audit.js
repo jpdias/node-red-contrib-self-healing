@@ -56,6 +56,7 @@ module.exports = function (RED) {
         clearTimeout(actionQueue.dequeue().timeoutId);
       }
       let actionQueue = new Queue();
+      node.status({});
     });
   }
 

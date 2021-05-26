@@ -208,6 +208,7 @@ module.exports = function (RED) {
     node.on("close", function (done) {
       resetTimeout();
       allValues = [];
+      node.status({});
       done();
     });
   }

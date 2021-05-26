@@ -335,6 +335,7 @@ module.exports = function (RED) {
     node.on("close", function (done) {
       clearInterval(scheduler);
       history = [];
+      node.status({});
       done();
     });
   }

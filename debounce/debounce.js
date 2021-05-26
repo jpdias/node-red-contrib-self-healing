@@ -103,6 +103,7 @@ module.exports = function (RED) {
       schedule = "undefined";
       allActions = []; //all msg payloads
       lastMsgTimestamp = null;
+      node.status({});
     });
   }
 
