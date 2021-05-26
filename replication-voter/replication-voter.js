@@ -77,13 +77,12 @@ module.exports = function (RED) {
     done();
   }
 
-  function setErrorStatus(node, done) {
+  function setErrorStatus(node) {
     node.status({
       fill: "red",
       shape: "dot",
       text: "Error: Unexpected Input",
     });
-    done();
   }
 
   function sendOut(node, msg, done, majority) {
@@ -96,12 +95,13 @@ module.exports = function (RED) {
 
   function allSameTypeInArray(arr, valueType) {
     return arr.reduce(function (result, val) {
-      return result && typeof val === valueType;
+      return result && typeof val === valueType && val !== "undefined";
     }, true);
   }
 
   function findMajorityInArray(allValues, config, node, done, timeout) {
     let msg = { timeout: timeout };
+    allValues = allValues.filter((val) => val !== undefined && val !== null);
     if (allSameTypeInArray(allValues, "number")) {
       //array of numbers
       const majorityVal = majorityCheck(
@@ -144,7 +144,10 @@ module.exports = function (RED) {
         sendOut(node, msg, done, false);
       }
     } else {
-      setErrorStatus(node, done);
+      setErrorStatus(node);
+      let msg = { error: true, payload: null };
+      sendOut(node, msg, done, false);
+      done();
     }
   }
 
@@ -200,7 +203,11 @@ module.exports = function (RED) {
             );
           }
         } else {
-          setErrorStatus(node, done);
+          setErrorStatus(node);
+          allValues = [];
+          let msg = { error: true, payload: null };
+          sendOut(node, msg, done, false);
+          done();
         }
       }
     });

@@ -135,6 +135,48 @@ describe("replication-voter node", function () {
     });
   }
 
+  function testNoMajorityArrayInput(
+    inputArray,
+    testFlow,
+    expectedResult,
+    done
+  ) {
+    helper.load(replicationVoterNode, testFlow, function () {
+      let replicationNode = helper.getNode("n1");
+      let successNode = helper.getNode("n2");
+      let errorNode = helper.getNode("n3");
+
+      const ok = sinon.spy();
+      const fail = sinon.spy();
+
+      successNode.on("input", ok);
+      errorNode.on("input", fail);
+
+      successNode.on("input", function (msg) {
+        ok();
+        done(msg);
+      });
+
+      errorNode.on("input", function (msg) {
+        //console.log(msg)
+        fail();
+        try {
+          JSON.stringify(msg.payload).should.equal(
+            JSON.stringify(expectedResult)
+          );
+          done();
+        } catch (err) {
+          done(err);
+        }
+      });
+
+      replicationNode.receive({ payload: inputArray });
+
+      sinon.assert.calledOnce(fail);
+      sinon.assert.notCalled(ok);
+    });
+  }
+
   function testNoMajorityInput(inputArray, testFlow, expectedResult, done) {
     helper.load(replicationVoterNode, testFlow, function () {
       let replicationNode = helper.getNode("n1");
@@ -235,6 +277,12 @@ describe("replication-voter node", function () {
     let payload = [21, 31, 1000];
     let testFlow = setupFlow("number", 2, payload.length, 50, "mean", 0);
     testMajorityArrayInput(payload, testFlow, 26, done);
+  });
+
+  it("should fail when there are undefineds in the inputs", function (done) {
+    let payload = [undefined, 31, undefined];
+    let testFlow = setupFlow("number", 2, payload.length, 50, "mean", 0);
+    testNoMajorityArrayInput(payload, testFlow, [31], done);
   });
 
   it("should pass when there is a majority number (float/mean) in the inputs", function (done) {
