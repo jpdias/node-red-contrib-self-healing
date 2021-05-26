@@ -204,6 +204,12 @@ module.exports = function (RED) {
         }
       }
     });
+
+    node.on("close", function (done) {
+      resetTimeout();
+      allValues = [];
+      done();
+    });
   }
 
   RED.nodes.registerType("replication-voter", ReplicationVoter);

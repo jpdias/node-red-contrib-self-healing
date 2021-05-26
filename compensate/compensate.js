@@ -332,7 +332,7 @@ module.exports = function (RED) {
       }
     });
 
-    this.on("close", function (done) {
+    node.on("close", function (done) {
       clearInterval(scheduler);
       history = [];
       done();
