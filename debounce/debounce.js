@@ -100,6 +100,9 @@ module.exports = function (RED) {
 
     node.on("close", function () {
       resetSchedule();
+      schedule = "undefined";
+      allActions = []; //all msg payloads
+      lastMsgTimestamp = null;
     });
   }
 

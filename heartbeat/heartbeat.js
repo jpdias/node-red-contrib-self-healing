@@ -3,48 +3,48 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config);
     let node = this;
 
-    this.interval = null;
-    this.timeout = null;
-    this.frequency = config.frequency;
-    this.protocol = config.protocol;
-    this.onfail = config.onfail;
-    this.httpendpoint = config.httpendpoint;
-    this.delay = config.delay;
+    node.interval = null;
+    node.timeout = null;
+    node.frequency = config.frequency;
+    node.protocol = config.protocol;
+    node.onfail = config.onfail;
+    node.httpendpoint = config.httpendpoint;
+    node.delay = config.delay;
 
-    this.late = false;
+    node.late = false;
     let result = [null, null, null];
 
-    this.interval = setInterval(function () {
+    node.interval = setInterval(function () {
       node.emit("checkAlive", {});
-    }, this.frequency * 1000); //from seconds to milliseconds
+    }, node.frequency * 1000); //from seconds to milliseconds
 
-    this.on("input", function (msg, send, done) {
-      if (this.late) {
+    node.on("input", function (msg, send, done) {
+      if (node.late) {
         return;
       }
 
-      if (this.timeout != null) {
-        clearTimeout(this.timeout);
-        this.timeout = null;
+      if (node.timeout != null) {
+        clearTimeout(node.timeout);
+        node.timeout = null;
       }
 
       //Passive protocol
-      if (this.protocol == "passive") {
+      if (node.protocol == "passive") {
         node.status({ fill: "green", shape: "dot", text: "OK" });
         msg.payload = "Connection successful";
         result[1] = msg;
-        if (!this.onfail) send(result);
+        if (!node.onfail) send(result);
         done();
       }
 
       //Active protocol
-      else if (this.protocol == "active") {
+      else if (node.protocol == "active") {
         node.status({ fill: "green", shape: "dot", text: "OK" });
         done();
       }
     });
 
-    this.on("checkAlive", function () {
+    node.on("checkAlive", function () {
       //Passive protocol
       if (this.protocol == "passive") {
         this.timeout = setTimeout(function () {
@@ -77,8 +77,10 @@ module.exports = function (RED) {
       }
     });
 
-    this.on("close", function () {
+    node.on("close", function () {
       clearInterval(this.interval);
+      node.interval = null;
+      node.timeout = null;
     });
   }
 

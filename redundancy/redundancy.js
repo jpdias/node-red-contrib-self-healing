@@ -152,6 +152,15 @@ module.exports = function (RED) {
     node.on("close", function () {
       clearInterval(node.alive);
     });
+
+    node.on("close", function (done) {
+      node.ip = getIp();
+      node.lastOctect = parseInt(node.ip.split(".")[3]);
+      node.masterIsMe = false;
+      node.ips = new Set();
+      node.lastAlive = {};
+      done();
+    });
   }
 
   RED.nodes.registerType("redundancy-manager", RedundancyManager);

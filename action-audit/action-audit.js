@@ -55,6 +55,7 @@ module.exports = function (RED) {
       while (!actionQueue.isEmpty()) {
         clearTimeout(actionQueue.dequeue().timeoutId);
       }
+      let actionQueue = new Queue();
     });
   }
 
