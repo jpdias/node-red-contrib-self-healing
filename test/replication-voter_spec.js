@@ -231,27 +231,33 @@ describe("replication-voter node", function () {
     testMajorityArrayInput(payload, testFlow, 3, done);
   });
 
+  it("should pass when there is a majority number (int) in the array input", function (done) {
+    let payload = [21, 31, 1000];
+    let testFlow = setupFlow("number", 2, payload.length, 50, "mean", 0);
+    testMajorityArrayInput(payload, testFlow, 26, done);
+  });
+
   it("should pass when there is a majority number (float/mean) in the inputs", function (done) {
     let payload = [1, 1.1, 0.9, 3.5, 10.0];
-    let testFlow = setupFlow("number", 3, payload.length, 0.1, "mean", 0);
+    let testFlow = setupFlow("number", 3, payload.length, 10, "mean", 0);
     testMajorityInput(payload, testFlow, 1, done);
   });
 
   it("should pass when there is a majority number (float/max) in the inputs", function (done) {
     let payload = [1, 1.1, 0.9, 3.5, 10.0];
-    let testFlow = setupFlow("number", 3, payload.length, 0.1, "highest", 0);
+    let testFlow = setupFlow("number", 3, payload.length, 10, "highest", 0);
     testMajorityInput(payload, testFlow, 1.1, done);
   });
 
   it("should pass when there is a majority number (float/min) in the inputs", function (done) {
     let payload = [1, 1.1, 0.9, 3.5, 10.0];
-    let testFlow = setupFlow("number", 3, payload.length, 0.1, "lowest", 0);
+    let testFlow = setupFlow("number", 3, payload.length, 10, "lowest", 0);
     testMajorityInput(payload, testFlow, 0.9, done);
   });
 
   it("should pass when returns the bigger majority in the inputs", function (done) {
     let payload = [1, 1.1, 0.9, 3.5, 10.0, 9.9, 10.1, 9.9, 10.1];
-    let testFlow = setupFlow("number", 3, payload.length, 0.1, "mean", 0);
+    let testFlow = setupFlow("number", 3, payload.length, 10, "mean", 0);
     testMajorityInput(payload, testFlow, 10.0, done);
   });
 
@@ -275,13 +281,13 @@ describe("replication-voter node", function () {
 
   it("should fail when there is no majority number in the inputs", function (done) {
     let payload = [1, 2, 3, 4, 5, 6, 7];
-    let testFlow = setupFlow("number", 2, payload.length, 0.2, "mean", 0);
+    let testFlow = setupFlow("number", 2, payload.length, 10, "mean", 0);
     testNoMajorityInput(payload, testFlow, payload, done);
   });
 
   it("should pass when there is majority number in the inputs with timeout", function (done) {
-    let payload = [1, 1, 2, 3];
-    let testFlow = setupFlow("number", 2, 5, 0.2, "mean", 1);
+    let payload = [1, 1, 4, 5];
+    let testFlow = setupFlow("number", 2, 5, 20, "mean", 1);
     testTimeoutMajorityInput(payload, testFlow, 1, done);
   });
 });

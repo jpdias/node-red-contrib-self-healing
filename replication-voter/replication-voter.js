@@ -1,7 +1,7 @@
 module.exports = function (RED) {
   function countOccurrences(arr, val, margin) {
     return arr.reduce(function (a, v) {
-      return val + margin >= v && v >= val - margin ? a + 1 : a;
+      return val + val * margin >= v && v >= val - val * margin ? a + 1 : a;
     }, 0);
   }
 
@@ -113,8 +113,8 @@ module.exports = function (RED) {
         // majority
         const valuesToConsider = allValues.filter(function (value) {
           return (
-            majorityVal + config.margin >= value &&
-            value >= majorityVal - config.margin
+            majorityVal + majorityVal * config.margin >= value &&
+            value >= majorityVal - config.margin * majorityVal
           );
         });
         msg.payload = msgToSend(valuesToConsider, true, config);
@@ -153,6 +153,8 @@ module.exports = function (RED) {
     let node = this;
     let allValues = [];
     let timeout = "undefined";
+
+    config.margin = Number(config.margin) / 100;
 
     function resetTimeout() {
       clearTimeout(timeout);
