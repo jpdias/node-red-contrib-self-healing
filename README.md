@@ -1,11 +1,12 @@
 # SHEN: Self-Healing Extensions for Node-RED
 
+[![DOI](https://zenodo.org/badge/doi/10.1007/978-3-030-50426-7_27.svg)](http://dx.doi.org/10.1007/978-3-030-50426-7_27)
+[![DOI](https://zenodo.org/badge/doi/10.1145/3361149.3361165.svg)](http://dx.doi.org/10.1145/3361149.3361165)
+
 ![Logo](https://i.imgur.com/AynqSQm.png)
 
 ## node-red-contrib-self-healing
 
-[![DOI](https://zenodo.org/badge/doi/10.1007/978-3-030-50426-7_27.svg)](http://dx.doi.org/10.1007/978-3-030-50426-7_27)
-[![DOI](https://zenodo.org/badge/doi/10.1145/3361149.3361165.svg)](http://dx.doi.org/10.1145/3361149.3361165)
 [![npm version badge](https://img.shields.io/npm/v/node-red-contrib-self-healing.svg)](https://www.npmjs.org/package/node-red-contrib-self-healing)
 [![downloads badge](https://img.shields.io/npm/dm/node-red-contrib-self-healing.svg)](https://www.npmjs.com/package/node-red-contrib-self-healing)
 [![license: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
