@@ -9,6 +9,7 @@
 [![npm version badge](https://img.shields.io/npm/v/node-red-contrib-self-healing.svg)](https://www.npmjs.org/package/node-red-contrib-self-healing)
 [![downloads badge](https://img.shields.io/npm/dm/node-red-contrib-self-healing.svg)](https://www.npmjs.com/package/node-red-contrib-self-healing)
 [![license: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build](https://github.com/jpdias/node-red-contrib-self-healing/actions/workflows/node-test-publish.yml/badge.svg)](https://github.com/jpdias/node-red-contrib-self-healing/actions/workflows/node-test-publish.yml)
 
 A collection of nodes for making Node-RED more resilient by adding self-healing capabilities. This project is at an early development stage and its usage in production environments is not recommended.
 
