@@ -78,7 +78,6 @@
     "prettier": "^2.1.2",
     "selenium-webdriver": "^4.0.0-alpha.7"
   },
-  "optionalDependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
