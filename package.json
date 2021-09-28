@@ -53,7 +53,7 @@
   "license": "MIT",
   "dependencies": {
     "ajv": "^6.12.4",
-    "arpping": "git+https://github.com/haf-decent/arpping.git",
+    "arpping": "^3.0.0",
     "asn1": "^0.2.4",
     "child_process": "^1.0.2",
     "dotenv": "^8.2.0",
