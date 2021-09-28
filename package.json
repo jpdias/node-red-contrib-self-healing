@@ -53,7 +53,7 @@
   "license": "MIT",
   "dependencies": {
     "ajv": "^6.12.4",
-    "arpping": "^3.0.0",
+    "arpping": "^2.0.0",
     "asn1": "^0.2.4",
     "child_process": "^1.0.2",
     "dotenv": "^8.2.0",
@@ -78,7 +78,6 @@
     "prettier": "^2.1.2",
     "selenium-webdriver": "^4.0.0-alpha.7"
   },
-  "optionalDependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
