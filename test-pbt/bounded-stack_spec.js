@@ -10,16 +10,18 @@ function isLessOrEqual(num1, num2) {
 }
 
 describe("bounded stack", function () {
-  jsc.property("max length is never passed", "array number", "nat", function (
-    arr,
-    nat
-  ) {
-    let boundedStack = new BoundedStack(nat);
-    arr.forEach((element) => {
-      boundedStack.push(element);
-    });
-    return isLessOrEqual(boundedStack.stack.length, nat);
-  });
+  jsc.property(
+    "max length is never passed",
+    "array number",
+    "nat",
+    function (arr, nat) {
+      let boundedStack = new BoundedStack(nat);
+      arr.forEach((element) => {
+        boundedStack.push(element);
+      });
+      return isLessOrEqual(boundedStack.stack.length, nat);
+    }
+  );
 
   jsc.property(
     "peeked element is always the last inserted",
