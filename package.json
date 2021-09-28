@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-self-healing",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "SHEN: Self-healing extensions for Node-RED.",
   "keywords": [
     "node-red",
