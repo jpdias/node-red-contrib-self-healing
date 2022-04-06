@@ -112,3 +112,6 @@ flows_cred.json
 
 # sonarqube
 .scannerwork/
+
+# macos
+*.DS_Store

@@ -24,6 +24,8 @@ COPY --chown=node-red timing-check selfhealing/timing-check
 COPY --chown=node-red device-registry selfhealing/device-registry
 COPY --chown=node-red action-audit selfhealing/action-audit
 COPY --chown=node-red http-aware selfhealing/http-aware
+COPY --chown=node-red confidence selfhealing/confidence
+
 
 USER node-red
 

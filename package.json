@@ -46,7 +46,8 @@
       "resource-monitor": "resource-monitor/resource-monitor.js",
       "device-registry": "device-registry/device-registry.js",
       "action-audit": "action-audit/action-audit.js",
-      "http-aware": "http-aware/http-aware.js"
+      "http-aware": "http-aware/http-aware.js",
+      "confidence": "confidence/confidence.js"
     }
   },
   "main": "node_modules/node-red/red/red.js",
