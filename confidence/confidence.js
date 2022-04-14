@@ -3,18 +3,10 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config);
     let node = this;
     config.uncertainty = parseFloat(config.measurementUncertainty) || 0;
+    config.confidence = parseFloat(config.confidenceDegree) || 100;
 
     function isNumber(value) {
       return typeof value === "number" && isFinite(value);
-    }
-
-    function calculateConfidence(value) {
-      let relativeUncertainty = 1;
-
-      if (value > 0 && value > config.uncertainty)
-        relativeUncertainty = config.uncertainty / Math.abs(value);
-
-      return 1 - relativeUncertainty;
     }
 
     node.on("input", function (msg, send, done) {
@@ -28,7 +20,8 @@ module.exports = function (RED) {
         send([
           {
             ...msg,
-            confidence: calculateConfidence(parseFloat(msg.payload)),
+            uncertainty: config.uncertainty,
+            confidence: config.confidence,
           },
           null,
         ]);

@@ -1,5 +1,5 @@
 let helper = require("node-red-node-test-helper");
-let confidenceNode = require("../confidence/confidence.js");
+const confidenceNode = require("../confidence/confidence.js");
 
 helper.init(require.resolve("node-red"));
 
@@ -33,13 +33,14 @@ describe("confidence node", function () {
     });
   });
 
-  function uncertaintyFlowBuilder(uncertainty) {
+  function uncertaintyFlowBuilder(uncertainty, confidence) {
     let testFlow = [
       {
         id: "n1",
         type: "confidence",
         name: "confidence",
         measurementUncertainty: uncertainty,
+        confidenceDegree: confidence,
         wires: [["n2"], ["n3"]],
       },
       {
@@ -57,11 +58,11 @@ describe("confidence node", function () {
     return testFlow;
   }
 
-  it("should return 99% confidence", function (done) {
+  it("should propagate uncertainty and confidence", function (done) {
     const payload = 100;
     const uncertainty = 1;
-    const desiredConfidence = 0.99;
-    const flow = uncertaintyFlowBuilder(uncertainty);
+    const confidence = 95;
+    const flow = uncertaintyFlowBuilder(uncertainty, confidence);
 
     helper.load(confidenceNode, flow, function () {
       let successNode = helper.getNode("n2");
@@ -69,55 +70,8 @@ describe("confidence node", function () {
       successNode.on("input", (msg) => {
         try {
           msg.should.have.property("payload", payload);
-          msg.should.have.property("confidence", desiredConfidence);
-          done();
-        } catch (error) {
-          done(error);
-        }
-      });
-
-      let testNode = helper.getNode("n1");
-      testNode.receive({ payload: payload });
-    });
-  });
-
-  it("should return 0% confidence when uncertainty is equal to payload", function (done) {
-    const payload = 1;
-    const uncertainty = 1;
-    const desiredConfidence = 0;
-    const flow = uncertaintyFlowBuilder(uncertainty);
-
-    helper.load(confidenceNode, flow, function () {
-      let successNode = helper.getNode("n2");
-
-      successNode.on("input", (msg) => {
-        try {
-          msg.should.have.property("payload", payload);
-          msg.should.have.property("confidence", desiredConfidence);
-          done();
-        } catch (error) {
-          done(error);
-        }
-      });
-
-      let testNode = helper.getNode("n1");
-      testNode.receive({ payload: payload });
-    });
-  });
-
-  it("should return 0% confidence when uncertainty is higher than payload", function (done) {
-    const payload = 1;
-    const uncertainty = 10;
-    const desiredConfidence = 0;
-    const flow = uncertaintyFlowBuilder(uncertainty);
-
-    helper.load(confidenceNode, flow, function () {
-      let successNode = helper.getNode("n2");
-
-      successNode.on("input", (msg) => {
-        try {
-          msg.should.have.property("payload", payload);
-          msg.should.have.property("confidence", desiredConfidence);
+          msg.should.have.property("uncertainty", uncertainty);
+          msg.should.have.property("confidence", confidence);
           done();
         } catch (error) {
           done(error);

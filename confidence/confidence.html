@@ -5,6 +5,7 @@
     defaults: {
       name: { value: "" },
       measurementUncertainty: { value: 0 },
+      confidenceDegree: { value: 100 },
     },
     inputs: 1,
     outputs: 2,
@@ -42,6 +43,19 @@
       step="0.01"
     />
   </div>
+  <div class="form-row">
+    <label for="node-input-confidenceDegree" style="width:80%;">
+      <i class="icon-tag"></i> Sensor's confidence degree (a percentage):
+    </label>
+    <input
+      type="number"
+      id="node-input-confidenceDegree"
+      placeholder="0"
+      min="0"
+      max="100"
+      step="0.01"
+    />
+  </div>
 </script>
 
 <script type="text/html" data-help-name="confidence">
@@ -50,12 +64,9 @@
   <p>
     This node can be placed right after an "mqtt in" node subscribed to a topic
     for a given sensor's readings. The node receives an absolute measurement
-    uncertainty, normally issued by the sensor's manufacturer, as an initial
-    parameter. This uncertainty, in conjunction with the current reading value,
-    is used to calculate the relative measurement uncertainty. This value is
-    then subtracted to 100% to calculate the confidence level. Note that this
-    node is not very useful with sensors that produce readings close to 0, since
-    the relative measurement goes to infinity as the values tend to null.
+    uncertainty and the confidence degree used to calculate the uncertainty,
+    normally issued by the sensor's manufacturer, as an initial parameter. Both
+    of these values are added as entries to the msg object.
   </p>
   <h3>Properties</h3>
   <dl class="message-properties">
@@ -67,6 +78,12 @@
       the sensor's absolute measurement uncertainty, in the same unit as the
       sensor readings
     </dd>
+
+    <dt>confidence degree<span class="property-type">percentage</span></dt>
+    <dd>
+      the sensor's confidence degree used to calculate the measurement
+      uncertainty
+    </dd>
   </dl>
   <h3>Inputs</h3>
   <dl class="message-properties">
@@ -75,9 +92,8 @@
   <h3>Outputs</h3>
   <dl class="message-properties">
     <p>
-      Equal to the last message object sent as input but with an additional
-      <b>confidence</b> field, containing the calculated confidence level, in
-      percentage
+      Equal to the last message object sent as input but with additional
+      <b>uncertainty</b> and <b>confidence</b> fields
     </p>
   </dl>
 </script>
