@@ -16,6 +16,7 @@ jobs:
 
       - name: semgrep-run
         id: semgrep-run
+        continue-on-error: true
         run: |
           semgrep ci
         env:
@@ -28,11 +29,13 @@ jobs:
             p/dockerfile
             p/javascript
             p/nodejs
-          #add language-specific configs to the above list
+      - name: package-logs
+        if: always()
+        run: tar czf logs.tgz ~/.semgrep/last.log
       - name: upload-logs
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: semgrep.log
-          path: ~/.semgrep/last.log
+          name: logs.tgz
+          path: logs.tgz
           retention-days: 1
