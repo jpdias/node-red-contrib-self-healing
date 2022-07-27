@@ -18,8 +18,8 @@ jobs:
         id: semgrep-run
         continue-on-error: true
         run: |
-          touch ~/.semgrep/output.log
-          semgrep ci 2>&1 | ~/.semgrep/output.log
+          touch output.log
+          semgrep ci 2>&1 | output.log
         env:
           # Select rules for your scan with one of these two options.
           # Option 1: set hard-coded rulesets
@@ -30,13 +30,10 @@ jobs:
             p/dockerfile
             p/javascript
             p/nodejs
-      - name: package-logs
-        if: always()
-        run: tar czf logs.tgz ~/.semgrep/output.log
       - name: upload-logs
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: logs.tgz
-          path: logs.tgz
+          name: output.log
+          path: output.log
           retention-days: 1
