@@ -19,7 +19,7 @@ jobs:
         continue-on-error: true
         run: |
           touch output.log
-          semgrep ci 2>&1 | output.log
+          semgrep ci 2>&1 | tee output.log
         env:
           # Select rules for your scan with one of these two options.
           # Option 1: set hard-coded rulesets
