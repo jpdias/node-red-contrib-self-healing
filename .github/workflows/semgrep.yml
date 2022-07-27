@@ -18,7 +18,7 @@ jobs:
         id: semgrep-run
         continue-on-error: true
         run: |
-          semgrep ci | tee ~/.semgrep/last.log
+          semgrep ci 2>&1 | tee test.log
         env:
           # Select rules for your scan with one of these two options.
           # Option 1: set hard-coded rulesets
