@@ -18,7 +18,7 @@ jobs:
         id: semgrep-run
         continue-on-error: true
         run: |
-          semgrep ci 2>&1 | tee test.log
+          semgrep ci 2>&1 | tee ~/.semgrep/output.log
         env:
           # Select rules for your scan with one of these two options.
           # Option 1: set hard-coded rulesets
@@ -31,7 +31,7 @@ jobs:
             p/nodejs
       - name: package-logs
         if: always()
-        run: tar czf logs.tgz ~/.semgrep/last.log
+        run: tar czf logs.tgz ~/.semgrep/output.log
       - name: upload-logs
         if: always()
         uses: actions/upload-artifact@v3
