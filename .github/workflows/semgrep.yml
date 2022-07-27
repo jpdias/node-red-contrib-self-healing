@@ -18,7 +18,7 @@ jobs:
         id: semgrep-run
         continue-on-error: true
         run: |
-          semgrep ci
+          semgrep ci --config p/ci
         env:
           # Select rules for your scan with one of these two options.
           # Option 1: set hard-coded rulesets
