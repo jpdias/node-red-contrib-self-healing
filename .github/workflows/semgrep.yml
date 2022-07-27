@@ -1,0 +1,38 @@
+name: Semgrep
+
+on: [workflow_dispatch, push, pull_request]
+
+jobs:
+  semgrep:
+    name: Scan
+    runs-on: ubuntu-latest
+    container:
+      image: returntocorp/semgrep
+    # Skip any PR created by dependabot to avoid permission issues
+    if: (github.actor != 'dependabot[bot]')
+    steps:
+      # Fetch project source
+      - uses: actions/checkout@v3
+
+      - name: semgrep-run
+        id: semgrep-run
+        run: |
+          semgrep ci
+        env:
+          # Select rules for your scan with one of these two options.
+          # Option 1: set hard-coded rulesets
+          SEMGREP_RULES: >- # more at semgrep.dev/r
+            p/security-audit
+            p/secrets
+            p/ci
+            p/dockerfile
+            p/javascript
+            p/nodejs
+          #add language-specific configs to the above list
+      - name: upload-logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: semgrep.log
+          path: ~/.semgrep/last.log
+          retention-days: 1
