@@ -67,8 +67,8 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
-    "@stryker-mutator/core": "^6.0.0",
-    "@stryker-mutator/mocha-runner": "^6.0.0",
+    "@stryker-mutator/core": "^9.0.1",
+    "@stryker-mutator/mocha-runner": "^9.0.1",
     "eslint": "^8.9.0",
     "eslint-config-prettier": "^8.5.0",
     "husky": "^8.0.1",
